@@ -1,0 +1,147 @@
+# Docker Compose - LMS Baby Owl (Inntexia Academy)
+# Usage:
+#   Development: docker compose --profile dev up -d
+#   Production:  docker compose up -d
+
+services:
+  # ============================================================================
+  # PostgreSQL Database
+  # ============================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: inntexia_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-inntexia}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-inntexia_secret}
+      POSTGRES_DB: ${DB_NAME:-inntexia_lms}
+      # Performance tuning
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --lc-collate=C --lc-ctype=C'
+    ports:
+      - '${DB_PORT:-5432}:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-inntexia} -d ${DB_NAME:-inntexia_lms}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - inntexia_network
+
+  # ============================================================================
+  # Redis Cache & Queue
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: inntexia_redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --appendonly yes
+      --requirepass ${REDIS_PASSWORD:-redis_secret}
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', '-a', '${REDIS_PASSWORD:-redis_secret}', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - inntexia_network
+
+  # ============================================================================
+  # Development Tools (Only with --profile dev)
+  # ============================================================================
+
+  # Redis Commander - Redis GUI
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: inntexia_redis_ui
+    restart: unless-stopped
+    environment:
+      REDIS_HOSTS: local:redis:6379:0:${REDIS_PASSWORD:-redis_secret}
+      HTTP_USER: ${REDIS_COMMANDER_USER:-admin}
+      HTTP_PASSWORD: ${REDIS_COMMANDER_PASSWORD:-admin}
+    ports:
+      - '${REDIS_COMMANDER_PORT:-8081}:8081'
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - inntexia_network
+    profiles:
+      - dev
+
+  # pgAdmin - PostgreSQL GUI
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: inntexia_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@inntexia.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - '${PGADMIN_PORT:-5050}:80'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - inntexia_network
+    profiles:
+      - dev
+
+  # ============================================================================
+  # Mail Server for Development
+  # ============================================================================
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: inntexia_mailpit
+    restart: unless-stopped
+    ports:
+      - '${MAILPIT_SMTP_PORT:-1025}:1025'  # SMTP
+      - '${MAILPIT_UI_PORT:-8025}:8025'    # Web UI
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    volumes:
+      - mailpit_data:/data
+    networks:
+      - inntexia_network
+    profiles:
+      - dev
+
+# ============================================================================
+# Networks
+# ============================================================================
+networks:
+  inntexia_network:
+    driver: bridge
+    name: inntexia_network
+
+# ============================================================================
+# Volumes
+# ============================================================================
+volumes:
+  postgres_data:
+    name: inntexia_postgres_data
+  redis_data:
+    name: inntexia_redis_data
+  pgadmin_data:
+    name: inntexia_pgadmin_data
+  mailpit_data:
+    name: inntexia_mailpit_data
+
