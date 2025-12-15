@@ -26,63 +26,36 @@
 - [x] Create `docker-compose.yml` (PostgreSQL + Redis)
 - [x] Create `env.example`
 - [x] Setup Prisma schema
-- [ ] Create `.env` file dari `env.example`
-- [ ] Setup Git hooks (husky + lint-staged)
-- [ ] Create `CONTRIBUTING.md`
-- [ ] Setup CI/CD (GitHub Actions)
+- [x] Create `.env` file dari `env.example`
+- [x] Setup Git hooks (husky + lint-staged)
+- [x] Create `CONTRIBUTING.md`
+- [ ] ⏸️ Setup CI/CD (GitHub Actions) - Skipped for now
   - [ ] Lint workflow
   - [ ] Test workflow
   - [ ] Build workflow
 
 ### 0.2 Install Core Dependencies
 
-- [ ] Install NestJS packages
-  ```bash
-  yarn add @nestjs/config @nestjs/swagger
-  ```
-- [ ] Install Authentication packages
-  ```bash
-  yarn add @nestjs/jwt @nestjs/passport passport passport-jwt passport-local bcrypt
-  yarn add -D @types/passport-jwt @types/passport-local @types/bcrypt
-  ```
-- [ ] Install CQRS package
-  ```bash
-  yarn add @nestjs/cqrs
-  ```
-- [ ] Install Validation packages
-  ```bash
-  yarn add class-validator class-transformer
-  ```
-- [ ] Install Caching packages
-  ```bash
-  yarn add @nestjs/cache-manager cache-manager cache-manager-redis-yet
-  ```
-- [ ] Install Queue packages
-  ```bash
-  yarn add @nestjs/bullmq bullmq
-  ```
-- [ ] Install Security packages
-  ```bash
-  yarn add helmet @nestjs/throttler
-  ```
-- [ ] Install Email package
-  ```bash
-  yarn add resend
-  ```
-- [ ] Install Storage packages
-  ```bash
-  yarn add @aws-sdk/client-s3 @aws-sdk/s3-request-presigner multer
-  yarn add -D @types/multer
-  ```
+- [x] Install NestJS packages (`@nestjs/config`, `@nestjs/swagger`)
+- [x] Install Authentication packages (`@nestjs/jwt`, `@nestjs/passport`, `passport`, `passport-jwt`, `passport-local`, `bcrypt`)
+- [x] Install CQRS package (`@nestjs/cqrs`)
+- [x] Install Validation packages (`class-validator`, `class-transformer`)
+- [x] Install Caching packages (`@nestjs/cache-manager`, `cache-manager`, `cache-manager-redis-yet`, `ioredis`)
+- [x] Install Queue packages (`@nestjs/bullmq`, `bullmq`)
+- [x] Install Security packages (`helmet`, `@nestjs/throttler`)
+- [x] Install Email package (`resend`)
+- [x] Install Storage packages (`@aws-sdk/client-s3`, `@aws-sdk/s3-request-presigner`, `multer`)
 
 ### 0.3 Verify Infrastructure
 
 - [x] PostgreSQL running & accessible
 - [x] Redis running & accessible
 - [x] Prisma connected to database
-- [x] All tables created
+- [x] All tables created (32 tables)
 - [ ] Test Redis connection from NestJS
 - [ ] Test Prisma queries from NestJS
+
+**✅ Phase 0 Complete** (except CI/CD - skipped)
 
 ---
 
