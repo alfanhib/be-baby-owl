@@ -125,25 +125,25 @@ COMMAND SIDE (Write)                    QUERY SIDE (Read)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                                                                  │
+│                                                                 │
 │   OUTER LAYERS DEPEND ON INNER LAYERS (Never the reverse)       │
-│                                                                  │
+│                                                                 │
 │   ┌─────────────────────────────────────────────────────────┐   │
-│   │                    INFRASTRUCTURE                        │   │
-│   │   (Controllers, Repositories, External Services)         │   │
+│   │                    INFRASTRUCTURE                       │   │
+│   │   (Controllers, Repositories, External Services)        │   │
 │   │   ┌─────────────────────────────────────────────────┐   │   │
-│   │   │                  APPLICATION                     │   │   │
-│   │   │   (Commands, Queries, Handlers, Services)        │   │   │
+│   │   │                  APPLICATION                    │   │   │
+│   │   │   (Commands, Queries, Handlers, Services)       │   │   │
 │   │   │   ┌─────────────────────────────────────────┐   │   │   │
-│   │   │   │                 DOMAIN                   │   │   │   │
-│   │   │   │   (Entities, Value Objects, Events)      │   │   │   │
-│   │   │   │                                          │   │   │   │
-│   │   │   │         NO EXTERNAL DEPENDENCIES         │   │   │   │
-│   │   │   │                                          │   │   │   │
+│   │   │   │                 DOMAIN                  │   │   │   │
+│   │   │   │   (Entities, Value Objects, Events)     │   │   │   │
+│   │   │   │                                         │   │   │   │
+│   │   │   │         NO EXTERNAL DEPENDENCIES        │   │   │   │
+│   │   │   │                                         │   │   │   │
 │   │   │   └─────────────────────────────────────────┘   │   │   │
 │   │   └─────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -155,36 +155,36 @@ COMMAND SIDE (Write)                    QUERY SIDE (Read)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           BOUNDED CONTEXTS MAP                               │
+│                           BOUNDED CONTEXTS MAP                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  ┌──────────────┐       ┌──────────────┐       ┌──────────────┐             │
 │  │   IDENTITY   │──────▶│   LEARNING   │◀──────│    CLASS     │             │
 │  │   CONTEXT    │       │   CONTEXT    │       │   CONTEXT    │             │
 │  │              │       │              │       │              │             │
 │  │  Core Domain │       │ Core Domain  │       │ Core Domain  │             │
 │  └──────┬───────┘       └──────┬───────┘       └──────┬───────┘             │
-│         │                      │                      │                      │
-│         │                      ▼                      │                      │
-│         │              ┌──────────────┐               │                      │
-│         │              │ GAMIFICATION │◀──────────────┘                      │
-│         │              │   CONTEXT    │                                      │
-│         │              │              │                                      │
-│         │              │ Core Domain  │                                      │
-│         │              └──────────────┘                                      │
-│         │                      ▲                                             │
-│         ▼                      │                                             │
+│         │                      │                      │                     │
+│         │                      ▼                      │                     │
+│         │              ┌──────────────┐               │                     │
+│         │              │ GAMIFICATION │◀──────────────┘                     │
+│         │              │   CONTEXT    │                                     │
+│         │              │              │                                     │
+│         │              │ Core Domain  │                                     │
+│         │              └──────────────┘                                     │
+│         │                      ▲                                            │
+│         ▼                      │                                            │
 │  ┌──────────────┐       ┌──────────────┐       ┌──────────────┐             │
 │  │  ASSESSMENT  │───────│  COMMUNITY   │       │   BILLING    │             │
 │  │   CONTEXT    │       │   CONTEXT    │       │   CONTEXT    │             │
 │  │              │       │              │       │              │             │
 │  │  Supporting  │       │  Supporting  │       │  Supporting  │             │
 │  └──────────────┘       └──────────────┘       └──────────────┘             │
-│                                                                              │
+│                                                                             │
 │  ────────────────────────────────────────────────────────────────────────   │
 │  SHARED KERNEL: Common value objects, Result pattern, Base classes          │
 │  ────────────────────────────────────────────────────────────────────────   │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
