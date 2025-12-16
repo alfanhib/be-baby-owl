@@ -264,13 +264,13 @@ Super Admin → Full system access, create staff/instructors, system analytics
 - [x] Create `update-profile/` - Update fullName, avatar, bio
 - [ ] Create `forgot-password/` (TODO: will add with email service)
 - [ ] Create `reset-password/` (TODO: will add with email service)
-- [ ] Create `create-user/` (Super Admin/Staff - create user accounts)
-- [ ] Create `update-user/` (Super Admin - update any user)
-- [ ] Create `deactivate-user/` (Super Admin - suspend/deactivate user)
-- [ ] Create `change-user-role/` (Super Admin only)
+- [x] Create `create-user/` (Super Admin/Staff - create user accounts)
+- [x] Create `update-user/` (Super Admin - update any user)
+- [x] Create `deactivate-user/` (Super Admin - suspend/deactivate user)
+- [x] Create `change-user-role/` (Super Admin only)
 - [x] Create `commands/index.ts` with CommandHandlers array
 
-**✅ Section 2.2 Complete** (core commands done, admin commands pending)
+**✅ Section 2.2 Complete** (admin commands done, email-related pending)
 
 ### 2.3 Application Layer - Queries
 
@@ -339,10 +339,10 @@ Super Admin → Full system access, create staff/instructors, system analytics
   - [x] `GET /users/:id`
   - [x] `GET /users/me`
   - [x] `PUT /users/me`
-  - [ ] `POST /users` (Super Admin/Staff - create user)
-  - [ ] `PUT /users/:id` (Super Admin)
-  - [ ] `DELETE /users/:id` (Super Admin - deactivate)
-  - [ ] `PUT /users/:id/role` (Super Admin - change role)
+  - [x] `POST /users` (Super Admin/Staff - create user)
+  - [x] `PUT /users/:id` (Super Admin)
+  - [x] `DELETE /users/:id` (Super Admin - deactivate)
+  - [x] `PUT /users/:id/role` (Super Admin - change role)
   - [ ] `GET /users/:id/activity` (Admin - activity log)
 - [x] Create DTOs:
   - [x] `register.dto.ts`
@@ -353,9 +353,11 @@ Super Admin → Full system access, create staff/instructors, system analytics
   - [ ] `reset-password.dto.ts`
   - [x] `change-password.dto.ts`
   - [x] `update-profile.dto.ts`
-  - [ ] `create-user.dto.ts`
+  - [x] `create-user.dto.ts`
+  - [x] `update-user.dto.ts`
+  - [x] `deactivate-user.dto.ts`
+  - [x] `change-user-role.dto.ts`
   - [x] `user-response.dto.ts`
-  - [ ] `users-list.dto.ts`
 
 ### 2.8 Passport Strategies
 
@@ -389,7 +391,7 @@ Super Admin → Full system access, create staff/instructors, system analytics
   - [ ] Login flow
   - [ ] Password reset flow
 
-**Phase 2: ~85% Complete - Core Authentication & User Management Implemented**
+**Phase 2: ~90% Complete - Core Auth, User Management & Admin Commands Implemented**
 
 ---
 

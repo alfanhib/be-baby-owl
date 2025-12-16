@@ -4,3 +4,7 @@ export * from './refresh-token.dto';
 export * from './change-password.dto';
 export * from './verify-email.dto';
 export * from './update-profile.dto';
+export * from './create-user.dto';
+export * from './update-user.dto';
+export * from './deactivate-user.dto';
+export * from './change-user-role.dto';
