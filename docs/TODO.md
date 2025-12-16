@@ -1080,7 +1080,9 @@
 
 ## Notes
 
-- Each phase should be completed with tests before moving to next
+- **Development Approach:** Focus on core implementation first, testing will be done at the end when all features are complete
+- **Phase Completion:** Each phase focuses on feature implementation without immediate testing
+- **Testing Strategy:** Comprehensive testing (unit, integration, E2E) will be implemented after all phases are complete
 - Deploy to staging after each major phase
 - Get user feedback early (after Phase 4)
 - Prioritize core features (Identity, Learning, Class) for MVP
@@ -1092,5 +1094,6 @@
 
 | Version | Date         | Changes                          |
 | ------- | ------------ | -------------------------------- |
+| 1.2     | Dec 16, 2025 | Update development approach - testing at end |
 | 1.1     | Dec 16, 2025 | Update Phase 2 status to 85% complete |
 | 1.0     | Dec 15, 2025 | Initial TODO list                |
