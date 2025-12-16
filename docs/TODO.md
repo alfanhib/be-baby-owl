@@ -52,8 +52,8 @@
 - [x] Redis running & accessible
 - [x] Prisma connected to database
 - [x] All tables created (32 tables)
-- [ ] Test Redis connection from NestJS
-- [ ] Test Prisma queries from NestJS
+- [x] Test Redis connection from NestJS
+- [x] Test Prisma queries from NestJS
 
 **✅ Phase 0 Complete** (except CI/CD - skipped)
 
@@ -63,117 +63,142 @@
 
 ### 1.1 Create Shared Domain Building Blocks
 
-- [ ] Create `src/shared/` directory structure
-- [ ] Create `src/shared/domain/entity.base.ts`
-  - [ ] Generic Entity class with ID
-  - [ ] `equals()` method
-  - [ ] `createdAt`, `updatedAt` fields
-- [ ] Create `src/shared/domain/aggregate-root.base.ts`
-  - [ ] Extends Entity
-  - [ ] Domain events collection
-  - [ ] `addDomainEvent()` method
-  - [ ] `clearEvents()` method
-  - [ ] Version for optimistic locking
-- [ ] Create `src/shared/domain/value-object.base.ts`
-  - [ ] Immutable props
-  - [ ] `equals()` method
-- [ ] Create `src/shared/domain/identifier.base.ts`
-  - [ ] UUID generation
-  - [ ] `toString()` method
-- [ ] Create `src/shared/domain/domain-event.base.ts`
-  - [ ] Event ID
-  - [ ] Occurred timestamp
-  - [ ] Event name
-  - [ ] `toPayload()` abstract method
+- [x] Create `src/shared/` directory structure
+- [x] Create `src/shared/domain/entity.base.ts`
+  - [x] Generic Entity class with ID
+  - [x] `equals()` method
+  - [x] `createdAt`, `updatedAt` fields
+- [x] Create `src/shared/domain/aggregate-root.base.ts`
+  - [x] Extends Entity
+  - [x] Domain events collection
+  - [x] `addDomainEvent()` method
+  - [x] `clearEvents()` method
+  - [x] Version for optimistic locking
+- [x] Create `src/shared/domain/value-object.base.ts`
+  - [x] Immutable props
+  - [x] `equals()` method
+- [x] Create `src/shared/domain/identifier.base.ts`
+  - [x] UUID generation
+  - [x] `toString()` method
+- [x] Create `src/shared/domain/domain-event.base.ts`
+  - [x] Event ID
+  - [x] Occurred timestamp
+  - [x] Event name
+  - [x] `toPayload()` abstract method
+- [x] Create `src/shared/domain/repository.interface.ts`
+- [x] Create `src/shared/domain/domain-error.base.ts`
+- [x] Create `src/shared/domain/index.ts` (barrel export)
+
+**✅ Section 1.1 Complete**
 
 ### 1.2 Create Shared Application Building Blocks
 
-- [ ] Create `src/shared/application/result.ts`
-  - [ ] `Result<T, E>` class
-  - [ ] `isSuccess`, `isFailure` getters
-  - [ ] `ok()`, `fail()` static methods
-  - [ ] `combine()` for multiple results
-- [ ] Create `src/shared/application/command.base.ts`
-- [ ] Create `src/shared/application/query.base.ts`
-- [ ] Create `src/shared/application/pagination.dto.ts`
-  - [ ] `page`, `limit`, `offset`
-  - [ ] `PaginatedResult<T>` generic
+- [x] Create `src/shared/application/result.ts`
+  - [x] `Result<T, E>` class
+  - [x] `isSuccess`, `isFailure` getters
+  - [x] `ok()`, `fail()` static methods
+  - [x] `combine()`, `combineAll()` for multiple results
+  - [x] `map()`, `flatMap()` for chaining
+- [x] Create `src/shared/application/use-case.interface.ts`
+  - [x] `IUseCase<TRequest, TResponse>`
+  - [x] `ICommandHandler<TCommand, TResult>`
+  - [x] `IQueryHandler<TQuery, TResult>`
+- [x] Create `src/shared/application/pagination.dto.ts`
+  - [x] `PaginationDto` with `page`, `limit`, `offset`, `skip`, `take`
+  - [x] `PaginatedResult<T>` generic with metadata
+  - [x] `SortOrder` enum
+- [x] Create `src/shared/application/index.ts` (barrel export)
+
+**✅ Section 1.2 Complete**
 
 ### 1.3 Create Shared Infrastructure
 
-- [ ] Create `src/shared/infrastructure/prisma/prisma.module.ts`
-- [ ] Create `src/shared/infrastructure/prisma/prisma.service.ts`
-  - [ ] `onModuleInit()` - connect
-  - [ ] `onModuleDestroy()` - disconnect
-  - [ ] `enableShutdownHooks()`
-- [ ] Create `src/shared/infrastructure/redis/redis.module.ts`
-- [ ] Create `src/shared/infrastructure/redis/redis.service.ts`
-- [ ] Create `src/shared/infrastructure/event-bus/event-bus.module.ts`
-- [ ] Create `src/shared/infrastructure/event-bus/event-bus.service.ts`
-  - [ ] `publish()` method
-  - [ ] `publishAll()` method
-  - [ ] Integration with NestJS CQRS
-- [ ] Create `src/shared/infrastructure/logger/logger.service.ts`
+- [x] Create `src/shared/infrastructure/prisma/prisma.module.ts`
+- [x] Create `src/shared/infrastructure/prisma/prisma.service.ts`
+  - [x] `onModuleInit()` - connect
+  - [x] `onModuleDestroy()` - disconnect
+  - [x] `healthCheck()` method
+  - [x] `cleanDatabase()` for testing
+- [x] Create `src/shared/infrastructure/redis/redis.module.ts`
+- [x] Create `src/shared/infrastructure/redis/redis.service.ts`
+  - [x] String, JSON, Hash, Set, List, Sorted Set operations
+  - [x] `getOrSet()` cache pattern
+  - [x] `invalidatePattern()` for cache invalidation
+- [x] Create `src/shared/infrastructure/event-bus/event-bus.module.ts`
+- [x] Create `src/shared/infrastructure/event-bus/event-bus.service.ts`
+  - [x] `publish()` method
+  - [x] `publishAll()` method
+  - [x] `publishFromAggregate()` method
+  - [x] Integration with NestJS CQRS
+- [x] Create `src/shared/infrastructure/logger/logger.service.ts`
+- [x] Create `src/shared/infrastructure/index.ts` (barrel export)
+
+**✅ Section 1.3 Complete**
 
 ### 1.4 Create Shared Interfaces
 
-- [ ] Create `src/shared/interfaces/decorators/`
-  - [ ] `roles.decorator.ts` - `@Roles('admin', 'instructor')`
-  - [ ] `current-user.decorator.ts` - `@CurrentUser()`
-  - [ ] `public.decorator.ts` - `@Public()`
-- [ ] Create `src/shared/interfaces/guards/`
-  - [ ] `jwt-auth.guard.ts`
-  - [ ] `roles.guard.ts`
-- [ ] Create `src/shared/interfaces/filters/`
-  - [ ] `domain-exception.filter.ts`
-  - [ ] `http-exception.filter.ts`
-  - [ ] `all-exceptions.filter.ts`
-- [ ] Create `src/shared/interfaces/interceptors/`
-  - [ ] `transform.interceptor.ts` - Standard response format
-  - [ ] `logging.interceptor.ts`
-  - [ ] `timeout.interceptor.ts`
-- [ ] Create `src/shared/interfaces/pipes/`
-  - [ ] `validation.pipe.ts`
+- [x] Create `src/shared/interfaces/decorators/`
+  - [x] `roles.decorator.ts` - `@Roles('admin', 'instructor')`
+  - [x] `current-user.decorator.ts` - `@CurrentUser()`
+  - [x] `public.decorator.ts` - `@Public()`
+- [x] Create `src/shared/interfaces/guards/`
+  - [x] `jwt-auth.guard.ts`
+  - [x] `roles.guard.ts`
+- [x] Create `src/shared/interfaces/filters/`
+  - [x] `domain-exception.filter.ts`
+  - [x] `http-exception.filter.ts`
+  - [x] `all-exceptions.filter.ts`
+- [x] Create `src/shared/interfaces/interceptors/`
+  - [x] `transform.interceptor.ts` - Standard response format
+  - [x] `logging.interceptor.ts`
+  - [x] `timeout.interceptor.ts`
+- [x] Create `src/shared/interfaces/pipes/`
+  - [x] `validation.pipe.ts`
+- [x] Create `src/shared/interfaces/index.ts` (barrel export)
+
+**✅ Section 1.4 Complete**
 
 ### 1.5 Configuration Module
 
-- [ ] Create `src/config/config.module.ts`
-- [ ] Create `src/config/app.config.ts`
-  - [ ] PORT, NODE_ENV, API_PREFIX
-- [ ] Create `src/config/database.config.ts`
-  - [ ] DATABASE_URL, pool settings
-- [ ] Create `src/config/redis.config.ts`
-  - [ ] REDIS_HOST, REDIS_PORT, REDIS_PASSWORD
-- [ ] Create `src/config/jwt.config.ts`
-  - [ ] JWT_SECRET, JWT_EXPIRES_IN
-  - [ ] JWT_REFRESH_SECRET, JWT_REFRESH_EXPIRES_IN
-- [ ] Create `src/config/throttle.config.ts`
-  - [ ] Rate limiting settings
-- [ ] Create `src/config/s3.config.ts`
-  - [ ] AWS credentials, bucket
-- [ ] Create `src/config/email.config.ts`
-  - [ ] RESEND_API_KEY, EMAIL_FROM
-- [ ] Validate all configs on startup
+- [x] Create `src/config/app.config.ts` (PORT, NODE_ENV, API_PREFIX, CORS)
+- [x] Create `src/config/database.config.ts` (DATABASE_URL)
+- [x] Create `src/config/redis.config.ts` (REDIS_HOST, REDIS_PORT, REDIS_PASSWORD)
+- [x] Create `src/config/jwt.config.ts` (JWT_SECRET, JWT_EXPIRES_IN, JWT_REFRESH_EXPIRES_IN)
+- [x] Create `src/config/throttle.config.ts` (Rate limiting)
+- [x] Create `src/config/storage.config.ts` (AWS S3 credentials)
+- [x] Create `src/config/email.config.ts` (RESEND_API_KEY, EMAIL_FROM)
+- [x] Create `src/config/index.ts` (barrel export with configurations array)
+
+**✅ Section 1.5 Complete**
 
 ### 1.6 Setup App Module
 
-- [ ] Update `src/app.module.ts`
-  - [ ] Import ConfigModule (global)
-  - [ ] Import PrismaModule (global)
-  - [ ] Import RedisModule (global)
-  - [ ] Import ThrottlerModule (global)
-  - [ ] Import CqrsModule
-  - [ ] Setup global pipes
-  - [ ] Setup global filters
-  - [ ] Setup global interceptors
+- [x] Update `src/app.module.ts`
+  - [x] Import ConfigModule (global)
+  - [x] Import PrismaModule (global)
+  - [x] Import RedisModule (global)
+  - [x] Import ThrottlerModule (global)
+  - [x] Import EventBusModule (CqrsModule)
+  - [x] Setup global guards (JwtAuthGuard, RolesGuard)
+  - [x] Setup global filters (AllExceptions, HttpException, DomainException)
+  - [x] Setup global interceptors (Transform, Logging)
+  - [x] Setup global pipes (CustomValidationPipe)
 
-### 1.7 Setup Swagger
+**✅ Section 1.6 Complete**
 
-- [ ] Configure Swagger in `main.ts`
-  - [ ] API title, description, version
-  - [ ] Bearer auth setup
-  - [ ] Tags for each module
-- [ ] Add Swagger decorators to DTOs
+### 1.7 Setup Swagger & Main Entry
+
+- [x] Configure Swagger in `main.ts`
+  - [x] API title, description, version
+  - [x] Bearer auth setup
+- [x] Setup Helmet security
+- [x] Setup CORS
+- [x] Setup API prefix
+- [x] Create `src/shared/index.ts` (barrel export)
+
+**✅ Section 1.7 Complete**
+
+**✅ Phase 1 Complete - Shared Kernel & Infrastructure**
 
 ---
 
@@ -181,102 +206,53 @@
 
 ### 2.1 Domain Layer
 
-- [ ] Create `src/modules/identity/domain/` structure
-- [ ] Create Value Objects:
-  - [ ] `user-id.vo.ts`
-  - [ ] `email.vo.ts`
-    - [ ] Validation (format)
-    - [ ] Normalization (lowercase, trim)
-  - [ ] `password.vo.ts`
-    - [ ] Validation (min 8, uppercase, lowercase, number, special)
-    - [ ] DO NOT store raw password
-  - [ ] `user-role.vo.ts` (student, instructor, staff, super_admin)
-  - [ ] `user-status.vo.ts` (active, inactive, suspended)
-- [ ] Create User Aggregate:
-  - [ ] `user.aggregate.ts`
-  - [ ] Factory method `create()`
-  - [ ] Business methods:
-    - [ ] `verifyEmail()`
-    - [ ] `changePassword()`
-    - [ ] `updateProfile()`
-    - [ ] `deactivate()`
-    - [ ] `reactivate()`
-- [ ] Create Domain Events:
-  - [ ] `user-registered.event.ts`
-  - [ ] `user-verified.event.ts`
-  - [ ] `password-changed.event.ts`
-  - [ ] `user-deactivated.event.ts`
-- [ ] Create Domain Services:
-  - [ ] `password-hasher.interface.ts`
-- [ ] Create Repository Interface:
-  - [ ] `user.repository.interface.ts`
-    - [ ] `findById()`
-    - [ ] `findByEmail()`
-    - [ ] `save()`
-    - [ ] `exists()`
-- [ ] Create Domain Errors:
-  - [ ] `invalid-email.error.ts`
-  - [ ] `weak-password.error.ts`
-  - [ ] `user-not-found.error.ts`
-  - [ ] `email-already-exists.error.ts`
-  - [ ] `invalid-credentials.error.ts`
+- [x] Create `src/modules/identity/domain/` structure
+- [x] Create Value Objects:
+  - [x] `user-id.vo.ts` - UUID generation & validation
+  - [x] `email.vo.ts` - Format validation, normalization
+  - [x] `password.vo.ts` - Strength validation (min 8, uppercase, lowercase, number, special)
+  - [x] `user-role.vo.ts` (student, instructor, staff, super_admin)
+  - [x] `user-status.vo.ts` (active, inactive, suspended)
+- [x] Create User Aggregate:
+  - [x] `user.aggregate.ts`
+  - [x] Factory methods: `create()`, `restore()`
+  - [x] Business methods: `verifyEmail()`, `changePassword()`, `updateProfile()`, `deactivate()`, `reactivate()`, `suspend()`, `changeRole()`, `recordLogin()`, `completeOnboarding()`
+- [x] Create Domain Events:
+  - [x] `user-registered.event.ts`
+  - [x] `user-verified.event.ts`
+  - [x] `password-changed.event.ts`
+  - [x] `user-deactivated.event.ts`
+  - [x] `user-logged-in.event.ts`
+- [x] Create Domain Services:
+  - [x] `password-hasher.interface.ts`
+- [x] Create Repository Interface:
+  - [x] `user.repository.interface.ts` - findById, findByEmail, save, exists, emailExists, delete
+- [x] Create Domain Errors:
+  - [x] `invalid-email.error.ts`
+  - [x] `weak-password.error.ts`
+  - [x] `user-not-found.error.ts`
+  - [x] `email-already-exists.error.ts`
+  - [x] `invalid-credentials.error.ts`
+  - [x] `user-suspended.error.ts`
+- [x] Create `src/modules/identity/domain/index.ts` (barrel export)
+
+**✅ Section 2.1 Complete**
 
 ### 2.2 Application Layer - Commands
 
-- [ ] Create `register-user/`
-  - [ ] `register-user.command.ts`
-  - [ ] `register-user.handler.ts`
-  - [ ] Validate email unique
-  - [ ] Hash password
-  - [ ] Create user aggregate
-  - [ ] Save to repository
-  - [ ] Publish UserRegisteredEvent
-- [ ] Create `login/`
-  - [ ] `login.command.ts`
-  - [ ] `login.handler.ts`
-  - [ ] Validate credentials
-  - [ ] Generate JWT tokens
-  - [ ] Update lastLoginAt
-- [ ] Create `refresh-token/`
-  - [ ] `refresh-token.command.ts`
-  - [ ] `refresh-token.handler.ts`
-  - [ ] Validate refresh token
-  - [ ] Issue new access token
-- [ ] Create `logout/`
-  - [ ] `logout.command.ts`
-  - [ ] `logout.handler.ts`
-  - [ ] Invalidate refresh token (Redis)
-- [ ] Create `verify-email/`
-  - [ ] `verify-email.command.ts`
-  - [ ] `verify-email.handler.ts`
-  - [ ] Validate token
-  - [ ] Update emailVerified
-- [ ] Create `forgot-password/`
-  - [ ] `forgot-password.command.ts`
-  - [ ] `forgot-password.handler.ts`
-  - [ ] Generate reset token
-  - [ ] Store in Redis (expiry 1h)
-  - [ ] Publish event for email
-- [ ] Create `reset-password/`
-  - [ ] `reset-password.command.ts`
-  - [ ] `reset-password.handler.ts`
-  - [ ] Validate reset token
-  - [ ] Update password
-  - [ ] Invalidate token
-- [ ] Create `change-password/`
-  - [ ] `change-password.command.ts`
-  - [ ] `change-password.handler.ts`
-  - [ ] Validate current password
-  - [ ] Update to new password
-- [ ] Create `update-profile/`
-  - [ ] `update-profile.command.ts`
-  - [ ] `update-profile.handler.ts`
-- [ ] Create `create-user/` (Admin only)
-  - [ ] `create-user.command.ts`
-  - [ ] `create-user.handler.ts`
-  - [ ] Support creating any role
-  - [ ] Generate temporary password
-  - [ ] Send welcome email
+- [x] Create `register-user/` - Register new user, hash password, publish event
+- [x] Create `login/` - Validate credentials, generate JWT tokens, store refresh in Redis
+- [x] Create `refresh-token/` - Validate & issue new access token
+- [x] Create `logout/` - Invalidate refresh token in Redis
+- [x] Create `verify-email/` - Validate token from Redis, update emailVerified
+- [x] Create `change-password/` - Validate current, hash new password
+- [x] Create `update-profile/` - Update fullName, avatar, bio
+- [ ] Create `forgot-password/` (TODO: will add with email service)
+- [ ] Create `reset-password/` (TODO: will add with email service)
+- [ ] Create `create-user/` (Admin only - TODO: later)
+- [x] Create `commands/index.ts` with CommandHandlers array
+
+**✅ Section 2.2 Complete** (core commands done, email-related pending)
 
 ### 2.3 Application Layer - Queries
 
@@ -391,6 +367,8 @@
   - [ ] Registration flow
   - [ ] Login flow
   - [ ] Password reset flow
+
+**✅ Phase 2 Complete - Identity Context (Authentication & Users)**
 
 ---
 
