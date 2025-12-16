@@ -1,5 +1,5 @@
 import { ValueObject } from '@shared/domain/value-object.base';
-import { InvalidEmailError } from '../errors/invalid-email.error';
+import { InvalidEmailError } from '@identity/domain/errors/invalid-email.error';
 
 interface EmailProps {
   value: string;

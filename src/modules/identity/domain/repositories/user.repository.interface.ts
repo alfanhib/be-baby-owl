@@ -1,5 +1,5 @@
-import { User } from '../aggregates/user.aggregate';
-import { UserId } from '../value-objects/user-id.vo';
+import { User } from '@identity/domain/aggregates/user.aggregate';
+import { UserId } from '@identity/domain/value-objects/user-id.vo';
 
 export const USER_REPOSITORY = Symbol('USER_REPOSITORY');
 

@@ -1,6 +1,6 @@
 # Implementation TODO List - LMS Baby Owl
 
-**Last Updated:** December 15, 2025  
+**Last Updated:** December 16, 2025  
 **Total Estimated Time:** 9 months (36 weeks)
 
 ---
@@ -284,73 +284,73 @@
 
 ### 2.5 Application Layer - Services
 
-- [ ] Create `jwt-token.service.ts`
-  - [ ] `generateAccessToken()`
-  - [ ] `generateRefreshToken()`
-  - [ ] `verifyAccessToken()`
-  - [ ] `verifyRefreshToken()`
-  - [ ] `decodeToken()`
+- [x] Create `jwt-token.service.ts`
+  - [x] `generateAccessToken()`
+  - [x] `generateRefreshToken()`
+  - [x] `verifyAccessToken()`
+  - [x] `verifyRefreshToken()`
+  - [x] `decodeToken()`
 
 ### 2.6 Infrastructure Layer
 
-- [ ] Create `user.repository.ts`
-  - [ ] Implement UserRepository interface
-  - [ ] Prisma queries
+- [x] Create `user.repository.ts`
+  - [x] Implement UserRepository interface
+  - [x] Prisma queries
 - [ ] Create `user.mapper.ts`
   - [ ] `toDomain()` - Prisma model → Domain entity
   - [ ] `toPersistence()` - Domain entity → Prisma model
-- [ ] Create `bcrypt-password-hasher.ts`
-  - [ ] Implement PasswordHasher interface
-  - [ ] `hash()` method
-  - [ ] `compare()` method
+- [x] Create `bcrypt-password-hasher.ts`
+  - [x] Implement PasswordHasher interface
+  - [x] `hash()` method
+  - [x] `compare()` method
 
 ### 2.7 Interface Layer - HTTP
 
-- [ ] Create `auth.controller.ts`
-  - [ ] `POST /auth/register`
-  - [ ] `POST /auth/login`
-  - [ ] `POST /auth/refresh`
-  - [ ] `POST /auth/logout`
+- [x] Create `auth.controller.ts`
+  - [x] `POST /auth/register`
+  - [x] `POST /auth/login`
+  - [x] `POST /auth/refresh`
+  - [x] `POST /auth/logout`
   - [ ] `POST /auth/forgot-password`
   - [ ] `POST /auth/reset-password`
-  - [ ] `PUT /auth/change-password`
+  - [x] `PUT /auth/change-password`
   - [ ] `POST /auth/verify-email`
-- [ ] Create `users.controller.ts`
+- [x] Create `users.controller.ts`
   - [ ] `GET /users` (Admin)
-  - [ ] `GET /users/:id`
-  - [ ] `GET /users/me`
-  - [ ] `PUT /users/me`
+  - [x] `GET /users/:id`
+  - [x] `GET /users/me`
+  - [x] `PUT /users/me`
   - [ ] `POST /users` (Admin - create user)
   - [ ] `PUT /users/:id` (Admin)
   - [ ] `DELETE /users/:id` (Admin - deactivate)
-- [ ] Create DTOs:
-  - [ ] `register.dto.ts`
-  - [ ] `login.dto.ts`
-  - [ ] `login-response.dto.ts`
-  - [ ] `refresh-token.dto.ts`
+- [x] Create DTOs:
+  - [x] `register.dto.ts`
+  - [x] `login.dto.ts`
+  - [x] `login-response.dto.ts`
+  - [x] `refresh-token.dto.ts`
   - [ ] `forgot-password.dto.ts`
   - [ ] `reset-password.dto.ts`
-  - [ ] `change-password.dto.ts`
-  - [ ] `update-profile.dto.ts`
+  - [x] `change-password.dto.ts`
+  - [x] `update-profile.dto.ts`
   - [ ] `create-user.dto.ts`
-  - [ ] `user-response.dto.ts`
+  - [x] `user-response.dto.ts`
   - [ ] `users-list.dto.ts`
 
 ### 2.8 Passport Strategies
 
-- [ ] Create `jwt.strategy.ts`
-  - [ ] Validate JWT
-  - [ ] Attach user to request
-- [ ] Create `jwt-refresh.strategy.ts`
-- [ ] Create `local.strategy.ts`
-  - [ ] Validate email/password
+- [x] Create `jwt.strategy.ts`
+  - [x] Validate JWT
+  - [x] Attach user to request
+- [x] Create `jwt-refresh.strategy.ts`
+- [x] Create `local.strategy.ts`
+  - [x] Validate email/password
 
 ### 2.9 Identity Module
 
-- [ ] Create `identity.module.ts`
-  - [ ] Import dependencies
-  - [ ] Register providers
-  - [ ] Export services
+- [x] Create `identity.module.ts`
+  - [x] Import dependencies
+  - [x] Register providers
+  - [x] Export services
 
 ### 2.10 Tests - Identity
 
@@ -368,7 +368,7 @@
   - [ ] Login flow
   - [ ] Password reset flow
 
-**✅ Phase 2 Complete - Identity Context (Authentication & Users)**
+**Phase 2: ~85% Complete - Core Authentication & User Management Implemented**
 
 ---
 
@@ -1090,6 +1090,7 @@
 
 **Document Changelog:**
 
-| Version | Date         | Changes           |
-| ------- | ------------ | ----------------- |
-| 1.0     | Dec 15, 2025 | Initial TODO list |
+| Version | Date         | Changes                          |
+| ------- | ------------ | -------------------------------- |
+| 1.1     | Dec 16, 2025 | Update Phase 2 status to 85% complete |
+| 1.0     | Dec 15, 2025 | Initial TODO list                |

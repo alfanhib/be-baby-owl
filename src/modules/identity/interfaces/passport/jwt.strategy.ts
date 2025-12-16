@@ -2,11 +2,11 @@ import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { JwtTokenService } from '../../infrastructure/services/jwt-token.service';
-import type { IUserRepository } from '../../domain/repositories/user.repository.interface';
-import { USER_REPOSITORY } from '../../domain/repositories/user.repository.interface';
-import { UserId } from '../../domain/value-objects/user-id.vo';
-import { UserStatusEnum } from '../../domain/value-objects/user-status.vo';
+import { JwtTokenService } from '@identity/infrastructure/services/jwt-token.service';
+import type { IUserRepository } from '@identity/domain/repositories/user.repository.interface';
+import { USER_REPOSITORY } from '@identity/domain/repositories/user.repository.interface';
+import { UserId } from '@identity/domain/value-objects/user-id.vo';
+import { UserStatusEnum } from '@identity/domain/value-objects/user-status.vo';
 
 interface JwtPayload {
   sub: string;

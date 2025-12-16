@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
-import { JwtTokenService } from '../../infrastructure/services/jwt-token.service';
+import { JwtTokenService } from '@identity/infrastructure/services/jwt-token.service';
 
 interface RefreshTokenPayload {
   sub: string;

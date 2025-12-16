@@ -1,5 +1,5 @@
 import { ValueObject } from '@shared/domain/value-object.base';
-import { WeakPasswordError } from '../errors/weak-password.error';
+import { WeakPasswordError } from '@identity/domain/errors/weak-password.error';
 
 interface PasswordProps {
   value: string;
