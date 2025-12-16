@@ -53,7 +53,7 @@ import {
 } from './dto';
 
 interface JwtPayload {
-  sub: string;
+  id: string;
   email: string;
   role: string;
 }
@@ -75,7 +75,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Get current user profile' })
   @ApiResponse({ status: 200, description: 'User profile' })
   async getMe(@CurrentUser() user: JwtPayload): Promise<UserResponse> {
-    const query = new GetUserByIdQuery(user.sub);
+    const query = new GetUserByIdQuery(user.id);
     return this.queryBus.execute<GetUserByIdQuery, UserResponse>(query);
   }
 
@@ -87,7 +87,7 @@ export class UsersController {
     @Body() dto: UpdateProfileDto,
   ): Promise<{ message: string }> {
     const command = new UpdateProfileCommand(
-      user.sub,
+      user.id,
       dto.fullName,
       dto.avatar,
       dto.bio,
@@ -119,7 +119,7 @@ export class UsersController {
       dto.password,
       dto.fullName,
       dto.role,
-      user.sub,
+      user.id,
     );
     return this.commandBus.execute<CreateUserCommand, CreateUserResult>(
       command,
@@ -175,7 +175,7 @@ export class UsersController {
   ): Promise<UpdateUserResult> {
     const command = new UpdateUserCommand(
       id,
-      user.sub,
+      user.id,
       dto.fullName,
       dto.avatar,
       dto.bio,
@@ -200,7 +200,7 @@ export class UsersController {
   ): Promise<DeactivateUserResult> {
     const command = new DeactivateUserCommand(
       id,
-      user.sub,
+      user.id,
       dto.reason,
       dto.action,
     );
@@ -220,7 +220,7 @@ export class UsersController {
     @CurrentUser() user: JwtPayload,
     @Body() dto: ChangeUserRoleDto,
   ): Promise<ChangeUserRoleResult> {
-    const command = new ChangeUserRoleCommand(id, dto.role, user.sub);
+    const command = new ChangeUserRoleCommand(id, dto.role, user.id);
     return this.commandBus.execute<ChangeUserRoleCommand, ChangeUserRoleResult>(
       command,
     );

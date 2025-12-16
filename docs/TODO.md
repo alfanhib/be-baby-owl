@@ -315,9 +315,10 @@ Super Admin → Full system access, create staff/instructors, system analytics
 - [x] Create `user.repository.ts`
   - [x] Implement UserRepository interface
   - [x] Prisma queries
-- [ ] Create `user.mapper.ts`
-  - [ ] `toDomain()` - Prisma model → Domain entity
-  - [ ] `toPersistence()` - Domain entity → Prisma model
+- [x] Create `user.mapper.ts`
+  - [x] `toDomain()` - Prisma model → Domain entity
+  - [x] `toPersistence()` - Domain entity → Prisma model
+  - [x] `toUpdateData()` - Partial update data
 - [x] Create `bcrypt-password-hasher.ts`
   - [x] Implement PasswordHasher interface
   - [x] `hash()` method
@@ -391,7 +392,8 @@ Super Admin → Full system access, create staff/instructors, system analytics
   - [ ] Login flow
   - [ ] Password reset flow
 
-**Phase 2: ~90% Complete - Core Auth, User Management & Admin Commands Implemented**
+**Phase 2: ~92% Complete - Core Auth, User Management & Admin Commands Implemented**
+_Remaining: Email features (depends on Phase 16), Activity Log, Tests_
 
 ---
 
