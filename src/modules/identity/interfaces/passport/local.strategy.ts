@@ -1,11 +1,11 @@
 import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
-import type { IUserRepository } from '@identity/domain/repositories/user.repository.interface';
-import { USER_REPOSITORY } from '@identity/domain/repositories/user.repository.interface';
-import type { IPasswordHasher } from '@identity/domain/services/password-hasher.interface';
-import { PASSWORD_HASHER } from '@identity/domain/services/password-hasher.interface';
-import { UserStatusEnum } from '@identity/domain/value-objects/user-status.vo';
+import type { IUserRepository } from '../../domain/repositories/user.repository.interface';
+import { USER_REPOSITORY } from '../../domain/repositories/user.repository.interface';
+import type { IPasswordHasher } from '../../domain/services/password-hasher.interface';
+import { PASSWORD_HASHER } from '../../domain/services/password-hasher.interface';
+import { UserStatusEnum } from '../../domain/value-objects/user-status.vo';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
