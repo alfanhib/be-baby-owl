@@ -2,6 +2,7 @@
 
 **Last Updated:** December 16, 2025  
 **Total Estimated Time:** 9 months (36 weeks)
+**PRD Reference:** [docs/prd/0-PRD-OVERVIEW.md](./prd/0-PRD-OVERVIEW.md)
 
 ---
 
@@ -12,6 +13,20 @@
 - ✅ Completed
 - ⏸️ Blocked
 - ❌ Cancelled
+
+---
+
+## Role Hierarchy (PRD Reference)
+
+```
+Super Admin → Full system access, create staff/instructors, system analytics
+     │
+     ├── Staff → Enrollments, class management, payments (NOT course creation)
+     │
+     ├── Instructor → Teach classes, grade, unlock lessons, create courses
+     │
+     └── Student → Learn, submit assignments, view progress
+```
 
 ---
 
@@ -202,7 +217,7 @@
 
 ---
 
-## Phase 2: Identity Context (Authentication & Users)
+## Phase 2: Identity Context (Authentication & Users) - PRD M01, M02
 
 ### 2.1 Domain Layer
 
@@ -249,10 +264,13 @@
 - [x] Create `update-profile/` - Update fullName, avatar, bio
 - [ ] Create `forgot-password/` (TODO: will add with email service)
 - [ ] Create `reset-password/` (TODO: will add with email service)
-- [ ] Create `create-user/` (Admin only - TODO: later)
+- [ ] Create `create-user/` (Super Admin/Staff - create user accounts)
+- [ ] Create `update-user/` (Super Admin - update any user)
+- [ ] Create `deactivate-user/` (Super Admin - suspend/deactivate user)
+- [ ] Create `change-user-role/` (Super Admin only)
 - [x] Create `commands/index.ts` with CommandHandlers array
 
-**✅ Section 2.2 Complete** (core commands done, email-related pending)
+**✅ Section 2.2 Complete** (core commands done, admin commands pending)
 
 ### 2.3 Application Layer - Queries
 
@@ -271,6 +289,7 @@
 - [x] Create `check-email-exists/`
   - [x] `check-email-exists.query.ts`
   - [x] `check-email-exists.handler.ts`
+- [ ] Create `get-user-activity-log/` (Admin - view user activity history)
 
 ### 2.4 Application Layer - Event Handlers
 
@@ -316,13 +335,15 @@
   - [x] `PUT /auth/change-password`
   - [ ] `POST /auth/verify-email`
 - [x] Create `users.controller.ts`
-  - [ ] `GET /users` (Admin)
+  - [x] `GET /users` (Admin)
   - [x] `GET /users/:id`
   - [x] `GET /users/me`
   - [x] `PUT /users/me`
-  - [ ] `POST /users` (Admin - create user)
-  - [ ] `PUT /users/:id` (Admin)
-  - [ ] `DELETE /users/:id` (Admin - deactivate)
+  - [ ] `POST /users` (Super Admin/Staff - create user)
+  - [ ] `PUT /users/:id` (Super Admin)
+  - [ ] `DELETE /users/:id` (Super Admin - deactivate)
+  - [ ] `PUT /users/:id/role` (Super Admin - change role)
+  - [ ] `GET /users/:id/activity` (Admin - activity log)
 - [x] Create DTOs:
   - [x] `register.dto.ts`
   - [x] `login.dto.ts`
@@ -372,7 +393,7 @@
 
 ---
 
-## Phase 3: Learning Context (Courses, Lessons, Exercises)
+## Phase 3: Learning Context (Courses, Lessons, Exercises) - PRD M03, M04, M07
 
 ### 3.1 Domain Layer
 
@@ -384,8 +405,9 @@
   - [ ] `exercise-id.vo.ts`
   - [ ] `course-status.vo.ts` (draft, published, archived)
   - [ ] `course-level.vo.ts` (beginner, intermediate, advanced)
-  - [ ] `exercise-type.vo.ts` (video, quiz, material, assignment, coding)
+  - [ ] `exercise-type.vo.ts` (video, quiz, material, assignment, coding_challenge, coding_playground)
   - [ ] `slug.vo.ts`
+  - [ ] `quiz-type.vo.ts` (multiple_choice, match_pairs, fill_blanks, true_false, sentence_building, listening)
 - [ ] Create Course Aggregate:
   - [ ] `course.aggregate.ts`
   - [ ] Contains Sections (entities)
@@ -405,7 +427,13 @@
   - [ ] `addExercise()`, `removeExercise()`, `reorderExercises()`
 - [ ] Create Exercise Entity:
   - [ ] `exercise.entity.ts`
-  - [ ] Type-specific content handling
+  - [ ] Type-specific content handling:
+    - [ ] Video: YouTube embed, duration
+    - [ ] Quiz: 6 types (MCQ, Match, Fill, T/F, Sentence, Listening)
+    - [ ] Material: Rich text, images
+    - [ ] Assignment: Instructions, rubric, due date
+    - [ ] Coding Challenge: Test cases, auto-grading
+    - [ ] Coding Playground: Turtle, matplotlib, interactive
 - [ ] Create StudentProgress Aggregate:
   - [ ] `student-progress.aggregate.ts`
   - [ ] Track lesson completion
@@ -427,6 +455,7 @@
   - [ ] `exercise-not-found.error.ts`
   - [ ] `duplicate-slug.error.ts`
   - [ ] `course-not-published.error.ts`
+  - [ ] `lesson-locked.error.ts`
 
 ### 3.2 Application Layer - Commands
 
@@ -468,28 +497,67 @@
 - [ ] `get-student-progress/` - Progress for a course
 - [ ] `get-student-courses/` - All enrolled courses
 
-### 3.4 Application Layer - Read Models
+### 3.4 Content Delivery - Exercise Types (PRD M04)
 
-- [ ] `course-catalog.read-model.ts`
-  - [ ] Optimized for listing
-  - [ ] Category filtering
-  - [ ] Search
-- [ ] `course-detail.read-model.ts`
-- [ ] `student-progress.read-model.ts`
+- [ ] Video Exercise:
+  - [ ] YouTube embed
+  - [ ] Progress tracking (>80% watched = complete)
+  - [ ] Resume position
+- [ ] Quiz Exercise (6 types):
+  - [ ] Multiple Choice - single/multiple answers
+  - [ ] Match Pairs - drag and drop matching
+  - [ ] Fill in Blanks - text input
+  - [ ] True/False - binary choice
+  - [ ] Sentence Building - word ordering
+  - [ ] Listening - audio + questions
+  - [ ] Auto-grading (≥70% = pass)
+  - [ ] Attempts tracking, best score
+- [ ] Material Exercise:
+  - [ ] Rich text (HTML/Markdown)
+  - [ ] Images, embedded content
+  - [ ] Scroll to bottom = complete
+- [ ] Coding Exercise - Challenge Mode:
+  - [ ] Test cases definition
+  - [ ] Auto-grading against test cases
+  - [ ] Python execution (Pyodide - WebAssembly)
+  - [ ] Monaco Editor integration
+  - [ ] Pass all tests = complete
+- [ ] Coding Exercise - Playground Mode:
+  - [ ] Interactive output (turtle graphics, matplotlib charts, console)
+  - [ ] No test cases, free exploration
+  - [ ] Manual completion by student
 
-### 3.5 Infrastructure Layer
+### 3.5 Progress Tracking (PRD M07)
+
+- [ ] Exercise-level tracking:
+  - [ ] Completion status per exercise
+  - [ ] Timestamps, attempts
+- [ ] Lesson-level tracking:
+  - [ ] All exercises complete = lesson complete
+  - [ ] Progress percentage: (completed/total exercises)
+- [ ] Course-level tracking:
+  - [ ] (Completed lessons / Total unlocked lessons) × 100
+  - [ ] Overall course percentage
+- [ ] Progress indicators:
+  - [ ] Checkmarks, progress bars
+  - [ ] Color-coded status
+- [ ] Certificate generation:
+  - [ ] Trigger on 100% course completion
+  - [ ] PDF with student name, course, date, certificate ID
+
+### 3.6 Infrastructure Layer
 
 - [ ] `course.repository.ts`
 - [ ] `course.mapper.ts`
 - [ ] `progress.repository.ts`
 - [ ] `progress.mapper.ts`
 
-### 3.6 Interface Layer - HTTP
+### 3.7 Interface Layer - HTTP
 
 - [ ] `courses.controller.ts`
   - [ ] `GET /courses` - Catalog
   - [ ] `GET /courses/:id` - Detail
-  - [ ] `POST /courses` - Create (Instructor)
+  - [ ] `POST /courses` - Create (Instructor/Super Admin)
   - [ ] `PUT /courses/:id` - Update
   - [ ] `DELETE /courses/:id` - Delete
   - [ ] `POST /courses/:id/publish`
@@ -512,15 +580,17 @@
   - [ ] `POST /exercises/:id/complete`
   - [ ] `POST /exercises/:id/quiz/submit`
   - [ ] `POST /exercises/:id/coding/submit`
+  - [ ] `POST /exercises/:id/coding/run` (playground)
 - [ ] `progress.controller.ts`
   - [ ] `GET /courses/:id/progress`
   - [ ] `GET /users/me/courses`
+  - [ ] `POST /courses/:id/certificate/generate`
 
-### 3.7 Learning Module
+### 3.8 Learning Module
 
 - [ ] Create `learning.module.ts`
 
-### 3.8 Tests - Learning
+### 3.9 Tests - Learning
 
 - [ ] Unit tests for domain
 - [ ] Integration tests for repository
@@ -528,7 +598,7 @@
 
 ---
 
-## Phase 4: Class Management Context
+## Phase 4: Class Management Context - PRD M12, M13, M14, M15
 
 ### 4.1 Domain Layer
 
@@ -536,31 +606,42 @@
   - [ ] `class-id.vo.ts`
   - [ ] `enrollment-id.vo.ts`
   - [ ] `class-type.vo.ts` (group, private)
-  - [ ] `class-status.vo.ts`
+  - [ ] `class-status.vo.ts` (draft, enrollment_open, active, completed, cancelled)
   - [ ] `meeting-credit.vo.ts`
-  - [ ] `attendance-status.vo.ts`
+  - [ ] `attendance-status.vo.ts` (present, absent, late)
   - [ ] `schedule.vo.ts`
 - [ ] Create Class Aggregate:
   - [ ] `class.aggregate.ts`
   - [ ] Contains Enrollments
+  - [ ] Business rules:
+    - [ ] 1 Meeting = 1 Lesson (fixed ratio)
+    - [ ] Package is at class level
+    - [ ] Group: No enroll after active status
+    - [ ] Private: Can add meetings anytime
   - [ ] Business methods:
-    - [ ] `enrollStudent()` - with business rules
+    - [ ] `enrollStudent()` - with enrollment rules
     - [ ] `removeStudent()`
-    - [ ] `markAttendance()`
-    - [ ] `adjustCredit()`
-    - [ ] `unlockLesson()`
+    - [ ] `markAttendance()` - affects credits
+    - [ ] `adjustCredit()` - manual adjustment
+    - [ ] `unlockLesson()` - unlock lesson + all exercises
     - [ ] `activate()`
     - [ ] `complete()`
 - [ ] Create Enrollment Entity:
   - [ ] `enrollment.entity.ts`
-  - [ ] Credit management
+  - [ ] `meetingCredits` - initial = class.totalMeetings
+  - [ ] `creditsUsed` - incremented on attendance
+  - [ ] `creditsRemaining` - for makeup classes
   - [ ] Progress tracking
 - [ ] Create Attendance Entity:
   - [ ] `attendance.entity.ts`
+  - [ ] Meeting number, Date, Status
+  - [ ] Credit impact (present/late = -1, absent = 0)
 - [ ] Create LessonUnlock Entity:
   - [ ] `lesson-unlock.entity.ts`
+  - [ ] Unlocking lesson unlocks ALL exercises inside
 - [ ] Create CreditAdjustment Entity:
   - [ ] `credit-adjustment.entity.ts`
+  - [ ] Amount (+/-), Reason, Adjusted by, Timestamp
 - [ ] Create Domain Events:
   - [ ] `class-created.event.ts`
   - [ ] `class-activated.event.ts`
@@ -581,6 +662,7 @@
   - [ ] `unlock.policy.ts`
     - [ ] Only instructor can unlock
     - [ ] Cannot exceed package limit
+    - [ ] Lessons unlocked ≤ Meetings completed
 - [ ] Create Repository Interface:
   - [ ] `class.repository.interface.ts`
 - [ ] Create Domain Errors:
@@ -595,37 +677,42 @@
 ### 4.2 Application Layer - Commands
 
 - [ ] Class Commands:
-  - [ ] `create-class/`
+  - [ ] `create-class/` - Staff/Super Admin
   - [ ] `update-class/`
   - [ ] `activate-class/`
   - [ ] `complete-class/`
   - [ ] `cancel-class/`
+  - [ ] `duplicate-class/`
 - [ ] Enrollment Commands:
-  - [ ] `enroll-student/`
+  - [ ] `enroll-student/` - with enrollment rules validation
   - [ ] `remove-student/`
   - [ ] `transfer-student/`
+  - [ ] `bulk-enroll-students/` - CSV upload
 - [ ] Attendance Commands:
-  - [ ] `mark-attendance/`
+  - [ ] `mark-attendance/` - affects credits
   - [ ] `update-attendance/`
   - [ ] `bulk-mark-attendance/`
 - [ ] Credit Commands:
-  - [ ] `adjust-credit/`
+  - [ ] `adjust-credit/` - manual adjustment with reason
 - [ ] Unlock Commands:
-  - [ ] `unlock-lesson/`
-  - [ ] `unlock-all-lessons/`
+  - [ ] `unlock-lesson/` - unlocks lesson + all exercises
+  - [ ] `bulk-unlock-lessons/`
+  - [ ] `lock-lesson/` - revert (rare)
 
 ### 4.3 Application Layer - Queries
 
-- [ ] `get-classes-list/` - Filter by status, instructor
+- [ ] `get-classes-list/` - Filter by status, instructor, course
 - [ ] `get-class-detail/`
-- [ ] `get-class-roster/` - Students in class
+- [ ] `get-class-roster/` - Students in class with progress & credits
 - [ ] `get-class-attendance/` - Attendance history
 - [ ] `get-attendance-report/` - Export
-- [ ] `get-credit-balance/` - Student credits
-- [ ] `get-credit-history/` - Adjustments
+- [ ] `get-credit-balance/` - Student credits for enrollment
+- [ ] `get-credit-history/` - Adjustments log
 - [ ] `get-unlocked-lessons/` - For a class
+- [ ] `get-unlock-history/` - Audit log
 - [ ] `get-instructor-classes/`
 - [ ] `get-student-classes/`
+- [ ] `get-class-analytics/` - Avg completion, engagement
 
 ### 4.4 Application Layer - Read Models
 
@@ -641,17 +728,22 @@
 ### 4.6 Interface Layer - HTTP
 
 - [ ] `classes.controller.ts`
-  - [ ] `GET /classes`
+  - [ ] `GET /classes` - Staff/Super Admin
   - [ ] `GET /classes/:id`
-  - [ ] `POST /classes`
+  - [ ] `POST /classes` - Staff/Super Admin
   - [ ] `PUT /classes/:id`
   - [ ] `POST /classes/:id/activate`
   - [ ] `POST /classes/:id/complete`
+  - [ ] `POST /classes/:id/duplicate`
+  - [ ] `DELETE /classes/:id`
 - [ ] `enrollments.controller.ts`
   - [ ] `GET /classes/:id/enrollments`
   - [ ] `POST /classes/:id/enrollments`
+  - [ ] `POST /classes/:id/enrollments/bulk` - CSV
   - [ ] `DELETE /classes/:classId/enrollments/:studentId`
+  - [ ] `POST /classes/:classId/enrollments/:enrollmentId/transfer`
   - [ ] `GET /enrollments/:id/credits`
+  - [ ] `GET /enrollments/:id/credits/history`
   - [ ] `POST /enrollments/:id/credits/adjust`
 - [ ] `attendance.controller.ts`
   - [ ] `GET /classes/:id/attendance`
@@ -661,6 +753,8 @@
 - [ ] `lesson-unlocks.controller.ts`
   - [ ] `GET /classes/:id/unlocked-lessons`
   - [ ] `POST /classes/:id/unlock-lesson`
+  - [ ] `POST /classes/:id/unlock-lessons/bulk`
+  - [ ] `GET /classes/:id/unlock-history`
 
 ### 4.7 Class Management Module
 
@@ -675,41 +769,90 @@
 
 ---
 
-## Phase 5: Assessment Context
+## Phase 5: Assessment Context - PRD M05, M17
 
 ### 5.1 Domain Layer
 
-- [ ] Create Value Objects
-- [ ] Create Assignment Aggregate
-- [ ] Create Submission Entity
-- [ ] Create Domain Events
+- [ ] Create Value Objects:
+  - [ ] `assignment-id.vo.ts`
+  - [ ] `submission-id.vo.ts`
+  - [ ] `assignment-status.vo.ts` (draft, published)
+  - [ ] `submission-status.vo.ts` (pending, submitted, graded, late, returned)
+  - [ ] `grade.vo.ts`
+- [ ] Create Assignment Aggregate:
+  - [ ] `assignment.aggregate.ts`
+  - [ ] Instructions, rubric, due date, max score
+- [ ] Create Submission Entity:
+  - [ ] `submission.entity.ts`
+  - [ ] Content (file URL, text, link)
+  - [ ] Submitted at, Grade, Feedback
+- [ ] Create Domain Events:
+  - [ ] `assignment-created.event.ts`
+  - [ ] `assignment-submitted.event.ts`
+  - [ ] `assignment-graded.event.ts`
+  - [ ] `assignment-returned.event.ts`
 - [ ] Create Repository Interface
 
-### 5.2 Application Layer
+### 5.2 Application Layer - Commands
 
-- [ ] Commands:
+- [ ] Assignment Commands:
+  - [ ] `create-assignment/`
+  - [ ] `update-assignment/`
+  - [ ] `delete-assignment/`
+- [ ] Submission Commands:
   - [ ] `submit-assignment/`
   - [ ] `resubmit-assignment/`
   - [ ] `grade-submission/`
+  - [ ] `bulk-grade-submissions/`
   - [ ] `return-for-revision/`
-- [ ] Queries:
-  - [ ] `get-pending-submissions/`
+
+### 5.3 Application Layer - Queries
+
+- [ ] `get-pending-submissions/` - Instructor queue
   - [ ] `get-student-submissions/`
   - [ ] `get-submission-detail/`
+- [ ] `get-grading-history/`
 
-### 5.3 Infrastructure & Interface Layer
+### 5.4 Grading & Feedback (PRD M17)
+
+- [ ] Grading Interface:
+  - [ ] View submission content
+  - [ ] Score input (numeric)
+  - [ ] Rubric-based grading (if rubric exists)
+  - [ ] Rich text feedback
+  - [ ] Template feedback (pre-written comments)
+- [ ] Bulk grading:
+  - [ ] Select multiple submissions
+  - [ ] Apply same score + feedback
+- [ ] Grading history:
+  - [ ] Audit log of grade changes
+
+### 5.5 Infrastructure & Interface Layer
 
 - [ ] Repository implementation
-- [ ] Controllers
+- [ ] `assignments.controller.ts`
+  - [ ] `GET /assignments/:id`
+  - [ ] `POST /lessons/:lessonId/assignments`
+  - [ ] `PUT /assignments/:id`
+  - [ ] `DELETE /assignments/:id`
+- [ ] `submissions.controller.ts`
+  - [ ] `POST /assignments/:id/submit`
+  - [ ] `GET /assignments/:id/submissions` - Instructor
+  - [ ] `GET /submissions/:id`
+  - [ ] `PUT /submissions/:id/grade`
+  - [ ] `PUT /submissions/:id/return`
+- [ ] `grading.controller.ts`
+  - [ ] `GET /instructor/grading/pending`
+  - [ ] `POST /instructor/grading/bulk`
 - [ ] DTOs
 
-### 5.4 Assessment Module
+### 5.6 Assessment Module
 
 - [ ] Create `assessment.module.ts`
 
 ---
 
-## Phase 6: Gamification Context
+## Phase 6: Gamification Context - PRD M08, M09, M10, M11
 
 ### 6.1 Domain Layer
 
@@ -718,6 +861,7 @@
   - [ ] `level.vo.ts`
   - [ ] `streak.vo.ts`
   - [ ] `badge-type.vo.ts`
+  - [ ] `league.vo.ts` (ruby, emerald, diamond, platinum, champion)
 - [ ] Create PlayerProfile Aggregate:
   - [ ] `player-profile.aggregate.ts`
   - [ ] `awardXp()` - with level up logic
@@ -732,11 +876,18 @@
   - [ ] `badge-unlocked.event.ts`
   - [ ] `streak-updated.event.ts`
   - [ ] `quest-completed.event.ts`
+  - [ ] `league-promotion.event.ts`
 - [ ] Create Domain Services:
   - [ ] `xp-calculator.service.ts`
-    - [ ] XP rules per action
+    - [ ] Video complete: +10 XP
+    - [ ] Material complete: +10 XP
+    - [ ] Quiz pass: +15 XP
+    - [ ] Assignment submit: +20 XP
+    - [ ] Assignment graded: +50 XP
+    - [ ] Daily login: +5 XP
+    - [ ] Quest complete: +25 XP
   - [ ] `level-calculator.service.ts`
-    - [ ] XP thresholds per level
+    - [ ] XP thresholds per level (formula: 100*N + 50*(N-1))
   - [ ] `badge-evaluator.service.ts`
     - [ ] Badge criteria checking
 
@@ -747,13 +898,18 @@
 - [ ] `unlock-badge/`
 - [ ] `complete-quest/`
 - [ ] `reset-daily-quests/`
+- [ ] `update-leaderboard/`
+- [ ] `promote-demote-league/` (weekly cron)
 
 ### 6.3 Application Layer - Queries
 
 - [ ] `get-player-stats/`
 - [ ] `get-leaderboard/` - Weekly/Monthly/All-time
+- [ ] `get-class-leaderboard/`
 - [ ] `get-badges/` - All + user's earned
 - [ ] `get-daily-quests/`
+- [ ] `get-xp-history/`
+- [ ] `get-streak-info/`
 
 ### 6.4 Application Layer - Event Handlers
 
@@ -785,6 +941,7 @@
 - [ ] `leaderboard.controller.ts`
   - [ ] `GET /leaderboard`
   - [ ] `GET /leaderboard/class/:classId`
+  - [ ] `GET /leaderboard/global`
 - [ ] `badges.controller.ts`
   - [ ] `GET /badges`
   - [ ] `GET /badges/earned`
@@ -797,124 +954,476 @@
 
 ---
 
-## Phase 7: Billing Context
+## Phase 7: Billing & Payment Context - PRD M20
 
 ### 7.1 Domain Layer
 
-- [ ] Create Payment Aggregate
-- [ ] Create Domain Events
+- [ ] Create Value Objects:
+  - [ ] `payment-id.vo.ts`
+  - [ ] `payment-status.vo.ts` (pending, verified, refunded)
+  - [ ] `payment-method.vo.ts` (bank_transfer, ewallet, cash)
+- [ ] Create Payment Aggregate:
+  - [ ] `payment.aggregate.ts`
+  - [ ] Student info, Amount, Course, Package
+  - [ ] Reference ID, Notes
+  - [ ] `verify()`, `refund()`
+- [ ] Create Domain Events:
+  - [ ] `payment-recorded.event.ts`
+  - [ ] `payment-verified.event.ts`
+  - [ ] `payment-refunded.event.ts`
 - [ ] Create Repository Interface
 
-### 7.2 Application Layer
+### 7.2 Application Layer - Commands
 
-- [ ] Commands:
-  - [ ] `record-payment/`
+- [ ] `record-payment/` - Staff/Super Admin
   - [ ] `verify-payment/`
   - [ ] `refund-payment/`
-- [ ] Queries:
-  - [ ] `get-payments-list/`
-  - [ ] `get-payment-detail/`
-  - [ ] `get-payment-stats/`
 
-### 7.3 Infrastructure & Interface Layer
+### 7.3 Application Layer - Queries
+
+- [ ] `get-payments-list/` - Filter, search, sort
+  - [ ] `get-payment-detail/`
+- [ ] `get-payment-stats/` - Revenue analytics
+- [ ] `get-pending-payments/`
+
+### 7.4 Infrastructure & Interface Layer
 
 - [ ] Repository
-- [ ] Controller
-- [ ] DTOs
+- [ ] `payments.controller.ts`
+  - [ ] `GET /payments` - Staff/Super Admin
+  - [ ] `GET /payments/:id`
+  - [ ] `POST /payments`
+  - [ ] `PUT /payments/:id/verify`
+  - [ ] `PUT /payments/:id/refund`
+  - [ ] `GET /payments/stats`
+  - [ ] `GET /payments/export` - CSV
 
-### 7.4 Billing Module
+### 7.5 Billing Module
 
 - [ ] Create `billing.module.ts`
 
 ---
 
-## Phase 8: Community Context
+## Phase 8: Enrollment Management Context - PRD M19
 
-### 8.1 Domain Layer
+### 8.1 Quick Enrollment Tool (Critical Feature)
+
+- [ ] Domain:
+  - [ ] Enrollment process combining user creation + class enrollment
+- [ ] Application Layer - Commands:
+  - [ ] `quick-enroll/` - Create user + Enroll + Send email (5 min process)
+  - [ ] `bulk-enroll/` - CSV upload, validation, batch create
+- [ ] Application Layer - Queries:
+  - [ ] `get-enrollment-history/` - Audit log
+  - [ ] `get-enrollment-analytics/` - Trends
+- [ ] Interface Layer:
+  - [ ] `enrollment-management.controller.ts`
+    - [ ] `POST /staff/quick-enroll` - One-step enrollment
+    - [ ] `POST /staff/bulk-enroll` - CSV upload
+    - [ ] `GET /staff/enrollments/history`
+    - [ ] `GET /staff/enrollments/analytics`
+    - [ ] `POST /staff/enrollments/pre-fill/:paymentId` - Pre-fill from payment
+
+### 8.2 Integration with Payment Tracking
+
+- [ ] Pre-fill enrollment form from payment record
+- [ ] Link payment → enrollment
+- [ ] Prevent enrollment without verified payment (optional)
+
+### 8.3 Enrollment Management Module
+
+- [ ] Create `enrollment-management.module.ts`
+
+---
+
+## Phase 9: Instructor Tools Context - PRD M16, M18
+
+### 9.1 Instructor Dashboard (PRD M16)
+
+- [ ] Dashboard Overview:
+  - [ ] My Classes widget (3-5 classes)
+  - [ ] Pending Tasks (assignments to grade count)
+  - [ ] Student Stats (total students, avg completion)
+  - [ ] Upcoming Meetings (schedule)
+- [ ] Quick Actions:
+  - [ ] Grade Next Assignment
+  - [ ] Unlock Next Lesson
+  - [ ] Message Students
+- [ ] Class Management:
+  - [ ] Class list with filters
+  - [ ] Class selection (switch context)
+  - [ ] Teaching analytics
+
+### 9.2 Student Monitoring (PRD M18)
+
+- [ ] Individual Student Progress View:
+  - [ ] Detailed breakdown (lessons, exercises)
+  - [ ] Quiz scores, Assignment grades
+  - [ ] Activity timeline
+- [ ] At-Risk Student Detection:
+  - [ ] No activity in 7+ days
+  - [ ] Progress <30% after 4 weeks
+  - [ ] Multiple failed quizzes
+  - [ ] Alert on dashboard
+- [ ] Student Communication:
+  - [ ] Send email from LMS
+  - [ ] Pre-filled subject/body
+- [ ] Progress Reports:
+  - [ ] Generate PDF per student
+  - [ ] Progress %, Grades, Attendance
+
+### 9.3 Interface Layer - HTTP
+
+- [ ] `instructor-dashboard.controller.ts`
+  - [ ] `GET /instructor/dashboard`
+  - [ ] `GET /instructor/classes`
+  - [ ] `GET /instructor/pending-tasks`
+  - [ ] `GET /instructor/analytics`
+- [ ] `student-monitoring.controller.ts`
+  - [ ] `GET /instructor/classes/:id/students/:studentId/progress`
+  - [ ] `GET /instructor/classes/:id/at-risk`
+  - [ ] `POST /instructor/students/:studentId/message`
+  - [ ] `GET /instructor/classes/:id/students/:studentId/report`
+
+### 9.4 Instructor Tools Module
+
+- [ ] Create `instructor-tools.module.ts`
+
+---
+
+## Phase 10: Student Dashboard Context - PRD M06
+
+### 10.1 Dashboard Overview
+
+- [ ] My Courses widget:
+  - [ ] Enrolled courses with progress bars
+  - [ ] Next lesson to continue
+  - [ ] Last accessed timestamp
+- [ ] Stats widget:
+  - [ ] Total lessons completed
+  - [ ] Current streak
+  - [ ] XP earned this week
+  - [ ] Current level
+- [ ] Next Steps widget:
+  - [ ] Continue lesson
+  - [ ] Pending assignments
+  - [ ] Upcoming deadlines
+- [ ] Schedule & Deadlines:
+  - [ ] Assignment due dates
+  - [ ] Class meeting schedule
+
+### 10.2 Course Detail View
+
+- [ ] Syllabus with sections/lessons
+- [ ] Progress indicators
+- [ ] Locked/Unlocked visual
+- [ ] Next lesson highlight
+
+### 10.3 Learning Interface
+
+- [ ] Exercise renderer (video, quiz, material, coding)
+- [ ] Navigation (prev/next)
+- [ ] Progress auto-save
+- [ ] Completion confirmation
+
+### 10.4 Interface Layer - HTTP
+
+- [ ] `student-dashboard.controller.ts`
+  - [ ] `GET /student/dashboard`
+  - [ ] `GET /student/courses`
+  - [ ] `GET /student/courses/:id`
+  - [ ] `GET /student/schedule`
+  - [ ] `GET /student/deadlines`
+
+### 10.5 Student Dashboard Module
+
+- [ ] Create `student-dashboard.module.ts`
+
+---
+
+## Phase 11: Admin Context - PRD M21, M22
+
+### 11.1 User Management (PRD M21)
+
+- [ ] User Search & Filter:
+  - [ ] By name, email
+  - [ ] By role (Super Admin only sees all roles)
+  - [ ] By status (active, inactive)
+- [ ] User Profile Management:
+  - [ ] View full profile
+  - [ ] Edit user details
+  - [ ] View enrollments
+  - [ ] View activity log
+- [ ] Role Assignment (Super Admin only):
+  - [ ] Change user role
+  - [ ] Confirmation required
+- [ ] User Deactivation:
+  - [ ] Soft delete
+  - [ ] Can reactivate
+- [ ] User Export:
+  - [ ] CSV with filters
+
+### 11.2 System Analytics (PRD M22) - Super Admin Only
+
+- [ ] Enrollment Analytics:
+  - [ ] Daily/weekly/monthly trends
+  - [ ] Total enrollments
+- [ ] Revenue Tracking:
+  - [ ] By course, package, instructor
+  - [ ] Revenue over time charts
+- [ ] Course Performance:
+  - [ ] Completion rates
+  - [ ] Quiz scores
+  - [ ] Student satisfaction
+- [ ] Instructor Performance:
+  - [ ] Students taught
+  - [ ] Classes completed
+  - [ ] Avg completion rate
+- [ ] Dashboard Visualizations:
+  - [ ] Line/bar/pie charts
+  - [ ] Date range selectors
+
+### 11.3 Interface Layer - HTTP
+
+- [ ] `super-admin.controller.ts`
+  - [ ] `GET /super-admin/users`
+  - [ ] `GET /super-admin/users/:id`
+  - [ ] `PUT /super-admin/users/:id`
+  - [ ] `PUT /super-admin/users/:id/role`
+  - [ ] `DELETE /super-admin/users/:id`
+  - [ ] `GET /super-admin/users/export`
+- [ ] `analytics.controller.ts`
+  - [ ] `GET /super-admin/analytics/enrollments`
+  - [ ] `GET /super-admin/analytics/revenue`
+  - [ ] `GET /super-admin/analytics/courses/:id`
+  - [ ] `GET /super-admin/analytics/instructors/:id`
+  - [ ] `GET /super-admin/analytics/dashboard`
+
+### 11.4 Admin Module
+
+- [ ] Create `admin.module.ts`
+
+---
+
+## Phase 12: WhatsApp Integration - PRD M24
+
+### 12.1 WhatsApp Deep Links
+
+- [ ] Generate wa.me links
+- [ ] Phone number from settings
+- [ ] URL encoding
+
+### 12.2 Pre-filled Messages
+
+- [ ] Course purchase template:
+  ```
+  Hi! I'm interested in:
+  [Course Title]
+  Package: [X meetings]
+  Name: [User Name]
+  Email: [User Email]
+  Please send payment details.
+  ```
+- [ ] Variables substitution
+- [ ] Logged-in vs anonymous handling
+
+### 12.3 Purchase Initiation Flow
+
+- [ ] Course catalog → "Buy via WhatsApp" button
+- [ ] Pre-fill user info if logged in
+- [ ] Open WhatsApp (new tab)
+
+### 12.4 Continue as Private Flow
+
+- [ ] Group class completed → "Continue Learning" button
+- [ ] Pre-filled message:
+  ```
+  Hi! I'd like to continue [Course Name].
+  Group class [Class Name] completed.
+  Lessons remaining: [X]
+  Please send private class options.
+  ```
+
+### 12.5 WhatsApp Component
+
+- [ ] Reusable `WhatsAppButton` component
+- [ ] Props: phone, message, buttonText
+- [ ] Green button with WhatsApp icon
+
+### 12.6 Interface Layer - HTTP
+
+- [ ] `whatsapp.controller.ts`
+  - [ ] `GET /whatsapp/purchase-link/:courseId`
+  - [ ] `GET /whatsapp/continue-link/:enrollmentId`
+  - [ ] `GET /whatsapp/settings` - Admin
+
+### 12.7 WhatsApp Module
+
+- [ ] Create `whatsapp.module.ts`
+
+---
+
+## Phase 13: Package & Upgrade Management - PRD M25
+
+### 13.1 Package Definition
+
+- [ ] Package stored at CLASS level
+- [ ] totalMeetings = Max lessons accessible
+- [ ] Price calculation based on meetings
+- [ ] Flexible input (10, 15, 20, 30, 50, custom)
+
+### 13.2 Package Display
+
+- [ ] Student dashboard: "Class Package: 20 Meetings (18/20 lessons unlocked)"
+- [ ] Color coding: Green (plenty), Yellow (3-5 left), Red (0-2 left)
+- [ ] Different messages for group vs private
+
+### 13.3 Upgrade Rules
+
+- [ ] Group Class:
+  - [ ] Cannot upgrade within existing class
+  - [ ] Cannot add meetings
+  - [ ] Alternative: Continue as private class
+- [ ] Private Class:
+  - [ ] Can add meetings anytime
+  - [ ] Staff updates totalMeetings
+  - [ ] Student pays difference
+
+### 13.4 Continue as Private (Group → Private)
+
+- [ ] Trigger: Group class package exhausted
+- [ ] Staff creates NEW private class
+- [ ] Course: Same
+- [ ] Package: Remaining lessons
+- [ ] Student pays private rate
+- [ ] Progress history linked
+
+### 13.5 Private Class - Add Meetings
+
+- [ ] Staff → Class detail → "Add Meetings"
+- [ ] Input additional meetings
+- [ ] System updates totalMeetings
+- [ ] Unlock limit increased
+
+### 13.6 Upsell Notifications
+
+- [ ] 2-3 meetings remaining:
+  - [ ] Toast notification
+  - [ ] Email notification
+  - [ ] Dashboard banner
+- [ ] Different messages by class type
+
+### 13.7 Interface Layer - HTTP
+
+- [ ] `packages.controller.ts`
+  - [ ] `GET /classes/:id/package`
+  - [ ] `PATCH /classes/:id/add-meetings` - Private only
+  - [ ] `POST /classes/continue-as-private`
+
+### 13.8 Package Module
+
+- [ ] Integrated into `class-management.module.ts`
+
+---
+
+## Phase 14: Community Context - PRD M26
+
+### 14.1 Domain Layer
 
 - [ ] Create Post Aggregate
 - [ ] Create Group Aggregate
 - [ ] Create Event Aggregate
 - [ ] Create Domain Events
 
-### 8.2 Application Layer
+### 14.2 Application Layer
 
 - [ ] Post Commands & Queries
 - [ ] Comment Commands & Queries
 - [ ] Group Commands & Queries
 - [ ] Event Commands & Queries
 
-### 8.3 Infrastructure & Interface Layer
+### 14.3 Infrastructure & Interface Layer
 
 - [ ] Repositories
 - [ ] Controllers
 
-### 8.4 Community Module
+### 14.4 Community Module
 
 - [ ] Create `community.module.ts`
 
 ---
 
-## Phase 9: Messaging Context
+## Phase 15: Messaging Context - PRD M27
 
-### 9.1 Domain Layer
+### 15.1 Domain Layer
 
 - [ ] Create Conversation Aggregate
 - [ ] Create Announcement Aggregate
 - [ ] Create Domain Events
 
-### 9.2 Application Layer
+### 15.2 Application Layer
 
 - [ ] Commands & Queries for messaging
 - [ ] Commands & Queries for announcements
 
-### 9.3 Infrastructure & Interface Layer
+### 15.3 Infrastructure & Interface Layer
 
 - [ ] Repositories
 - [ ] Controllers
 
-### 9.4 Messaging Module
+### 15.4 Messaging Module
 
 - [ ] Create `messaging.module.ts`
 
 ---
 
-## Phase 10: Notification Module
+## Phase 16: Notification Module - PRD M23
 
-### 10.1 Email Service
+### 16.1 Email Service
 
 - [ ] Create `email.service.ts`
   - [ ] Resend integration
   - [ ] Template rendering
 - [ ] Create email templates:
-  - [ ] Welcome email
+  - [ ] Welcome email (new user)
   - [ ] Email verification
   - [ ] Password reset
   - [ ] Course enrolled
   - [ ] Lesson unlocked
+  - [ ] Assignment due soon (3 days)
   - [ ] Assignment graded
   - [ ] Badge earned
+  - [ ] Certificate earned
+  - [ ] Payment confirmation
 
-### 10.2 Push Notification Service
+### 16.2 Push Notification Service
 
 - [ ] Create `push.service.ts`
 - [ ] In-app notification storage
 - [ ] Real-time updates (optional WebSocket)
 
-### 10.3 Queue Processors
+### 16.3 Queue Processors
 
 - [ ] `email.processor.ts`
 - [ ] `notification.processor.ts`
 
-### 10.4 Notification Module
+### 16.4 Triggered Emails (Event-based)
+
+- [ ] UserRegisteredEvent → Welcome email
+- [ ] StudentEnrolledEvent → Course added email
+- [ ] LessonUnlockedEvent → Unlock email
+- [ ] AssignmentGradedEvent → Graded email
+- [ ] BadgeUnlockedEvent → Badge email
+
+### 16.5 Notification Module
 
 - [ ] Create `notification.module.ts`
 
 ---
 
-## Phase 11: Infrastructure Services
+## Phase 17: Infrastructure Services
 
-### 11.1 File Storage
+### 17.1 File Storage
 
 - [ ] Create `storage.module.ts`
 - [ ] Create `s3.service.ts`
@@ -926,7 +1435,7 @@
   - [ ] `POST /upload/file`
   - [ ] `POST /upload/video`
 
-### 11.2 Caching Service
+### 17.2 Caching Service
 
 - [ ] Create `cache.module.ts`
 - [ ] Create `cache.service.ts`
@@ -937,7 +1446,7 @@
   - [ ] Leaderboard
   - [ ] User sessions
 
-### 11.3 Queue Service
+### 17.3 Queue Service
 
 - [ ] Create `queue.module.ts`
 - [ ] Setup BullMQ queues:
@@ -947,9 +1456,9 @@
 
 ---
 
-## Phase 12: Testing & Quality
+## Phase 18: Testing & Quality
 
-### 12.1 Unit Tests
+### 18.1 Unit Tests
 
 - [ ] All value objects
 - [ ] All aggregates
@@ -957,13 +1466,13 @@
 - [ ] All query handlers
 - [ ] Domain services
 
-### 12.2 Integration Tests
+### 18.2 Integration Tests
 
 - [ ] All repositories
 - [ ] Database transactions
 - [ ] Redis operations
 
-### 12.3 E2E Tests
+### 18.3 E2E Tests
 
 - [ ] Authentication flow
 - [ ] Course management flow
@@ -971,7 +1480,7 @@
 - [ ] Progress tracking flow
 - [ ] Gamification flow
 
-### 12.4 Performance Tests
+### 18.4 Performance Tests
 
 - [ ] API response times
 - [ ] Database query optimization
@@ -979,9 +1488,9 @@
 
 ---
 
-## Phase 13: Security & Hardening
+## Phase 19: Security & Hardening
 
-### 13.1 Security Implementation
+### 19.1 Security Implementation
 
 - [ ] Rate limiting per endpoint
 - [ ] CORS configuration
@@ -990,13 +1499,13 @@
 - [ ] SQL injection prevention (Prisma)
 - [ ] XSS prevention
 
-### 13.2 Audit & Logging
+### 19.2 Audit & Logging
 
 - [ ] Activity logging
 - [ ] Error logging
 - [ ] Security event logging
 
-### 13.3 Security Testing
+### 19.3 Security Testing
 
 - [ ] Penetration testing
 - [ ] Dependency vulnerability scan
@@ -1004,22 +1513,22 @@
 
 ---
 
-## Phase 14: Documentation
+## Phase 20: Documentation
 
-### 14.1 API Documentation
+### 20.1 API Documentation
 
 - [ ] Swagger complete for all endpoints
 - [ ] Request/response examples
 - [ ] Error codes documentation
 
-### 14.2 Developer Documentation
+### 20.2 Developer Documentation
 
 - [ ] README.md update
 - [ ] Setup guide
 - [ ] Architecture guide
 - [ ] Contribution guide
 
-### 14.3 Deployment Documentation
+### 20.3 Deployment Documentation
 
 - [ ] Environment setup
 - [ ] Docker deployment
@@ -1027,9 +1536,9 @@
 
 ---
 
-## Phase 15: Deployment & Launch
+## Phase 21: Deployment & Launch
 
-### 15.1 Staging Environment
+### 21.1 Staging Environment
 
 - [ ] Setup staging server
 - [ ] Deploy to staging
@@ -1037,7 +1546,7 @@
 - [ ] Configure staging Redis
 - [ ] Test all features
 
-### 15.2 Production Environment
+### 21.2 Production Environment
 
 - [ ] Setup production server
 - [ ] Configure production database (managed)
@@ -1047,7 +1556,7 @@
 - [ ] Setup monitoring (Sentry)
 - [ ] Setup uptime monitoring
 
-### 15.3 Launch Checklist
+### 21.3 Launch Checklist
 
 - [ ] All tests passing
 - [ ] Security audit complete
@@ -1056,25 +1565,66 @@
 - [ ] Backup strategy verified
 - [ ] Rollback plan ready
 - [ ] Team trained
-- [ ] Go live! 🚀
+- [ ] Go live!
+
+---
+
+## Quick Reference: PRD Module Mapping
+
+| PRD Module                  | TODO Phase | Status |
+| --------------------------- | ---------- | ------ |
+| M01: Authentication         | Phase 2    | ✅ 85% |
+| M02: User Registration      | Phase 2    | ✅ 85% |
+| M03: Course Management      | Phase 3    | ⬜     |
+| M04: Content Delivery       | Phase 3    | ⬜     |
+| M05: Assignment System      | Phase 5    | ⬜     |
+| M06: Student Dashboard      | Phase 10   | ⬜     |
+| M07: Progress Tracking      | Phase 3    | ⬜     |
+| M08: XP & Leveling          | Phase 6    | ⬜     |
+| M09: Badges                 | Phase 6    | ⬜     |
+| M10: Leaderboard            | Phase 6    | ⬜     |
+| M11: Daily Quests           | Phase 6    | ⬜     |
+| M12: Class Creation         | Phase 4    | ⬜     |
+| M13: Student Assignment     | Phase 4    | ⬜     |
+| M14: Class Roster & Credits | Phase 4    | ⬜     |
+| M15: Lesson Unlocking       | Phase 4    | ⬜     |
+| M16: Instructor Dashboard   | Phase 9    | ⬜     |
+| M17: Grading & Feedback     | Phase 5    | ⬜     |
+| M18: Student Monitoring     | Phase 9    | ⬜     |
+| M19: Enrollment Management  | Phase 8    | ⬜     |
+| M20: Payment Tracking       | Phase 7    | ⬜     |
+| M21: User Management        | Phase 11   | ⬜     |
+| M22: System Analytics       | Phase 11   | ⬜     |
+| M23: Email Notifications    | Phase 16   | ⬜     |
+| M24: WhatsApp Integration   | Phase 12   | ⬜     |
+| M25: Package & Upgrade      | Phase 13   | ⬜     |
+| M26: Community              | Phase 14   | ⬜     |
+| M27: Messaging              | Phase 15   | ⬜     |
 
 ---
 
 ## Quick Reference: File Counts by Phase
 
-| Phase       | Files to Create            | Estimated Time |
-| ----------- | -------------------------- | -------------- |
-| Phase 0-1   | ~30 files                  | 2 weeks        |
-| Phase 2     | ~40 files                  | 3 weeks        |
-| Phase 3     | ~50 files                  | 4 weeks        |
-| Phase 4     | ~45 files                  | 4 weeks        |
-| Phase 5     | ~20 files                  | 2 weeks        |
-| Phase 6     | ~35 files                  | 3 weeks        |
-| Phase 7-9   | ~40 files                  | 4 weeks        |
-| Phase 10-11 | ~20 files                  | 2 weeks        |
-| Phase 12-15 | Documentation + Deployment | 4 weeks        |
+| Phase       | Focus                          | Estimated Time |
+| ----------- | ------------------------------ | -------------- |
+| Phase 0-1   | Infrastructure                 | 2 weeks        |
+| Phase 2     | Identity & Auth                | 3 weeks        |
+| Phase 3     | Learning & Content             | 4 weeks        |
+| Phase 4     | Class Management               | 4 weeks        |
+| Phase 5     | Assessment                     | 2 weeks        |
+| Phase 6     | Gamification                   | 3 weeks        |
+| Phase 7     | Billing                        | 1 week         |
+| Phase 8     | Enrollment                     | 1 week         |
+| Phase 9     | Instructor Tools               | 2 weeks        |
+| Phase 10    | Student Dashboard              | 1 week         |
+| Phase 11    | Admin Tools                    | 2 weeks        |
+| Phase 12    | WhatsApp                       | 1 week         |
+| Phase 13    | Package Management             | 1 week         |
+| Phase 14-15 | Community & Messaging          | 3 weeks        |
+| Phase 16-17 | Notifications & Infrastructure | 2 weeks        |
+| Phase 18-21 | Testing, Security, Deployment  | 4 weeks        |
 
-**Total: ~280 files, 28 weeks core development**
+**Total: ~36 weeks (9 months)**
 
 ---
 
@@ -1083,18 +1633,19 @@
 - **Development Approach:** Focus on core implementation first, testing will be done at the end when all features are complete
 - **Phase Completion:** Each phase focuses on feature implementation without immediate testing
 - **Testing Strategy:** Comprehensive testing (unit, integration, E2E) will be implemented after all phases are complete
+- **MVP Priority:** Identity → Learning → Class Management → Enrollment → Instructor Tools
+- **Post-MVP:** Gamification, Community, Advanced Analytics
 - Deploy to staging after each major phase
 - Get user feedback early (after Phase 4)
-- Prioritize core features (Identity, Learning, Class) for MVP
-- Gamification and Community can be simplified for MVP
 
 ---
 
 **Document Changelog:**
 
-| Version | Date         | Changes                          |
-| ------- | ------------ | -------------------------------- |
-| 1.3     | Dec 16, 2025 | Mark Phase 2.3 queries as complete |
-| 1.2     | Dec 16, 2025 | Update development approach - testing at end |
-| 1.1     | Dec 16, 2025 | Update Phase 2 status to 85% complete |
-| 1.0     | Dec 15, 2025 | Initial TODO list                |
+| Version | Date         | Changes                                        |
+| ------- | ------------ | ---------------------------------------------- |
+| 2.0     | Dec 16, 2025 | Major update - Full PRD alignment (27 modules) |
+| 1.3     | Dec 16, 2025 | Mark Phase 2.3 queries as complete             |
+| 1.2     | Dec 16, 2025 | Update development approach - testing at end   |
+| 1.1     | Dec 16, 2025 | Update Phase 2 status to 85% complete          |
+| 1.0     | Dec 15, 2025 | Initial TODO list                              |
