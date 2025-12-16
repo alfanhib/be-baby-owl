@@ -256,21 +256,21 @@
 
 ### 2.3 Application Layer - Queries
 
-- [ ] Create `get-user-by-id/`
-  - [ ] `get-user-by-id.query.ts`
-  - [ ] `get-user-by-id.handler.ts`
-- [ ] Create `get-user-profile/`
-  - [ ] `get-user-profile.query.ts`
-  - [ ] `get-user-profile.handler.ts`
-- [ ] Create `get-users-list/` (Admin)
-  - [ ] `get-users-list.query.ts`
-  - [ ] `get-users-list.handler.ts`
-  - [ ] Pagination
-  - [ ] Filter by role, status
-  - [ ] Search by name, email
-- [ ] Create `check-email-exists/`
-  - [ ] `check-email-exists.query.ts`
-  - [ ] `check-email-exists.handler.ts`
+- [x] Create `get-user-by-id/`
+  - [x] `get-user-by-id.query.ts`
+  - [x] `get-user-by-id.handler.ts`
+- [x] Create `get-user-profile/`
+  - [x] `get-user-profile.query.ts`
+  - [x] `get-user-profile.handler.ts`
+- [x] Create `get-users-list/` (Admin)
+  - [x] `get-users-list.query.ts`
+  - [x] `get-users-list.handler.ts`
+  - [x] Pagination
+  - [x] Filter by role, status
+  - [x] Search by name, email
+- [x] Create `check-email-exists/`
+  - [x] `check-email-exists.query.ts`
+  - [x] `check-email-exists.handler.ts`
 
 ### 2.4 Application Layer - Event Handlers
 
@@ -1094,6 +1094,7 @@
 
 | Version | Date         | Changes                          |
 | ------- | ------------ | -------------------------------- |
+| 1.3     | Dec 16, 2025 | Mark Phase 2.3 queries as complete |
 | 1.2     | Dec 16, 2025 | Update development approach - testing at end |
 | 1.1     | Dec 16, 2025 | Update Phase 2 status to 85% complete |
 | 1.0     | Dec 15, 2025 | Initial TODO list                |
