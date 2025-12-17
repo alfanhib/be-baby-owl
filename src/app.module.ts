@@ -23,6 +23,7 @@ import { AppService } from './app.service';
 // Feature Modules
 import { IdentityModule } from './modules/identity';
 import { LearningModule } from './modules/learning';
+import { ClassManagementModule } from './modules/class-management';
 
 @Module({
   imports: [
@@ -51,7 +52,7 @@ import { LearningModule } from './modules/learning';
     // Feature Modules
     IdentityModule,
     LearningModule,
-    // ClassManagementModule,
+    ClassManagementModule,
     // GamificationModule,
     // AssessmentModule,
     // CommunityModule,

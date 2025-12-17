@@ -30,6 +30,8 @@ import { UpdateMaterialProgressCommand } from '@learning/application/commands/up
 import { SubmitQuizAnswerCommand } from '@learning/application/commands/submit-quiz-answer';
 import { GetStudentProgressQuery } from '@learning/application/queries/get-student-progress';
 import { GetCourseStatsQuery } from '@learning/application/queries/get-course-stats';
+import { GetStudentCoursesQuery } from '@learning/application/queries/get-student-courses';
+import { GenerateCertificateCommand } from '@learning/application/commands/generate-certificate';
 import { CompleteExerciseDto } from '../dto/complete-exercise.dto';
 import { UpdateVideoProgressDto } from '../dto/update-video-progress.dto';
 import { UpdateMaterialProgressDto } from '../dto/update-material-progress.dto';
@@ -185,6 +187,47 @@ export class ProgressController {
     if (!result) {
       throw new NotFoundException('Course not found');
     }
+
+    return {
+      success: true,
+      data: result,
+    };
+  }
+
+  @Get('my-courses')
+  @Roles('student', 'instructor', 'staff', 'super_admin')
+  @ApiOperation({ summary: 'Get all courses the student has started learning' })
+  @ApiResponse({ status: 200, description: 'Student courses retrieved' })
+  async getStudentCourses(
+    @CurrentUser() user: CurrentUserPayload,
+  ): Promise<{ success: boolean; data: unknown }> {
+    const result: unknown = await this.queryBus.execute(
+      new GetStudentCoursesQuery(user.userId),
+    );
+
+    return {
+      success: true,
+      data: result,
+    };
+  }
+
+  @Post('courses/:courseId/certificate')
+  @Roles('student', 'instructor', 'staff', 'super_admin')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Generate certificate for completed course' })
+  @ApiResponse({
+    status: 200,
+    description: 'Certificate generated successfully',
+  })
+  @ApiResponse({ status: 400, description: 'Course not completed' })
+  @ApiResponse({ status: 404, description: 'Course not found' })
+  async generateCertificate(
+    @Param('courseId') courseId: string,
+    @CurrentUser() user: CurrentUserPayload,
+  ): Promise<{ success: boolean; data: unknown }> {
+    const result: unknown = await this.commandBus.execute(
+      new GenerateCertificateCommand(user.userId, courseId),
+    );
 
     return {
       success: true,

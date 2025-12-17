@@ -137,6 +137,7 @@ model User {
   markedAttendances      ClassAttendance[]     @relation("MarkedBy")
   updatedAttendances     ClassAttendance[]     @relation("UpdatedBy")
   creditAdjustments      CreditAdjustment[]    @relation("AdjustedBy")
+  certificates           Certificate[]
 
   // Community
   posts                  CommunityPost[]
@@ -180,10 +181,11 @@ model Course {
   publishedAt       DateTime?    @map("published_at")
 
   // Relations
-  createdBy User      @relation("CreatedCourses", fields: [createdById], references: [id])
-  sections  Section[]
-  classes   Class[]
-  payments  Payment[]
+  createdBy    User          @relation("CreatedCourses", fields: [createdById], references: [id])
+  sections     Section[]
+  classes      Class[]
+  payments     Payment[]
+  certificates Certificate[]
 
   @@map("courses")
   @@index([status])
@@ -296,6 +298,28 @@ model ExerciseProgress {
   @@map("exercise_progress")
   @@index([userId])
   @@index([exerciseId])
+}
+
+model Certificate {
+  id              String   @id @default(uuid())
+  userId          String   @map("user_id")
+  courseId        String   @map("course_id")
+  certificateCode String   @unique @map("certificate_code") // e.g., "CERT-2025-XXXX"
+  studentName     String   @map("student_name")
+  courseTitle     String   @map("course_title")
+  completedAt     DateTime @map("completed_at")
+  issuedAt        DateTime @default(now()) @map("issued_at")
+  pdfUrl          String?  @map("pdf_url") // S3 URL for PDF
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@map("certificates")
+  @@index([userId])
+  @@index([courseId])
+  @@index([certificateCode])
 }
 
 model QuizAttempt {

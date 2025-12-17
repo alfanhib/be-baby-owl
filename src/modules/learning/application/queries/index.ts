@@ -16,6 +16,10 @@ export * from './get-lesson-detail/get-lesson-detail.handler';
 export * from './get-exercise-detail/get-exercise-detail.query';
 export * from './get-exercise-detail/get-exercise-detail.handler';
 
+// Student Courses Query
+export * from './get-student-courses/get-student-courses.query';
+export * from './get-student-courses/get-student-courses.handler';
+
 import {
   GetCourseHandler,
   GetCourseBySlugHandler,
@@ -28,6 +32,7 @@ import { GetStudentProgressHandler } from './get-student-progress/get-student-pr
 import { GetCourseStatsHandler } from './get-course-stats/get-course-stats.handler';
 import { GetLessonDetailHandler } from './get-lesson-detail/get-lesson-detail.handler';
 import { GetExerciseDetailHandler } from './get-exercise-detail/get-exercise-detail.handler';
+import { GetStudentCoursesHandler } from './get-student-courses/get-student-courses.handler';
 
 export const QueryHandlers = [
   // Course
@@ -41,4 +46,6 @@ export const QueryHandlers = [
   // Lesson & Exercise
   GetLessonDetailHandler,
   GetExerciseDetailHandler,
+  // Student Courses
+  GetStudentCoursesHandler,
 ];

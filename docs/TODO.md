@@ -505,9 +505,9 @@ _Remaining: Email features (depends on Phase 16), Activity Log, Tests_
 - [x] `get-exercise-detail/` - Single exercise detail with progress
 - [x] `get-student-progress/` - Progress for a course
 - [x] `get-course-stats/` - Course statistics (instructor view)
-- [ ] `get-student-courses/` - All enrolled courses
+- [x] `get-student-courses/` - All enrolled courses
 
-**✅ Section 3.3 ~90% Complete**
+**✅ Section 3.3 Complete**
 
 ### 3.4 Content Delivery - Exercise Types (PRD M04)
 
@@ -608,9 +608,10 @@ _Remaining: Email features (depends on Phase 16), Activity Log, Tests_
   - [x] `POST /progress/exercises/:id/quiz`
   - [x] `GET /progress/courses/:id` - Student progress
   - [x] `GET /progress/courses/:id/stats` - Course statistics
-  - [ ] `POST /courses/:id/certificate/generate`
+  - [x] `GET /progress/my-courses` - Student enrolled courses
+  - [x] `POST /progress/courses/:id/certificate` - Generate certificate
 
-**✅ Section 3.7 ~95% Complete**
+**✅ Section 3.7 Complete**
 
 ### 3.8 Learning Module
 
@@ -625,8 +626,8 @@ _Remaining: Email features (depends on Phase 16), Activity Log, Tests_
 - [ ] Integration tests for repository
 - [ ] E2E tests for API
 
-**✅ Phase 3: ~95% Complete - Learning Context Fully Implemented**
-_Remaining: Certificate generation, get-student-courses query, Tests_
+**✅ Phase 3: 100% Complete - Learning Context Fully Implemented**
+_Remaining: Tests (deferred to Phase 18)_
 
 ---
 
@@ -1603,35 +1604,35 @@ _Remaining: Certificate generation, get-student-courses query, Tests_
 
 ## Quick Reference: PRD Module Mapping
 
-| PRD Module                  | TODO Phase | Status |
-| --------------------------- | ---------- | ------ |
-| M01: Authentication         | Phase 2    | ✅ 92% |
-| M02: User Registration      | Phase 2    | ✅ 92% |
-| M03: Course Management      | Phase 3    | ✅ 95% |
-| M04: Content Delivery       | Phase 3    | 🚧 70% |
-| M05: Assignment System      | Phase 5    | ⬜     |
-| M06: Student Dashboard      | Phase 10   | ⬜     |
-| M07: Progress Tracking      | Phase 3    | ✅ 90% |
-| M08: XP & Leveling          | Phase 6    | ⬜     |
-| M09: Badges                 | Phase 6    | ⬜     |
-| M10: Leaderboard            | Phase 6    | ⬜     |
-| M11: Daily Quests           | Phase 6    | ⬜     |
-| M12: Class Creation         | Phase 4    | ⬜     |
-| M13: Student Assignment     | Phase 4    | ⬜     |
-| M14: Class Roster & Credits | Phase 4    | ⬜     |
-| M15: Lesson Unlocking       | Phase 4    | ⬜     |
-| M16: Instructor Dashboard   | Phase 9    | ⬜     |
-| M17: Grading & Feedback     | Phase 5    | ⬜     |
-| M18: Student Monitoring     | Phase 9    | ⬜     |
-| M19: Enrollment Management  | Phase 8    | ⬜     |
-| M20: Payment Tracking       | Phase 7    | ⬜     |
-| M21: User Management        | Phase 11   | ⬜     |
-| M22: System Analytics       | Phase 11   | ⬜     |
-| M23: Email Notifications    | Phase 16   | ⬜     |
-| M24: WhatsApp Integration   | Phase 12   | ⬜     |
-| M25: Package & Upgrade      | Phase 13   | ⬜     |
-| M26: Community              | Phase 14   | ⬜     |
-| M27: Messaging              | Phase 15   | ⬜     |
+| PRD Module                  | TODO Phase | Status  |
+| --------------------------- | ---------- | ------- |
+| M01: Authentication         | Phase 2    | ✅ 92%  |
+| M02: User Registration      | Phase 2    | ✅ 92%  |
+| M03: Course Management      | Phase 3    | ✅ 100% |
+| M04: Content Delivery       | Phase 3    | 🚧 70%  |
+| M05: Assignment System      | Phase 5    | ⬜      |
+| M06: Student Dashboard      | Phase 10   | ⬜      |
+| M07: Progress Tracking      | Phase 3    | ✅ 100% |
+| M08: XP & Leveling          | Phase 6    | ⬜      |
+| M09: Badges                 | Phase 6    | ⬜      |
+| M10: Leaderboard            | Phase 6    | ⬜      |
+| M11: Daily Quests           | Phase 6    | ⬜      |
+| M12: Class Creation         | Phase 4    | ⬜      |
+| M13: Student Assignment     | Phase 4    | ⬜      |
+| M14: Class Roster & Credits | Phase 4    | ⬜      |
+| M15: Lesson Unlocking       | Phase 4    | ⬜      |
+| M16: Instructor Dashboard   | Phase 9    | ⬜      |
+| M17: Grading & Feedback     | Phase 5    | ⬜      |
+| M18: Student Monitoring     | Phase 9    | ⬜      |
+| M19: Enrollment Management  | Phase 8    | ⬜      |
+| M20: Payment Tracking       | Phase 7    | ⬜      |
+| M21: User Management        | Phase 11   | ⬜      |
+| M22: System Analytics       | Phase 11   | ⬜      |
+| M23: Email Notifications    | Phase 16   | ⬜      |
+| M24: WhatsApp Integration   | Phase 12   | ⬜      |
+| M25: Package & Upgrade      | Phase 13   | ⬜      |
+| M26: Community              | Phase 14   | ⬜      |
+| M27: Messaging              | Phase 15   | ⬜      |
 
 ---
 
@@ -1676,6 +1677,7 @@ _Remaining: Certificate generation, get-student-courses query, Tests_
 
 | Version | Date         | Changes                                                   |
 | ------- | ------------ | --------------------------------------------------------- |
+| 2.3     | Dec 17, 2025 | Phase 3 100% - Added certificate & get-student-courses    |
 | 2.2     | Dec 17, 2025 | Phase 3 ~95% complete - Full Learning Context implemented |
 |         |              | - StudentProgress aggregate & entities                    |
 |         |              | - Progress repository & mapper                            |

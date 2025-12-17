@@ -50,6 +50,10 @@ export * from './update-material-progress/update-material-progress.handler';
 export * from './submit-quiz-answer/submit-quiz-answer.command';
 export * from './submit-quiz-answer/submit-quiz-answer.handler';
 
+// Certificate Commands
+export * from './generate-certificate/generate-certificate.command';
+export * from './generate-certificate/generate-certificate.handler';
+
 import { CreateCourseHandler } from './create-course/create-course.handler';
 import { UpdateCourseHandler } from './update-course/update-course.handler';
 import { PublishCourseHandler } from './publish-course/publish-course.handler';
@@ -71,6 +75,7 @@ import { CompleteExerciseHandler } from './complete-exercise/complete-exercise.h
 import { UpdateVideoProgressHandler } from './update-video-progress/update-video-progress.handler';
 import { UpdateMaterialProgressHandler } from './update-material-progress/update-material-progress.handler';
 import { SubmitQuizAnswerHandler } from './submit-quiz-answer/submit-quiz-answer.handler';
+import { GenerateCertificateHandler } from './generate-certificate/generate-certificate.handler';
 
 export const CommandHandlers = [
   // Course
@@ -99,4 +104,6 @@ export const CommandHandlers = [
   UpdateVideoProgressHandler,
   UpdateMaterialProgressHandler,
   SubmitQuizAnswerHandler,
+  // Certificate
+  GenerateCertificateHandler,
 ];
