@@ -5,6 +5,7 @@ export class SectionAddedEvent extends DomainEvent {
     public readonly courseId: string,
     public readonly sectionId: string,
     public readonly title: string,
+    public readonly addedBy: string,
   ) {
     super();
   }
@@ -14,6 +15,7 @@ export class SectionAddedEvent extends DomainEvent {
       courseId: this.courseId,
       sectionId: this.sectionId,
       title: this.title,
+      addedBy: this.addedBy,
     };
   }
 }

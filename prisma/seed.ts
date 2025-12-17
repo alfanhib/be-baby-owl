@@ -44,9 +44,27 @@ const seedUsers: SeedUser[] = [
     role: UserRole.instructor,
   },
   {
+    email: 'instructor2@inntexia.com',
+    password: 'Instructor123!',
+    fullName: 'Sarah Teacher',
+    role: UserRole.instructor,
+  },
+  {
     email: 'student@inntexia.com',
     password: 'Student123!',
     fullName: 'Jane Student',
+    role: UserRole.student,
+  },
+  {
+    email: 'student2@inntexia.com',
+    password: 'Student123!',
+    fullName: 'Bob Learner',
+    role: UserRole.student,
+  },
+  {
+    email: 'student3@inntexia.com',
+    password: 'Student123!',
+    fullName: 'Alice Coder',
     role: UserRole.student,
   },
 ];
@@ -334,6 +352,229 @@ const seedCourses: SeedCourse[] = [
       },
     ],
   },
+  // Empty course for CRUD testing
+  {
+    title: 'Course CRUD Testing',
+    slug: 'course-crud-testing',
+    description:
+      'Empty course for testing Section/Lesson/Exercise CRUD operations via API.',
+    coverImage: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3',
+    category: 'Testing',
+    level: CourseLevel.beginner,
+    language: 'english',
+    estimatedDuration: 10,
+    status: CourseStatus.draft,
+    sections: [], // Empty - for testing add section API
+  },
+  // Course with various quiz types
+  {
+    title: 'Quiz Types Demo',
+    slug: 'quiz-types-demo',
+    description:
+      'Course demonstrating all quiz types: MCQ, True/False, Fill Blanks, Match Pairs.',
+    coverImage: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173',
+    category: 'Demo',
+    level: CourseLevel.beginner,
+    language: 'indonesian',
+    estimatedDuration: 15,
+    status: CourseStatus.published,
+    sections: [
+      {
+        title: 'Quiz Examples',
+        description: 'Various quiz type examples',
+        lessons: [
+          {
+            title: 'Multiple Choice Quiz',
+            description: 'Example of multiple choice quiz',
+            estimatedDuration: 10,
+            exercises: [
+              {
+                title: 'Quiz: Multiple Choice',
+                type: ExerciseType.quiz,
+                content: {
+                  quizType: 'multiple_choice',
+                  questions: [
+                    {
+                      id: 'mc1',
+                      question: 'What is 2 + 2?',
+                      options: ['3', '4', '5', '6'],
+                      correctAnswer: '4',
+                      points: 10,
+                    },
+                    {
+                      id: 'mc2',
+                      question: 'Which is a programming language?',
+                      options: ['HTML', 'CSS', 'Python', 'JSON'],
+                      correctAnswer: 'Python',
+                      points: 10,
+                    },
+                  ],
+                  passingScore: 70,
+                  maxAttempts: 3,
+                },
+                estimatedDuration: 5,
+              },
+            ],
+          },
+          {
+            title: 'True/False Quiz',
+            description: 'Example of true/false quiz',
+            estimatedDuration: 5,
+            exercises: [
+              {
+                title: 'Quiz: True or False',
+                type: ExerciseType.quiz,
+                content: {
+                  quizType: 'true_false',
+                  questions: [
+                    {
+                      id: 'tf1',
+                      question: 'Python is a compiled language.',
+                      options: ['True', 'False'],
+                      correctAnswer: 'False',
+                      points: 10,
+                    },
+                    {
+                      id: 'tf2',
+                      question: 'JavaScript runs in the browser.',
+                      options: ['True', 'False'],
+                      correctAnswer: 'True',
+                      points: 10,
+                    },
+                  ],
+                  passingScore: 70,
+                },
+                estimatedDuration: 3,
+              },
+            ],
+          },
+          {
+            title: 'Fill in the Blanks',
+            description: 'Example of fill in the blanks quiz',
+            estimatedDuration: 5,
+            exercises: [
+              {
+                title: 'Quiz: Fill Blanks',
+                type: ExerciseType.quiz,
+                content: {
+                  quizType: 'fill_blanks',
+                  questions: [
+                    {
+                      id: 'fb1',
+                      question: 'The function to print in Python is ___.',
+                      correctAnswer: 'print',
+                      points: 10,
+                    },
+                    {
+                      id: 'fb2',
+                      question: 'HTML stands for HyperText ___ Language.',
+                      correctAnswer: 'Markup',
+                      points: 10,
+                    },
+                  ],
+                  passingScore: 70,
+                },
+                estimatedDuration: 3,
+              },
+            ],
+          },
+          {
+            title: 'Match Pairs',
+            description: 'Example of match pairs quiz',
+            estimatedDuration: 5,
+            exercises: [
+              {
+                title: 'Quiz: Match Pairs',
+                type: ExerciseType.quiz,
+                content: {
+                  quizType: 'match_pairs',
+                  questions: [
+                    {
+                      id: 'mp1',
+                      question:
+                        'Match the programming language with its creator',
+                      correctAnswer: {
+                        Python: 'Guido van Rossum',
+                        JavaScript: 'Brendan Eich',
+                        Java: 'James Gosling',
+                      },
+                      points: 30,
+                    },
+                  ],
+                  passingScore: 70,
+                },
+                estimatedDuration: 5,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Coding Exercises',
+        description: 'Example coding exercises',
+        lessons: [
+          {
+            title: 'Python Coding Challenge',
+            description: 'Simple Python coding challenge',
+            estimatedDuration: 15,
+            exercises: [
+              {
+                title: 'Coding: Sum Function',
+                type: ExerciseType.coding,
+                content: {
+                  instructions:
+                    'Create a function `add(a, b)` that returns the sum of two numbers.',
+                  starterCode:
+                    'def add(a, b):\n    # Write your code here\n    pass\n',
+                  testCases: [
+                    { input: 'add(1, 2)', expectedOutput: '3', hidden: false },
+                    {
+                      input: 'add(10, 20)',
+                      expectedOutput: '30',
+                      hidden: false,
+                    },
+                    { input: 'add(-5, 5)', expectedOutput: '0', hidden: true },
+                  ],
+                  language: 'python',
+                },
+                estimatedDuration: 10,
+              },
+              {
+                title: 'Coding: FizzBuzz',
+                type: ExerciseType.coding,
+                content: {
+                  instructions:
+                    'Create a function `fizzbuzz(n)` that returns "Fizz" if n is divisible by 3, "Buzz" if divisible by 5, "FizzBuzz" if both, or the number as string.',
+                  starterCode:
+                    'def fizzbuzz(n):\n    # Write your code here\n    pass\n',
+                  testCases: [
+                    {
+                      input: 'fizzbuzz(3)',
+                      expectedOutput: 'Fizz',
+                      hidden: false,
+                    },
+                    {
+                      input: 'fizzbuzz(5)',
+                      expectedOutput: 'Buzz',
+                      hidden: false,
+                    },
+                    {
+                      input: 'fizzbuzz(15)',
+                      expectedOutput: 'FizzBuzz',
+                      hidden: false,
+                    },
+                    { input: 'fizzbuzz(7)', expectedOutput: '7', hidden: true },
+                  ],
+                  language: 'python',
+                },
+                estimatedDuration: 15,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 // ============================================================================
@@ -463,6 +704,230 @@ async function seedCoursesData(instructorId: string): Promise<void> {
 }
 
 // ============================================================================
+// PROGRESS SEEDS
+// ============================================================================
+
+async function seedProgressData(userIdMap: Map<string, string>): Promise<void> {
+  console.log('\n📊 Seeding student progress...\n');
+
+  // Get student IDs
+  const student1Id = userIdMap.get('student@inntexia.com');
+  const student2Id = userIdMap.get('student2@inntexia.com');
+  const student3Id = userIdMap.get('student3@inntexia.com');
+
+  if (!student1Id || !student2Id || !student3Id) {
+    console.log('   ⚠️  Students not found, skipping progress seed');
+    return;
+  }
+
+  // Get published courses with their lessons and exercises
+  const pythonCourse = await prisma.course.findUnique({
+    where: { slug: 'python-untuk-pemula' },
+    include: {
+      sections: {
+        include: {
+          lessons: {
+            include: {
+              exercises: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const jsCourse = await prisma.course.findUnique({
+    where: { slug: 'web-development-javascript' },
+    include: {
+      sections: {
+        include: {
+          lessons: {
+            include: {
+              exercises: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const quizCourse = await prisma.course.findUnique({
+    where: { slug: 'quiz-types-demo' },
+    include: {
+      sections: {
+        include: {
+          lessons: {
+            include: {
+              exercises: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!pythonCourse || !jsCourse || !quizCourse) {
+    console.log('   ⚠️  Courses not found, skipping progress seed');
+    return;
+  }
+
+  // Helper to create progress
+  const createProgress = async (
+    userId: string,
+    lessonId: string,
+    exerciseIds: string[],
+    completedCount: number,
+    videoWatched?: number,
+    materialScroll?: number,
+  ) => {
+    // Check if lesson progress already exists
+    const existingLessonProgress = await prisma.lessonProgress.findUnique({
+      where: {
+        userId_lessonId: {
+          userId,
+          lessonId,
+        },
+      },
+    });
+
+    if (!existingLessonProgress) {
+      await prisma.lessonProgress.create({
+        data: {
+          userId,
+          lessonId,
+          completed: completedCount >= exerciseIds.length,
+          exercisesCompleted: completedCount,
+          totalExercises: exerciseIds.length,
+          completedAt: completedCount >= exerciseIds.length ? new Date() : null,
+        },
+      });
+    }
+
+    // Create exercise progress
+    for (let i = 0; i < exerciseIds.length; i++) {
+      const exerciseId = exerciseIds[i];
+      const isCompleted = i < completedCount;
+
+      const existingExerciseProgress = await prisma.exerciseProgress.findUnique(
+        {
+          where: {
+            userId_exerciseId: {
+              userId,
+              exerciseId,
+            },
+          },
+        },
+      );
+
+      if (!existingExerciseProgress) {
+        await prisma.exerciseProgress.create({
+          data: {
+            userId,
+            exerciseId,
+            completed: isCompleted,
+            watchedSeconds: videoWatched ?? (isCompleted ? 600 : 120),
+            scrollDepth: materialScroll ?? (isCompleted ? 100 : 30),
+            completedAt: isCompleted ? new Date() : null,
+          },
+        });
+      }
+    }
+  };
+
+  // Student 1: Completed Python course, started JS course
+  console.log('   📈 Creating progress for student@inntexia.com...');
+
+  // Python - all lessons completed
+  for (const section of pythonCourse.sections) {
+    for (const lesson of section.lessons) {
+      const exerciseIds = lesson.exercises.map((e) => e.id);
+      await createProgress(
+        student1Id,
+        lesson.id,
+        exerciseIds,
+        exerciseIds.length, // All completed
+        600,
+        100,
+      );
+    }
+  }
+
+  // JS - first section completed, second in progress
+  const jsSection1 = jsCourse.sections[0];
+  if (jsSection1) {
+    for (const lesson of jsSection1.lessons) {
+      const exerciseIds = lesson.exercises.map((e) => e.id);
+      await createProgress(
+        student1Id,
+        lesson.id,
+        exerciseIds,
+        exerciseIds.length,
+      );
+    }
+  }
+  const jsSection2 = jsCourse.sections[1];
+  if (jsSection2 && jsSection2.lessons[0]) {
+    const lesson = jsSection2.lessons[0];
+    const exerciseIds = lesson.exercises.map((e) => e.id);
+    await createProgress(student1Id, lesson.id, exerciseIds, 1, 400, 50); // Partial
+  }
+
+  console.log('      ✅ Python: 100% | JS: ~75%');
+
+  // Student 2: Started Python course, partial progress
+  console.log('   📈 Creating progress for student2@inntexia.com...');
+
+  const pythonSection1 = pythonCourse.sections[0];
+  if (pythonSection1) {
+    // First lesson complete
+    const lesson1 = pythonSection1.lessons[0];
+    if (lesson1) {
+      const exerciseIds = lesson1.exercises.map((e) => e.id);
+      await createProgress(
+        student2Id,
+        lesson1.id,
+        exerciseIds,
+        exerciseIds.length,
+      );
+    }
+    // Second lesson partial
+    const lesson2 = pythonSection1.lessons[1];
+    if (lesson2) {
+      const exerciseIds = lesson2.exercises.map((e) => e.id);
+      await createProgress(student2Id, lesson2.id, exerciseIds, 1, 200, 40);
+    }
+  }
+
+  console.log('      ✅ Python: ~40%');
+
+  // Student 3: Completed Quiz Types Demo course
+  console.log('   📈 Creating progress for student3@inntexia.com...');
+
+  for (const section of quizCourse.sections) {
+    for (const lesson of section.lessons) {
+      const exerciseIds = lesson.exercises.map((e) => e.id);
+      await createProgress(
+        student3Id,
+        lesson.id,
+        exerciseIds,
+        exerciseIds.length,
+        0, // No video
+        100,
+      );
+    }
+  }
+
+  // Also started Python
+  if (pythonSection1 && pythonSection1.lessons[0]) {
+    const lesson = pythonSection1.lessons[0];
+    const exerciseIds = lesson.exercises.map((e) => e.id);
+    await createProgress(student3Id, lesson.id, exerciseIds, 1, 300, 60);
+  }
+
+  console.log('      ✅ Quiz Demo: 100% | Python: ~15%');
+}
+
+// ============================================================================
 // MAIN
 // ============================================================================
 
@@ -482,6 +947,9 @@ async function main() {
   // Seed courses
   await seedCoursesData(instructorId);
 
+  // Seed student progress
+  await seedProgressData(userIdMap);
+
   console.log('\n' + '═'.repeat(50));
   console.log('\n🎉 Seed completed!\n');
 
@@ -499,6 +967,14 @@ async function main() {
   seedCourses.forEach((c) => {
     console.log(`   [${c.status.padEnd(9)}] ${c.title}`);
   });
+  console.log('─'.repeat(50));
+
+  // Print progress summary
+  console.log('\n📊 Student Progress:');
+  console.log('─'.repeat(50));
+  console.log('   student@inntexia.com  : Python 100%, JS ~75%');
+  console.log('   student2@inntexia.com : Python ~40%');
+  console.log('   student3@inntexia.com : Quiz Demo 100%, Python ~15%');
   console.log('─'.repeat(50));
 }
 

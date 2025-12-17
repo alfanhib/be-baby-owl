@@ -4,8 +4,8 @@ export class LessonCompletedEvent extends DomainEvent {
   constructor(
     public readonly userId: string,
     public readonly lessonId: string,
-    public readonly sectionId: string,
     public readonly courseId: string,
+    public readonly sectionId?: string,
   ) {
     super();
   }
@@ -14,8 +14,8 @@ export class LessonCompletedEvent extends DomainEvent {
     return {
       userId: this.userId,
       lessonId: this.lessonId,
-      sectionId: this.sectionId,
       courseId: this.courseId,
+      sectionId: this.sectionId,
     };
   }
 }

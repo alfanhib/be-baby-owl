@@ -5,8 +5,7 @@ export enum ExerciseTypeEnum {
   QUIZ = 'quiz',
   MATERIAL = 'material',
   ASSIGNMENT = 'assignment',
-  CODING_CHALLENGE = 'coding_challenge',
-  CODING_PLAYGROUND = 'coding_playground',
+  CODING = 'coding',
 }
 
 interface ExerciseTypeProps {
@@ -46,12 +45,8 @@ export class ExerciseType extends ValueObject<ExerciseTypeProps> {
     return new ExerciseType({ value: ExerciseTypeEnum.ASSIGNMENT });
   }
 
-  static codingChallenge(): ExerciseType {
-    return new ExerciseType({ value: ExerciseTypeEnum.CODING_CHALLENGE });
-  }
-
-  static codingPlayground(): ExerciseType {
-    return new ExerciseType({ value: ExerciseTypeEnum.CODING_PLAYGROUND });
+  static coding(): ExerciseType {
+    return new ExerciseType({ value: ExerciseTypeEnum.CODING });
   }
 
   isVideo(): boolean {
@@ -70,12 +65,8 @@ export class ExerciseType extends ValueObject<ExerciseTypeProps> {
     return this.props.value === ExerciseTypeEnum.ASSIGNMENT;
   }
 
-  isCodingChallenge(): boolean {
-    return this.props.value === ExerciseTypeEnum.CODING_CHALLENGE;
-  }
-
-  isCodingPlayground(): boolean {
-    return this.props.value === ExerciseTypeEnum.CODING_PLAYGROUND;
+  isCoding(): boolean {
+    return this.props.value === ExerciseTypeEnum.CODING;
   }
 
   requiresManualGrading(): boolean {
@@ -83,6 +74,6 @@ export class ExerciseType extends ValueObject<ExerciseTypeProps> {
   }
 
   hasAutoGrading(): boolean {
-    return this.isQuiz() || this.isCodingChallenge();
+    return this.isQuiz() || this.isCoding();
   }
 }

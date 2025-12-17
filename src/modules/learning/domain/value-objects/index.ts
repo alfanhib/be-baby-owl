@@ -2,6 +2,7 @@ export * from './course-id.vo';
 export * from './section-id.vo';
 export * from './lesson-id.vo';
 export * from './exercise-id.vo';
+export * from './progress-id.vo';
 export * from './course-status.vo';
 export * from './course-level.vo';
 export * from './exercise-type.vo';

@@ -5,7 +5,7 @@ export class ExerciseCompletedEvent extends DomainEvent {
     public readonly userId: string,
     public readonly exerciseId: string,
     public readonly lessonId: string,
-    public readonly exerciseType: string,
+    public readonly exerciseType?: string,
   ) {
     super();
   }
