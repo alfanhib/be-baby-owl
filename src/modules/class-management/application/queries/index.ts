@@ -12,6 +12,14 @@ export * from './get-class-roster/get-class-roster.handler';
 export * from './get-class-attendance/get-class-attendance.query';
 export * from './get-class-attendance/get-class-attendance.handler';
 
+// Lesson Unlock Queries
+export * from './get-unlocked-lessons/get-unlocked-lessons.query';
+export * from './get-unlocked-lessons/get-unlocked-lessons.handler';
+
+// Credit Queries
+export * from './get-credit-history/get-credit-history.query';
+export * from './get-credit-history/get-credit-history.handler';
+
 import { GetClassHandler } from './get-class/get-class.handler';
 import {
   GetClassesHandler,
@@ -23,6 +31,8 @@ import {
   GetClassAttendanceHandler,
   GetStudentAttendanceHandler,
 } from './get-class-attendance/get-class-attendance.handler';
+import { GetUnlockedLessonsHandler } from './get-unlocked-lessons/get-unlocked-lessons.handler';
+import { GetCreditHistoryHandler } from './get-credit-history/get-credit-history.handler';
 
 export const QueryHandlers = [
   // Class
@@ -35,4 +45,8 @@ export const QueryHandlers = [
   // Attendance
   GetClassAttendanceHandler,
   GetStudentAttendanceHandler,
+  // Lesson Unlock
+  GetUnlockedLessonsHandler,
+  // Credit
+  GetCreditHistoryHandler,
 ];

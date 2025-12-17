@@ -9,6 +9,8 @@ export * from './activate-class/activate-class.command';
 export * from './activate-class/activate-class.handler';
 export * from './complete-class/complete-class.command';
 export * from './complete-class/complete-class.handler';
+export * from './cancel-class/cancel-class.command';
+export * from './cancel-class/cancel-class.handler';
 
 // Enrollment Commands
 export * from './enroll-student/enroll-student.command';
@@ -19,6 +21,8 @@ export * from './remove-student/remove-student.handler';
 // Attendance Commands
 export * from './mark-attendance/mark-attendance.command';
 export * from './mark-attendance/mark-attendance.handler';
+export * from './update-attendance/update-attendance.command';
+export * from './update-attendance/update-attendance.handler';
 
 // Credit Commands
 export * from './adjust-credits/adjust-credits.command';
@@ -33,9 +37,11 @@ import { UpdateClassHandler } from './update-class/update-class.handler';
 import { OpenEnrollmentHandler } from './open-enrollment/open-enrollment.handler';
 import { ActivateClassHandler } from './activate-class/activate-class.handler';
 import { CompleteClassHandler } from './complete-class/complete-class.handler';
+import { CancelClassHandler } from './cancel-class/cancel-class.handler';
 import { EnrollStudentHandler } from './enroll-student/enroll-student.handler';
 import { RemoveStudentHandler } from './remove-student/remove-student.handler';
 import { MarkAttendanceHandler } from './mark-attendance/mark-attendance.handler';
+import { UpdateAttendanceHandler } from './update-attendance/update-attendance.handler';
 import { AdjustCreditsHandler } from './adjust-credits/adjust-credits.handler';
 import { UnlockLessonHandler } from './unlock-lesson/unlock-lesson.handler';
 
@@ -46,11 +52,13 @@ export const CommandHandlers = [
   OpenEnrollmentHandler,
   ActivateClassHandler,
   CompleteClassHandler,
+  CancelClassHandler,
   // Enrollment
   EnrollStudentHandler,
   RemoveStudentHandler,
   // Attendance
   MarkAttendanceHandler,
+  UpdateAttendanceHandler,
   // Credits
   AdjustCreditsHandler,
   // Lesson Unlock

@@ -15,6 +15,7 @@ import { UserLoggedInEvent } from '@identity/domain/events/user-logged-in.event'
 
 export interface UserProps {
   email: Email;
+  username?: string;
   passwordHash: Password;
   fullName: string;
   avatar?: string;
@@ -28,6 +29,7 @@ export interface UserProps {
 
 export interface CreateUserProps {
   email: string;
+  username?: string;
   passwordHash: string;
   fullName: string;
   role?: UserRoleEnum;
@@ -36,6 +38,7 @@ export interface CreateUserProps {
 export interface RestoreUserProps {
   id: string;
   email: string;
+  username?: string;
   passwordHash: string;
   fullName: string;
   avatar?: string;
@@ -51,6 +54,7 @@ export interface RestoreUserProps {
 
 export class User extends AggregateRoot<UserId> {
   private _email: Email;
+  private _username?: string;
   private _passwordHash: Password;
   private _fullName: string;
   private _avatar?: string;
@@ -69,6 +73,7 @@ export class User extends AggregateRoot<UserId> {
   ) {
     super(id, createdAt, updatedAt);
     this._email = props.email;
+    this._username = props.username;
     this._passwordHash = props.passwordHash;
     this._fullName = props.fullName;
     this._avatar = props.avatar;
@@ -86,6 +91,10 @@ export class User extends AggregateRoot<UserId> {
 
   get email(): Email {
     return this._email;
+  }
+
+  get username(): string | undefined {
+    return this._username;
   }
 
   get passwordHash(): Password {
@@ -140,6 +149,7 @@ export class User extends AggregateRoot<UserId> {
 
     const user = new User(id, {
       email,
+      username: props.username,
       passwordHash,
       fullName: props.fullName,
       role,
@@ -174,6 +184,7 @@ export class User extends AggregateRoot<UserId> {
       id,
       {
         email,
+        username: props.username,
         passwordHash,
         fullName: props.fullName,
         avatar: props.avatar,
@@ -226,11 +237,15 @@ export class User extends AggregateRoot<UserId> {
    */
   updateProfile(data: {
     fullName?: string;
+    username?: string;
     avatar?: string;
     bio?: string;
   }): void {
     if (data.fullName !== undefined) {
       this._fullName = data.fullName;
+    }
+    if (data.username !== undefined) {
+      this._username = data.username;
     }
     if (data.avatar !== undefined) {
       this._avatar = data.avatar;

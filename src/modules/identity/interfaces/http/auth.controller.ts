@@ -43,7 +43,13 @@ interface LoginResult {
   accessToken: string;
   refreshToken: string;
   expiresIn: number;
-  user: { id: string; email: string; fullName: string; role: string };
+  user: {
+    id: string;
+    email: string;
+    username?: string;
+    fullName: string;
+    role: string;
+  };
 }
 
 interface RefreshResult {
@@ -81,11 +87,11 @@ export class AuthController {
   @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Login user' })
+  @ApiOperation({ summary: 'Login with username or email' })
   @ApiResponse({ status: 200, description: 'Login successful' })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   async login(@Body() dto: LoginDto): Promise<LoginResult> {
-    const command = new LoginCommand(dto.email, dto.password);
+    const command = new LoginCommand(dto.identifier, dto.password);
     return this.commandBus.execute<LoginCommand, LoginResult>(command);
   }
 

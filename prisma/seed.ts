@@ -5,6 +5,10 @@ import {
   CourseStatus,
   CourseLevel,
   ExerciseType,
+  ClassType,
+  ClassStatus,
+  EnrollmentStatus,
+  AttendanceStatus,
   Prisma,
 } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -19,6 +23,7 @@ const SALT_ROUNDS = 10;
 
 interface SeedUser {
   email: string;
+  username: string;
   password: string;
   fullName: string;
   role: UserRole;
@@ -27,42 +32,49 @@ interface SeedUser {
 const seedUsers: SeedUser[] = [
   {
     email: 'superadmin@inntexia.com',
+    username: 'superadmin',
     password: 'SuperAdmin123!',
     fullName: 'Super Admin',
     role: UserRole.super_admin,
   },
   {
     email: 'staff@inntexia.com',
+    username: 'staff',
     password: 'Staff123!',
     fullName: 'Staff Member',
     role: UserRole.staff,
   },
   {
     email: 'instructor@inntexia.com',
+    username: 'johninstructor',
     password: 'Instructor123!',
     fullName: 'John Instructor',
     role: UserRole.instructor,
   },
   {
     email: 'instructor2@inntexia.com',
+    username: 'sarahteacher',
     password: 'Instructor123!',
     fullName: 'Sarah Teacher',
     role: UserRole.instructor,
   },
   {
     email: 'student@inntexia.com',
+    username: 'janestudent',
     password: 'Student123!',
     fullName: 'Jane Student',
     role: UserRole.student,
   },
   {
     email: 'student2@inntexia.com',
+    username: 'boblearner',
     password: 'Student123!',
     fullName: 'Bob Learner',
     role: UserRole.student,
   },
   {
     email: 'student3@inntexia.com',
+    username: 'alicecoder',
     password: 'Student123!',
     fullName: 'Alice Coder',
     role: UserRole.student,
@@ -591,7 +603,16 @@ async function seedUsersData(): Promise<Map<string, string>> {
     });
 
     if (existingUser) {
-      console.log(`   ⏭️  User ${userData.email} already exists`);
+      // Update username if not set
+      if (!existingUser.username) {
+        await prisma.user.update({
+          where: { id: existingUser.id },
+          data: { username: userData.username },
+        });
+        console.log(`   🔄 Updated username for ${userData.email}`);
+      } else {
+        console.log(`   ⏭️  User ${userData.email} already exists`);
+      }
       userIdMap.set(userData.email, existingUser.id);
       continue;
     }
@@ -601,6 +622,7 @@ async function seedUsersData(): Promise<Map<string, string>> {
     const user = await prisma.user.create({
       data: {
         email: userData.email,
+        username: userData.username,
         passwordHash,
         fullName: userData.fullName,
         role: userData.role,
@@ -928,6 +950,431 @@ async function seedProgressData(userIdMap: Map<string, string>): Promise<void> {
 }
 
 // ============================================================================
+// CLASS MANAGEMENT SEEDS
+// ============================================================================
+
+interface ClassSeedResult {
+  classIds: Map<string, string>;
+  enrollmentIds: Map<string, string>;
+}
+
+async function seedClassManagementData(
+  userIdMap: Map<string, string>,
+): Promise<ClassSeedResult> {
+  console.log('\n🏫 Seeding class management...\n');
+
+  const classIds = new Map<string, string>();
+  const enrollmentIds = new Map<string, string>();
+
+  // Get user IDs
+  const instructorId = userIdMap.get('instructor@inntexia.com');
+  const instructor2Id = userIdMap.get('instructor2@inntexia.com');
+  const student1Id = userIdMap.get('student@inntexia.com');
+  const student2Id = userIdMap.get('student2@inntexia.com');
+  const student3Id = userIdMap.get('student3@inntexia.com');
+  const staffId = userIdMap.get('staff@inntexia.com');
+
+  if (
+    !instructorId ||
+    !instructor2Id ||
+    !student1Id ||
+    !student2Id ||
+    !student3Id ||
+    !staffId
+  ) {
+    console.log('   ⚠️  Required users not found, skipping class seed');
+    return { classIds, enrollmentIds };
+  }
+
+  // Get courses
+  const pythonCourse = await prisma.course.findUnique({
+    where: { slug: 'python-untuk-pemula' },
+    include: {
+      sections: {
+        include: {
+          lessons: { orderBy: { orderIndex: 'asc' } },
+        },
+        orderBy: { orderIndex: 'asc' },
+      },
+    },
+  });
+
+  const jsCourse = await prisma.course.findUnique({
+    where: { slug: 'web-development-javascript' },
+    include: {
+      sections: {
+        include: {
+          lessons: { orderBy: { orderIndex: 'asc' } },
+        },
+        orderBy: { orderIndex: 'asc' },
+      },
+    },
+  });
+
+  if (!pythonCourse || !jsCourse) {
+    console.log('   ⚠️  Courses not found, skipping class seed');
+    return { classIds, enrollmentIds };
+  }
+
+  // Get all lessons for courses
+  const pythonLessons = pythonCourse.sections.flatMap((s) => s.lessons);
+  // Note: JS lessons can be accessed via jsCourse.sections.flatMap((s) => s.lessons) when needed
+
+  // ========== CLASS 1: Python Group Class (Active) ==========
+  const existingPythonGroup = await prisma.class.findFirst({
+    where: { name: 'Python Batch 1 - Group' },
+  });
+
+  if (!existingPythonGroup) {
+    const pythonGroupClass = await prisma.class.create({
+      data: {
+        name: 'Python Batch 1 - Group',
+        courseId: pythonCourse.id,
+        instructorId: instructorId,
+        type: ClassType.group,
+        status: ClassStatus.active,
+        totalMeetings: 10,
+        meetingsCompleted: 4,
+        meetingsScheduled: 10,
+        lessonsUnlocked: 3,
+        maxCapacity: 20,
+        currentCapacity: 3,
+        schedule: {
+          days: ['Monday', 'Wednesday'],
+          time: '19:00-21:00',
+          timezone: 'Asia/Jakarta',
+        },
+        startDate: new Date('2025-12-01'),
+        endDate: new Date('2026-02-01'),
+        enrollmentDeadline: new Date('2025-12-01'),
+      },
+    });
+    classIds.set('python-group', pythonGroupClass.id);
+    console.log(`   ✅ Created class: Python Batch 1 - Group (active)`);
+
+    // Enroll students
+    const enrollments = [
+      { studentId: student1Id, key: 'student1-python-group' },
+      { studentId: student2Id, key: 'student2-python-group' },
+      { studentId: student3Id, key: 'student3-python-group' },
+    ];
+
+    for (const { studentId, key } of enrollments) {
+      const enrollment = await prisma.classEnrollment.create({
+        data: {
+          classId: pythonGroupClass.id,
+          studentId,
+          meetingCredits: 10,
+          creditsUsed: 4,
+          status: EnrollmentStatus.active,
+        },
+      });
+      enrollmentIds.set(key, enrollment.id);
+    }
+    console.log(`      └─ Enrolled 3 students`);
+
+    // Unlock first 3 lessons
+    for (let i = 0; i < 3 && i < pythonLessons.length; i++) {
+      await prisma.lessonUnlock.create({
+        data: {
+          classId: pythonGroupClass.id,
+          lessonId: pythonLessons[i].id,
+          unlockedBy: instructorId,
+        },
+      });
+    }
+    console.log(`      └─ Unlocked 3 lessons`);
+
+    // Create attendance records for 4 meetings
+    for (let meeting = 1; meeting <= 4; meeting++) {
+      const meetingDate = new Date('2025-12-01');
+      meetingDate.setDate(meetingDate.getDate() + (meeting - 1) * 3); // Every 3 days
+
+      for (const { key } of enrollments) {
+        const enrollmentId = enrollmentIds.get(key);
+        if (!enrollmentId) continue;
+
+        // Vary attendance status
+        let status: AttendanceStatus;
+        if (meeting === 3 && key === 'student2-python-group') {
+          status = AttendanceStatus.absent;
+        } else if (meeting === 2 && key === 'student3-python-group') {
+          status = AttendanceStatus.late;
+        } else {
+          status = AttendanceStatus.present;
+        }
+
+        await prisma.classAttendance.create({
+          data: {
+            classId: pythonGroupClass.id,
+            enrollmentId,
+            meetingNumber: meeting,
+            meetingDate,
+            status,
+            creditDeducted: status !== AttendanceStatus.absent,
+            markedById: instructorId,
+          },
+        });
+      }
+    }
+    console.log(`      └─ Created attendance for 4 meetings`);
+  } else {
+    classIds.set('python-group', existingPythonGroup.id);
+    console.log(`   ⏭️  Class "Python Batch 1 - Group" already exists`);
+  }
+
+  // ========== CLASS 2: Python Private Class (Active) ==========
+  const existingPythonPrivate = await prisma.class.findFirst({
+    where: { name: 'Python Private - Jane' },
+  });
+
+  if (!existingPythonPrivate) {
+    const pythonPrivateClass = await prisma.class.create({
+      data: {
+        name: 'Python Private - Jane',
+        courseId: pythonCourse.id,
+        instructorId: instructorId,
+        type: ClassType.private,
+        status: ClassStatus.active,
+        totalMeetings: 20,
+        meetingsCompleted: 8,
+        meetingsScheduled: 20,
+        lessonsUnlocked: 8,
+        maxCapacity: 1,
+        currentCapacity: 1,
+        schedule: {
+          days: ['Tuesday', 'Thursday'],
+          time: '18:00-19:30',
+          timezone: 'Asia/Jakarta',
+        },
+        startDate: new Date('2025-11-15'),
+      },
+    });
+    classIds.set('python-private', pythonPrivateClass.id);
+    console.log(`   ✅ Created class: Python Private - Jane (active)`);
+
+    // Enroll student1
+    const enrollment = await prisma.classEnrollment.create({
+      data: {
+        classId: pythonPrivateClass.id,
+        studentId: student1Id,
+        meetingCredits: 20,
+        creditsUsed: 8,
+        status: EnrollmentStatus.active,
+      },
+    });
+    enrollmentIds.set('student1-python-private', enrollment.id);
+    console.log(`      └─ Enrolled 1 student (private class)`);
+
+    // Unlock lessons (can unlock more than meetings in private)
+    const lessonsToUnlock = Math.min(8, pythonLessons.length);
+    for (let i = 0; i < lessonsToUnlock; i++) {
+      await prisma.lessonUnlock.create({
+        data: {
+          classId: pythonPrivateClass.id,
+          lessonId: pythonLessons[i].id,
+          unlockedBy: instructorId,
+        },
+      });
+    }
+    console.log(`      └─ Unlocked ${lessonsToUnlock} lessons`);
+
+    // Attendance for 8 meetings - all present (private class)
+    for (let meeting = 1; meeting <= 8; meeting++) {
+      const meetingDate = new Date('2025-11-15');
+      meetingDate.setDate(meetingDate.getDate() + (meeting - 1) * 3);
+
+      await prisma.classAttendance.create({
+        data: {
+          classId: pythonPrivateClass.id,
+          enrollmentId: enrollment.id,
+          meetingNumber: meeting,
+          meetingDate,
+          status: AttendanceStatus.present,
+          creditDeducted: true,
+          markedById: instructorId,
+        },
+      });
+    }
+    console.log(`      └─ Created attendance for 8 meetings`);
+
+    // Add credit adjustment (bonus credits example)
+    await prisma.creditAdjustment.create({
+      data: {
+        enrollmentId: enrollment.id,
+        adjustment: 2,
+        creditsBefore: 20,
+        creditsAfter: 22,
+        reason: 'bonus',
+        reasonDetail: 'Early bird bonus - 2 extra meetings',
+        adjustedById: staffId,
+      },
+    });
+
+    // Update enrollment to reflect adjustment
+    await prisma.classEnrollment.update({
+      where: { id: enrollment.id },
+      data: { meetingCredits: 22 },
+    });
+    console.log(`      └─ Added credit adjustment (+2 bonus)`);
+  } else {
+    classIds.set('python-private', existingPythonPrivate.id);
+    console.log(`   ⏭️  Class "Python Private - Jane" already exists`);
+  }
+
+  // ========== CLASS 3: JavaScript Group Class (Enrollment Open) ==========
+  const existingJsGroup = await prisma.class.findFirst({
+    where: { name: 'JavaScript Batch 1 - Group' },
+  });
+
+  if (!existingJsGroup) {
+    const jsGroupClass = await prisma.class.create({
+      data: {
+        name: 'JavaScript Batch 1 - Group',
+        courseId: jsCourse.id,
+        instructorId: instructor2Id,
+        type: ClassType.group,
+        status: ClassStatus.enrollment_open,
+        totalMeetings: 15,
+        meetingsCompleted: 0,
+        meetingsScheduled: 15,
+        lessonsUnlocked: 0,
+        maxCapacity: 15,
+        currentCapacity: 2,
+        schedule: {
+          days: ['Saturday'],
+          time: '09:00-12:00',
+          timezone: 'Asia/Jakarta',
+        },
+        startDate: new Date('2026-01-10'),
+        enrollmentDeadline: new Date('2026-01-05'),
+      },
+    });
+    classIds.set('js-group', jsGroupClass.id);
+    console.log(
+      `   ✅ Created class: JavaScript Batch 1 - Group (enrollment_open)`,
+    );
+
+    // Enroll 2 students
+    for (const [studentId, key] of [
+      [student1Id, 'student1-js-group'],
+      [student2Id, 'student2-js-group'],
+    ] as const) {
+      const enrollment = await prisma.classEnrollment.create({
+        data: {
+          classId: jsGroupClass.id,
+          studentId,
+          meetingCredits: 15,
+          creditsUsed: 0,
+          status: EnrollmentStatus.active,
+        },
+      });
+      enrollmentIds.set(key, enrollment.id);
+    }
+    console.log(`      └─ Enrolled 2 students (waiting for more)`);
+  } else {
+    classIds.set('js-group', existingJsGroup.id);
+    console.log(`   ⏭️  Class "JavaScript Batch 1 - Group" already exists`);
+  }
+
+  // ========== CLASS 4: Python Group Class (Completed) ==========
+  const existingPythonCompleted = await prisma.class.findFirst({
+    where: { name: 'Python Batch 0 - Completed' },
+  });
+
+  if (!existingPythonCompleted) {
+    const pythonCompletedClass = await prisma.class.create({
+      data: {
+        name: 'Python Batch 0 - Completed',
+        courseId: pythonCourse.id,
+        instructorId: instructorId,
+        type: ClassType.group,
+        status: ClassStatus.completed,
+        totalMeetings: 10,
+        meetingsCompleted: 10,
+        meetingsScheduled: 10,
+        lessonsUnlocked: pythonLessons.length,
+        maxCapacity: 10,
+        currentCapacity: 1,
+        schedule: {
+          days: ['Monday', 'Wednesday'],
+          time: '19:00-21:00',
+          timezone: 'Asia/Jakarta',
+        },
+        startDate: new Date('2025-09-01'),
+        endDate: new Date('2025-11-30'),
+      },
+    });
+    classIds.set('python-completed', pythonCompletedClass.id);
+    console.log(`   ✅ Created class: Python Batch 0 - Completed`);
+
+    // Enroll student2 (completed the course)
+    const enrollment = await prisma.classEnrollment.create({
+      data: {
+        classId: pythonCompletedClass.id,
+        studentId: student2Id,
+        meetingCredits: 10,
+        creditsUsed: 10,
+        status: EnrollmentStatus.completed,
+        completedAt: new Date('2025-11-30'),
+      },
+    });
+    enrollmentIds.set('student2-python-completed', enrollment.id);
+    console.log(`      └─ 1 student completed the class`);
+
+    // Unlock all lessons
+    for (const lesson of pythonLessons) {
+      await prisma.lessonUnlock.create({
+        data: {
+          classId: pythonCompletedClass.id,
+          lessonId: lesson.id,
+          unlockedBy: instructorId,
+        },
+      });
+    }
+    console.log(`      └─ All ${pythonLessons.length} lessons unlocked`);
+  } else {
+    classIds.set('python-completed', existingPythonCompleted.id);
+    console.log(`   ⏭️  Class "Python Batch 0 - Completed" already exists`);
+  }
+
+  // ========== CLASS 5: Draft Class ==========
+  const existingDraftClass = await prisma.class.findFirst({
+    where: { name: 'Python Batch 2 - Draft' },
+  });
+
+  if (!existingDraftClass) {
+    const draftClass = await prisma.class.create({
+      data: {
+        name: 'Python Batch 2 - Draft',
+        courseId: pythonCourse.id,
+        instructorId: instructorId,
+        type: ClassType.group,
+        status: ClassStatus.draft,
+        totalMeetings: 10,
+        meetingsCompleted: 0,
+        meetingsScheduled: 0,
+        lessonsUnlocked: 0,
+        maxCapacity: 25,
+        currentCapacity: 0,
+        schedule: {
+          days: ['Saturday', 'Sunday'],
+          time: '10:00-12:00',
+          timezone: 'Asia/Jakarta',
+        },
+      },
+    });
+    classIds.set('python-draft', draftClass.id);
+    console.log(`   ✅ Created class: Python Batch 2 - Draft`);
+  } else {
+    classIds.set('python-draft', existingDraftClass.id);
+    console.log(`   ⏭️  Class "Python Batch 2 - Draft" already exists`);
+  }
+
+  return { classIds, enrollmentIds };
+}
+
+// ============================================================================
 // MAIN
 // ============================================================================
 
@@ -950,16 +1397,25 @@ async function main() {
   // Seed student progress
   await seedProgressData(userIdMap);
 
+  // Seed class management data
+  const { classIds } = await seedClassManagementData(userIdMap);
+
   console.log('\n' + '═'.repeat(50));
   console.log('\n🎉 Seed completed!\n');
 
   // Print credentials
-  console.log('📋 Test Credentials:');
-  console.log('─'.repeat(50));
+  console.log('📋 Test Credentials (login with username or email):');
+  console.log('─'.repeat(70));
+  console.log(
+    '   Role         | Username        | Email                      | Password',
+  );
+  console.log('─'.repeat(70));
   seedUsers.forEach((u) => {
-    console.log(`   ${u.role.padEnd(12)} | ${u.email} | ${u.password}`);
+    console.log(
+      `   ${u.role.padEnd(12)} | ${u.username.padEnd(15)} | ${u.email.padEnd(26)} | ${u.password}`,
+    );
   });
-  console.log('─'.repeat(50));
+  console.log('─'.repeat(70));
 
   // Print courses summary
   console.log('\n📚 Courses Created:');
@@ -976,6 +1432,34 @@ async function main() {
   console.log('   student2@inntexia.com : Python ~40%');
   console.log('   student3@inntexia.com : Quiz Demo 100%, Python ~15%');
   console.log('─'.repeat(50));
+
+  // Print class management summary
+  console.log('\n🏫 Classes Created:');
+  console.log('─'.repeat(50));
+  console.log(
+    '   [active     ] Python Batch 1 - Group (3 students, 4/10 meetings)',
+  );
+  console.log(
+    '   [active     ] Python Private - Jane (1 student, 8/20 meetings)',
+  );
+  console.log(
+    '   [enrollment ] JavaScript Batch 1 - Group (2 students enrolled)',
+  );
+  console.log(
+    '   [completed  ] Python Batch 0 - Completed (1 student graduated)',
+  );
+  console.log('   [draft      ] Python Batch 2 - Draft (not yet opened)');
+  console.log('─'.repeat(50));
+
+  // Print class IDs for API testing
+  if (classIds.size > 0) {
+    console.log('\n🔑 Class IDs for Testing:');
+    console.log('─'.repeat(50));
+    classIds.forEach((id, name) => {
+      console.log(`   ${name.padEnd(20)} : ${id}`);
+    });
+    console.log('─'.repeat(50));
+  }
 }
 
 main()

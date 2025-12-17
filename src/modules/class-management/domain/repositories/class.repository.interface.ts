@@ -16,6 +16,7 @@ export interface IClassRepository {
 
   // Attendance
   saveAttendance(attendance: Attendance): Promise<void>;
+  findAttendanceById(id: string): Promise<Attendance | null>;
   findAttendanceByEnrollment(enrollmentId: string): Promise<Attendance[]>;
   findAttendanceByClassAndMeeting(
     classId: string,

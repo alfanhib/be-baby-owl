@@ -214,6 +214,28 @@ export class ClassRepository implements IClassRepository {
     });
   }
 
+  async findAttendanceById(id: string): Promise<Attendance | null> {
+    const record = await this.prisma.classAttendance.findUnique({
+      where: { id },
+    });
+
+    if (!record) return null;
+
+    return Attendance.restore(record.id, {
+      enrollmentId: record.enrollmentId,
+      classId: record.classId,
+      meetingNumber: record.meetingNumber,
+      meetingDate: record.meetingDate,
+      status: record.status,
+      creditConsumed: record.creditDeducted,
+      markedBy: record.markedById,
+      markedAt: record.markedAt,
+      lastEditedBy: record.updatedById ?? undefined,
+      lastEditedAt: record.updatedAt ?? undefined,
+      notes: record.notes ?? undefined,
+    });
+  }
+
   async findAttendanceByEnrollment(
     enrollmentId: string,
   ): Promise<Attendance[]> {

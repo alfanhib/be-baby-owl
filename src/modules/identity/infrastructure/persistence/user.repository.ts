@@ -33,6 +33,42 @@ export class UserRepository implements IUserRepository {
     return UserMapper.toDomain(user);
   }
 
+  async findByUsername(username: string): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { username: username.toLowerCase() },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return UserMapper.toDomain(user);
+  }
+
+  async findByUsernameOrEmail(identifier: string): Promise<User | null> {
+    const normalizedIdentifier = identifier.toLowerCase();
+
+    // Check if identifier looks like an email
+    const isEmail = identifier.includes('@');
+
+    const user = await this.prisma.user.findFirst({
+      where: isEmail
+        ? { email: normalizedIdentifier }
+        : {
+            OR: [
+              { username: normalizedIdentifier },
+              { email: normalizedIdentifier },
+            ],
+          },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return UserMapper.toDomain(user);
+  }
+
   async save(user: User): Promise<void> {
     const data = UserMapper.toPersistence(user);
 
@@ -57,6 +93,13 @@ export class UserRepository implements IUserRepository {
   async emailExists(email: string): Promise<boolean> {
     const count = await this.prisma.user.count({
       where: { email: email.toLowerCase() },
+    });
+    return count > 0;
+  }
+
+  async usernameExists(username: string): Promise<boolean> {
+    const count = await this.prisma.user.count({
+      where: { username: username.toLowerCase() },
     });
     return count > 0;
   }

@@ -9,6 +9,7 @@ export class UserMapper {
     return User.restore({
       id: raw.id,
       email: raw.email,
+      username: raw.username ?? undefined,
       passwordHash: raw.passwordHash ?? '',
       fullName: raw.fullName,
       avatar: raw.avatar ?? undefined,
@@ -32,6 +33,7 @@ export class UserMapper {
     return {
       id: user.id.value,
       email: user.email.value,
+      username: user.username ?? null,
       passwordHash: user.passwordHash.value,
       fullName: user.fullName,
       avatar: user.avatar ?? null,
@@ -50,6 +52,7 @@ export class UserMapper {
   static toUpdateData(user: User): Partial<PrismaUser> {
     return {
       email: user.email.value,
+      username: user.username ?? null,
       passwordHash: user.passwordHash.value,
       fullName: user.fullName,
       avatar: user.avatar ?? null,

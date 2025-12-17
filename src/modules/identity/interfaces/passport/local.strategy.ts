@@ -16,13 +16,13 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
     private readonly passwordHasher: IPasswordHasher,
   ) {
     super({
-      usernameField: 'email', // Use email as username field
+      usernameField: 'identifier', // Use identifier field (username or email)
     });
   }
 
-  async validate(email: string, password: string): Promise<any> {
-    // Find user by email
-    const user = await this.userRepository.findByEmail(email.toLowerCase());
+  async validate(identifier: string, password: string): Promise<any> {
+    // Find user by username or email
+    const user = await this.userRepository.findByUsernameOrEmail(identifier);
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
@@ -47,6 +47,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
     return {
       id: user.id.value,
       email: user.email.value,
+      username: user.username,
       fullName: user.fullName,
       role: user.role.value,
       status: user.status,

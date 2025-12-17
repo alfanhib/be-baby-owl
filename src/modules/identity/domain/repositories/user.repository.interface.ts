@@ -15,6 +15,16 @@ export interface IUserRepository {
   findByEmail(email: string): Promise<User | null>;
 
   /**
+   * Find user by username
+   */
+  findByUsername(username: string): Promise<User | null>;
+
+  /**
+   * Find user by username or email (for login)
+   */
+  findByUsernameOrEmail(identifier: string): Promise<User | null>;
+
+  /**
    * Save user (create or update)
    */
   save(user: User): Promise<void>;
@@ -28,6 +38,11 @@ export interface IUserRepository {
    * Check if email is already taken
    */
   emailExists(email: string): Promise<boolean>;
+
+  /**
+   * Check if username is already taken
+   */
+  usernameExists(username: string): Promise<boolean>;
 
   /**
    * Delete user by ID

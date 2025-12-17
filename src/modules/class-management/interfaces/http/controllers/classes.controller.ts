@@ -34,9 +34,11 @@ import {
   OpenEnrollmentCommand,
   ActivateClassCommand,
   CompleteClassCommand,
+  CancelClassCommand,
   EnrollStudentCommand,
   RemoveStudentCommand,
   MarkAttendanceCommand,
+  UpdateAttendanceCommand,
   AdjustCreditsCommand,
   UnlockLessonCommand,
 } from '@class-management/application/commands';
@@ -48,12 +50,15 @@ import {
   GetClassRosterQuery,
   GetClassAttendanceQuery,
   GetStudentAttendanceQuery,
+  GetUnlockedLessonsQuery,
+  GetCreditHistoryQuery,
 } from '@class-management/application/queries';
 import {
   CreateClassDto,
   UpdateClassDto,
   EnrollStudentDto,
   MarkAttendanceDto,
+  UpdateAttendanceDto,
   AdjustCreditsDto,
   UnlockLessonDto,
 } from '../dto';
@@ -222,6 +227,17 @@ export class ClassesController {
     return { success: true, message: 'Class completed' };
   }
 
+  @Delete(':classId')
+  @Roles('staff', 'super_admin')
+  @ApiOperation({ summary: 'Cancel class' })
+  @ApiParam({ name: 'classId' })
+  async cancelClass(
+    @Param('classId') classId: string,
+  ): Promise<{ success: boolean; message: string }> {
+    await this.commandBus.execute(new CancelClassCommand(classId));
+    return { success: true, message: 'Class cancelled' };
+  }
+
   // ========== Enrollment ==========
 
   @Post(':classId/enroll')
@@ -328,6 +344,27 @@ export class ClassesController {
     return { success: true, data: result };
   }
 
+  @Put(':classId/attendance/:attendanceId')
+  @Roles('instructor', 'staff', 'super_admin')
+  @ApiOperation({ summary: 'Update an attendance record' })
+  @ApiParam({ name: 'classId' })
+  @ApiParam({ name: 'attendanceId' })
+  async updateAttendance(
+    @Param('attendanceId') attendanceId: string,
+    @Body() dto: UpdateAttendanceDto,
+    @CurrentUser() user: CurrentUserPayload,
+  ): Promise<{ success: boolean; message: string }> {
+    await this.commandBus.execute(
+      new UpdateAttendanceCommand(
+        attendanceId,
+        dto.status,
+        user.userId,
+        dto.notes,
+      ),
+    );
+    return { success: true, message: 'Attendance updated successfully' };
+  }
+
   // ========== Credits ==========
 
   @Post(':classId/credits')
@@ -352,6 +389,23 @@ export class ClassesController {
     return { success: true, data: result };
   }
 
+  @Get(':classId/enrollments/:enrollmentId/credits/history')
+  @Roles('instructor', 'staff', 'super_admin')
+  @ApiOperation({ summary: 'Get credit adjustment history for an enrollment' })
+  @ApiParam({ name: 'classId' })
+  @ApiParam({ name: 'enrollmentId' })
+  async getCreditHistory(
+    @Param('enrollmentId') enrollmentId: string,
+  ): Promise<{ success: boolean; data: unknown }> {
+    const result: unknown = await this.queryBus.execute(
+      new GetCreditHistoryQuery(enrollmentId),
+    );
+    if (!result) {
+      throw new NotFoundException('Enrollment not found');
+    }
+    return { success: true, data: result };
+  }
+
   // ========== Lesson Unlock ==========
 
   @Post(':classId/unlock-lesson')
@@ -372,6 +426,22 @@ export class ClassesController {
         dto.notes,
       ),
     );
+    return { success: true, data: result };
+  }
+
+  @Get(':classId/unlocked-lessons')
+  @Roles('instructor', 'staff', 'super_admin', 'student')
+  @ApiOperation({ summary: 'Get all unlocked lessons for the class' })
+  @ApiParam({ name: 'classId' })
+  async getUnlockedLessons(
+    @Param('classId') classId: string,
+  ): Promise<{ success: boolean; data: unknown }> {
+    const result: unknown = await this.queryBus.execute(
+      new GetUnlockedLessonsQuery(classId),
+    );
+    if (!result) {
+      throw new NotFoundException('Class not found');
+    }
     return { success: true, data: result };
   }
 }

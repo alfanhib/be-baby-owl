@@ -19,6 +19,7 @@ export interface LoginResult {
   user: {
     id: string;
     email: string;
+    username?: string;
     fullName: string;
     role: string;
     avatar?: string;
@@ -39,8 +40,10 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
   ) {}
 
   async execute(command: LoginCommand): Promise<LoginResult> {
-    // Find user by email
-    const user = await this.userRepository.findByEmail(command.email);
+    // Find user by username or email
+    const user = await this.userRepository.findByUsernameOrEmail(
+      command.identifier,
+    );
 
     if (!user) {
       throw new InvalidCredentialsError();
@@ -98,6 +101,7 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
       user: {
         id: user.id.value,
         email: user.email.value,
+        username: user.username,
         fullName: user.fullName,
         role: user.role.value,
         avatar: user.avatar,

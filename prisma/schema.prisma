@@ -106,6 +106,7 @@ enum BadgeRarity {
 model User {
   id                  String     @id @default(uuid())
   email               String     @unique
+  username            String?    @unique
   passwordHash        String?    @map("password_hash")
   fullName            String     @map("full_name")
   avatar              String?
@@ -155,6 +156,7 @@ model User {
 
   @@map("users")
   @@index([email])
+  @@index([username])
   @@index([role])
   @@index([status])
 }
