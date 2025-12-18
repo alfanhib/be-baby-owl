@@ -32,7 +32,8 @@
       "@assessment/*": ["src/modules/assessment/*"],
       "@community/*": ["src/modules/community/*"],
       "@billing/*": ["src/modules/billing/*"],
-      "@staff/*": ["src/modules/staff/*"]
+      "@staff/*": ["src/modules/staff/*"],
+      "@instructor/*": ["src/modules/instructor/*"]
     }
   }
 }
