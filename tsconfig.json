@@ -31,7 +31,8 @@
       "@gamification/*": ["src/modules/gamification/*"],
       "@assessment/*": ["src/modules/assessment/*"],
       "@community/*": ["src/modules/community/*"],
-      "@billing/*": ["src/modules/billing/*"]
+      "@billing/*": ["src/modules/billing/*"],
+      "@staff/*": ["src/modules/staff/*"]
     }
   }
 }

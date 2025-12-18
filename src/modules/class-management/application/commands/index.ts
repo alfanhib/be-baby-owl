@@ -17,6 +17,10 @@ export * from './enroll-student/enroll-student.command';
 export * from './enroll-student/enroll-student.handler';
 export * from './remove-student/remove-student.command';
 export * from './remove-student/remove-student.handler';
+export * from './transfer-enrollment/transfer-enrollment.command';
+export * from './transfer-enrollment/transfer-enrollment.handler';
+export * from './cancel-enrollment/cancel-enrollment.command';
+export * from './cancel-enrollment/cancel-enrollment.handler';
 
 // Attendance Commands
 export * from './mark-attendance/mark-attendance.command';
@@ -40,6 +44,8 @@ import { CompleteClassHandler } from './complete-class/complete-class.handler';
 import { CancelClassHandler } from './cancel-class/cancel-class.handler';
 import { EnrollStudentHandler } from './enroll-student/enroll-student.handler';
 import { RemoveStudentHandler } from './remove-student/remove-student.handler';
+import { TransferEnrollmentHandler } from './transfer-enrollment/transfer-enrollment.handler';
+import { CancelEnrollmentHandler } from './cancel-enrollment/cancel-enrollment.handler';
 import { MarkAttendanceHandler } from './mark-attendance/mark-attendance.handler';
 import { UpdateAttendanceHandler } from './update-attendance/update-attendance.handler';
 import { AdjustCreditsHandler } from './adjust-credits/adjust-credits.handler';
@@ -56,6 +62,8 @@ export const CommandHandlers = [
   // Enrollment
   EnrollStudentHandler,
   RemoveStudentHandler,
+  TransferEnrollmentHandler,
+  CancelEnrollmentHandler,
   // Attendance
   MarkAttendanceHandler,
   UpdateAttendanceHandler,
