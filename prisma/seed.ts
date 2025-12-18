@@ -9,6 +9,7 @@ import {
   ClassStatus,
   EnrollmentStatus,
   AttendanceStatus,
+  PaymentStatus,
   Prisma,
 } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -1375,6 +1376,256 @@ async function seedClassManagementData(
 }
 
 // ============================================================================
+// PAYMENT SEEDS
+// ============================================================================
+
+interface SeedPayment {
+  studentName: string;
+  studentEmail: string;
+  studentPhone: string;
+  courseSlug: string;
+  packageType: string;
+  amount: number;
+  paymentMethod: string;
+  paymentRef: string;
+  status: PaymentStatus;
+  notes?: string;
+  daysAgo: number; // Days before today
+}
+
+const seedPayments: SeedPayment[] = [
+  // Verified payments (completed transactions)
+  {
+    studentName: 'Jane Student',
+    studentEmail: 'student@inntexia.com',
+    studentPhone: '+6281234567890',
+    courseSlug: 'python-untuk-pemula',
+    packageType: '20 Meetings',
+    amount: 2500000,
+    paymentMethod: 'bank_transfer',
+    paymentRef: 'BCA-TRF-20251201-001',
+    status: PaymentStatus.verified,
+    notes: 'Transfer BCA, verified via mobile banking',
+    daysAgo: 30,
+  },
+  {
+    studentName: 'Bob Learner',
+    studentEmail: 'student2@inntexia.com',
+    studentPhone: '+6281234567891',
+    courseSlug: 'python-untuk-pemula',
+    packageType: '10 Meetings',
+    amount: 1500000,
+    paymentMethod: 'e_wallet',
+    paymentRef: 'GOPAY-20251205-002',
+    status: PaymentStatus.verified,
+    notes: 'GoPay transfer',
+    daysAgo: 25,
+  },
+  {
+    studentName: 'Alice Coder',
+    studentEmail: 'student3@inntexia.com',
+    studentPhone: '+6281234567892',
+    courseSlug: 'quiz-types-demo',
+    packageType: '10 Meetings',
+    amount: 1500000,
+    paymentMethod: 'bank_transfer',
+    paymentRef: 'BNI-TRF-20251208-003',
+    status: PaymentStatus.verified,
+    notes: 'BNI transfer',
+    daysAgo: 20,
+  },
+  {
+    studentName: 'Jane Student',
+    studentEmail: 'student@inntexia.com',
+    studentPhone: '+6281234567890',
+    courseSlug: 'web-development-javascript',
+    packageType: '15 Meetings',
+    amount: 2000000,
+    paymentMethod: 'bank_transfer',
+    paymentRef: 'BCA-TRF-20251210-004',
+    status: PaymentStatus.verified,
+    notes: 'Second course enrollment',
+    daysAgo: 15,
+  },
+  {
+    studentName: 'Bob Learner',
+    studentEmail: 'student2@inntexia.com',
+    studentPhone: '+6281234567891',
+    courseSlug: 'web-development-javascript',
+    packageType: '15 Meetings',
+    amount: 2000000,
+    paymentMethod: 'credit_card',
+    paymentRef: 'CC-VISA-20251212-005',
+    status: PaymentStatus.verified,
+    notes: 'Visa credit card payment',
+    daysAgo: 10,
+  },
+
+  // Pending payments (awaiting verification)
+  {
+    studentName: 'Dimas Pratama',
+    studentEmail: 'dimas.p@gmail.com',
+    studentPhone: '+6281234567893',
+    courseSlug: 'python-untuk-pemula',
+    packageType: '10 Meetings',
+    amount: 1500000,
+    paymentMethod: 'bank_transfer',
+    paymentRef: 'MANDIRI-TRF-20251215-006',
+    status: PaymentStatus.pending,
+    notes: 'Waiting for proof upload',
+    daysAgo: 5,
+  },
+  {
+    studentName: 'Siti Aminah',
+    studentEmail: 'siti.aminah@yahoo.com',
+    studentPhone: '+6281234567894',
+    courseSlug: 'web-development-javascript',
+    packageType: '15 Meetings',
+    amount: 2000000,
+    paymentMethod: 'e_wallet',
+    paymentRef: 'OVO-20251216-007',
+    status: PaymentStatus.pending,
+    notes: 'OVO payment, checking transfer',
+    daysAgo: 4,
+  },
+  {
+    studentName: 'Eko Wijaya',
+    studentEmail: 'eko.wijaya@hotmail.com',
+    studentPhone: '+6281234567895',
+    courseSlug: 'python-untuk-pemula',
+    packageType: '30 Meetings',
+    amount: 3500000,
+    paymentMethod: 'bank_transfer',
+    paymentRef: 'BRI-TRF-20251217-008',
+    status: PaymentStatus.pending,
+    notes: 'Full package, premium student',
+    daysAgo: 3,
+  },
+  {
+    studentName: 'Rina Wulandari',
+    studentEmail: 'rina.w@gmail.com',
+    studentPhone: '+6281234567896',
+    courseSlug: 'quiz-types-demo',
+    packageType: '10 Meetings',
+    amount: 1500000,
+    paymentMethod: 'cash',
+    paymentRef: 'CASH-20251218-009',
+    status: PaymentStatus.pending,
+    notes: 'Cash payment at office',
+    daysAgo: 2,
+  },
+  {
+    studentName: 'Budi Santoso',
+    studentEmail: 'budi.santoso@company.co.id',
+    studentPhone: '+6281234567897',
+    courseSlug: 'python-untuk-pemula',
+    packageType: '50 Meetings',
+    amount: 5000000,
+    paymentMethod: 'bank_transfer',
+    paymentRef: 'BCA-TRF-20251218-010',
+    status: PaymentStatus.pending,
+    notes: 'Corporate training - full course',
+    daysAgo: 1,
+  },
+
+  // Refunded payment
+  {
+    studentName: 'Ahmad Fauzi',
+    studentEmail: 'ahmad.f@gmail.com',
+    studentPhone: '+6281234567898',
+    courseSlug: 'python-untuk-pemula',
+    packageType: '10 Meetings',
+    amount: 1500000,
+    paymentMethod: 'bank_transfer',
+    paymentRef: 'BCA-TRF-20251101-011',
+    status: PaymentStatus.refunded,
+    notes: 'Refunded - schedule conflict, student requested cancellation',
+    daysAgo: 45,
+  },
+];
+
+async function seedPaymentsData(
+  userIdMap: Map<string, string>,
+): Promise<Map<string, string>> {
+  console.log('\n💳 Seeding payments...\n');
+
+  const paymentIds = new Map<string, string>();
+  const staffId = userIdMap.get('staff@inntexia.com');
+
+  if (!staffId) {
+    console.log('   ⚠️  Staff not found, skipping payment seed');
+    return paymentIds;
+  }
+
+  // Get courses for courseId lookup
+  const courses = await prisma.course.findMany({
+    select: { id: true, slug: true },
+  });
+  const courseMap = new Map(courses.map((c) => [c.slug, c.id]));
+
+  let verifiedCount = 0;
+  let pendingCount = 0;
+  let refundedCount = 0;
+  let totalAmount = 0;
+
+  for (const paymentData of seedPayments) {
+    // Check if payment already exists by reference
+    const existingPayment = await prisma.payment.findFirst({
+      where: { paymentRef: paymentData.paymentRef },
+    });
+
+    if (existingPayment) {
+      paymentIds.set(paymentData.paymentRef, existingPayment.id);
+      continue;
+    }
+
+    const courseId = courseMap.get(paymentData.courseSlug) ?? null;
+    const createdAt = new Date();
+    createdAt.setDate(createdAt.getDate() - paymentData.daysAgo);
+
+    const payment = await prisma.payment.create({
+      data: {
+        studentName: paymentData.studentName,
+        studentEmail: paymentData.studentEmail,
+        studentPhone: paymentData.studentPhone,
+        courseId,
+        packageType: paymentData.packageType,
+        amount: paymentData.amount,
+        paymentMethod: paymentData.paymentMethod,
+        paymentRef: paymentData.paymentRef,
+        status: paymentData.status,
+        notes: paymentData.notes,
+        verifiedById:
+          paymentData.status === PaymentStatus.verified ? staffId : null,
+        verifiedAt:
+          paymentData.status === PaymentStatus.verified
+            ? new Date(createdAt.getTime() + 24 * 60 * 60 * 1000) // 1 day after creation
+            : null,
+        createdAt,
+      },
+    });
+
+    paymentIds.set(paymentData.paymentRef, payment.id);
+
+    // Track stats
+    totalAmount += paymentData.amount;
+    if (paymentData.status === PaymentStatus.verified) verifiedCount++;
+    else if (paymentData.status === PaymentStatus.pending) pendingCount++;
+    else if (paymentData.status === PaymentStatus.refunded) refundedCount++;
+  }
+
+  console.log(`   ✅ Created ${seedPayments.length} payment records`);
+  console.log(`      └─ Verified: ${verifiedCount}`);
+  console.log(`      └─ Pending: ${pendingCount}`);
+  console.log(`      └─ Refunded: ${refundedCount}`);
+  console.log(
+    `      └─ Total amount: Rp ${totalAmount.toLocaleString('id-ID')}`,
+  );
+
+  return paymentIds;
+}
+
+// ============================================================================
 // MAIN
 // ============================================================================
 
@@ -1399,6 +1650,9 @@ async function main() {
 
   // Seed class management data
   const { classIds } = await seedClassManagementData(userIdMap);
+
+  // Seed payments data
+  const paymentIds = await seedPaymentsData(userIdMap);
 
   console.log('\n' + '═'.repeat(50));
   console.log('\n🎉 Seed completed!\n');
@@ -1458,6 +1712,32 @@ async function main() {
     classIds.forEach((id, name) => {
       console.log(`   ${name.padEnd(20)} : ${id}`);
     });
+    console.log('─'.repeat(50));
+  }
+
+  // Print payment summary
+  console.log('\n💳 Payments Created:');
+  console.log('─'.repeat(50));
+  console.log('   [verified ] 5 payments - Rp 9,500,000');
+  console.log(
+    '   [pending  ] 5 payments - Rp 13,500,000 (awaiting verification)',
+  );
+  console.log('   [refunded ] 1 payment  - Rp 1,500,000');
+  console.log('   Total: 11 payments - Rp 24,500,000');
+  console.log('─'.repeat(50));
+
+  // Print sample payment IDs for API testing
+  if (paymentIds.size > 0) {
+    console.log('\n🔑 Sample Payment Refs for Testing:');
+    console.log('─'.repeat(50));
+    let count = 0;
+    paymentIds.forEach((id, ref) => {
+      if (count < 5) {
+        console.log(`   ${ref.padEnd(28)} : ${id}`);
+        count++;
+      }
+    });
+    console.log('   ... and more');
     console.log('─'.repeat(50));
   }
 }

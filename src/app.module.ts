@@ -24,6 +24,8 @@ import { AppService } from './app.service';
 import { IdentityModule } from './modules/identity';
 import { LearningModule } from './modules/learning';
 import { ClassManagementModule } from './modules/class-management';
+import { BillingModule } from './modules/billing';
+import { GamificationModule } from './modules/gamification';
 
 @Module({
   imports: [
@@ -53,10 +55,10 @@ import { ClassManagementModule } from './modules/class-management';
     IdentityModule,
     LearningModule,
     ClassManagementModule,
-    // GamificationModule,
+    BillingModule,
+    GamificationModule,
     // AssessmentModule,
     // CommunityModule,
-    // BillingModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,6 +1,6 @@
 # Implementation TODO List - LMS Baby Owl
 
-**Last Updated:** December 17, 2025 (Evening)  
+**Last Updated:** December 18, 2025  
 **Total Estimated Time:** 9 months (36 weeks)
 **PRD Reference:** [docs/prd/0-PRD-OVERVIEW.md](./prd/0-PRD-OVERVIEW.md)
 
@@ -1001,49 +1001,86 @@ _Remaining: duplicate-class, transfer-student, bulk operations, analytics, tests
 
 ### 7.1 Domain Layer
 
-- [ ] Create Value Objects:
-  - [ ] `payment-id.vo.ts`
-  - [ ] `payment-status.vo.ts` (pending, verified, refunded)
-  - [ ] `payment-method.vo.ts` (bank_transfer, ewallet, cash)
-- [ ] Create Payment Aggregate:
-  - [ ] `payment.aggregate.ts`
-  - [ ] Student info, Amount, Course, Package
-  - [ ] Reference ID, Notes
-  - [ ] `verify()`, `refund()`
-- [ ] Create Domain Events:
-  - [ ] `payment-recorded.event.ts`
-  - [ ] `payment-verified.event.ts`
-  - [ ] `payment-refunded.event.ts`
-- [ ] Create Repository Interface
+- [x] Create Value Objects:
+  - [x] `payment-id.vo.ts` - UUID generation & validation
+  - [x] `payment-status.vo.ts` (pending, verified, rejected, refunded)
+  - [x] `payment-method.vo.ts` (bank_transfer, e_wallet, credit_card, cash, other)
+  - [x] `money.vo.ts` - Monetary value handling with currency
+- [x] Create Payment Aggregate:
+  - [x] `payment.aggregate.ts`
+  - [x] Student info (name, email, phone), Amount, Course, Package
+  - [x] Reference ID, Notes, Proof URL
+  - [x] `verify()`, `reject()`, `refund()`, `updateDetails()`, `uploadProof()`
+- [x] Create Domain Events:
+  - [x] `payment-created.event.ts`
+  - [x] `payment-verified.event.ts`
+  - [x] `payment-rejected.event.ts`
+  - [x] `payment-refunded.event.ts`
+- [x] Create Domain Errors:
+  - [x] `payment-not-found.error.ts`
+  - [x] `payment-already-verified.error.ts`
+  - [x] `payment-already-rejected.error.ts`
+  - [x] `payment-already-refunded.error.ts`
+  - [x] `invalid-refund-amount.error.ts`
+- [x] Create Repository Interface
+
+**✅ Section 7.1 Complete**
 
 ### 7.2 Application Layer - Commands
 
-- [ ] `record-payment/` - Staff/Super Admin
-  - [ ] `verify-payment/`
-  - [ ] `refund-payment/`
+- [x] `create-payment/` - Staff/Super Admin
+- [x] `update-payment/`
+- [x] `verify-payment/`
+- [x] `reject-payment/`
+- [x] `refund-payment/`
+- [x] `upload-proof/`
+
+**✅ Section 7.2 Complete**
 
 ### 7.3 Application Layer - Queries
 
-- [ ] `get-payments-list/` - Filter, search, sort
-  - [ ] `get-payment-detail/`
-- [ ] `get-payment-stats/` - Revenue analytics
-- [ ] `get-pending-payments/`
+- [x] `get-payments/` - Filter, search, sort, pagination
+- [x] `get-payment/` - Payment detail by ID
+- [x] `get-payment-stats/` - Revenue analytics (total, verified, pending, refunded)
+
+**✅ Section 7.3 Complete**
 
 ### 7.4 Infrastructure & Interface Layer
 
-- [ ] Repository
-- [ ] `payments.controller.ts`
-  - [ ] `GET /payments` - Staff/Super Admin
-  - [ ] `GET /payments/:id`
-  - [ ] `POST /payments`
-  - [ ] `PUT /payments/:id/verify`
-  - [ ] `PUT /payments/:id/refund`
-  - [ ] `GET /payments/stats`
-  - [ ] `GET /payments/export` - CSV
+- [x] `payment.repository.ts` - Prisma implementation
+- [x] `payment.mapper.ts` - Domain ↔ Persistence mapping
+- [x] `payments.controller.ts`
+  - [x] `GET /payments` - Staff/Super Admin (with filters, pagination)
+  - [x] `GET /payments/stats` - Revenue statistics
+  - [x] `GET /payments/:id`
+  - [x] `POST /payments`
+  - [x] `PUT /payments/:id`
+  - [x] `POST /payments/:id/verify`
+  - [x] `POST /payments/:id/reject`
+  - [x] `POST /payments/:id/refund`
+  - [x] `POST /payments/:id/proof`
+  - [ ] `GET /payments/export` - CSV (TODO)
+- [x] DTOs:
+  - [x] `create-payment.dto.ts`
+  - [x] `update-payment.dto.ts`
+  - [x] `verify-payment.dto.ts`
+  - [x] `reject-payment.dto.ts`
+  - [x] `refund-payment.dto.ts`
+  - [x] `payment-query.dto.ts`
+  - [x] `payment.dto.ts` (response)
+
+**✅ Section 7.4 ~95% Complete**
 
 ### 7.5 Billing Module
 
-- [ ] Create `billing.module.ts`
+- [x] Create `billing.module.ts`
+- [x] Register in `app.module.ts`
+- [x] Seed data for payments (11 records: 5 verified, 5 pending, 1 refunded)
+
+**✅ Section 7.5 Complete**
+
+**✅ Phase 7: ~95% Complete - Billing & Payment Context Implemented**
+_Remaining: Export to CSV endpoint_
 
 ---
 
@@ -1635,7 +1672,7 @@ _Remaining: duplicate-class, transfer-student, bulk operations, analytics, tests
 | M17: Grading & Feedback     | Phase 5    | ⬜      |
 | M18: Student Monitoring     | Phase 9    | ⬜      |
 | M19: Enrollment Management  | Phase 8    | ⬜      |
-| M20: Payment Tracking       | Phase 7    | ⬜      |
+| M20: Payment Tracking       | Phase 7    | ✅ 95%  |
 | M21: User Management        | Phase 11   | ⬜      |
 | M22: System Analytics       | Phase 11   | ⬜      |
 | M23: Email Notifications    | Phase 16   | ⬜      |
@@ -1685,25 +1722,33 @@ _Remaining: duplicate-class, transfer-student, bulk operations, analytics, tests
 
 **Document Changelog:**
 
-| Version | Date         | Changes                                                   |
-| ------- | ------------ | --------------------------------------------------------- |
-| 2.4     | Dec 17, 2025 | Phase 4 ~90% - Class Management Context implemented       |
-|         |              | - Cancel class command & endpoint                         |
-|         |              | - Get unlocked lessons query & endpoint                   |
-|         |              | - Get credit history query & endpoint                     |
-|         |              | - Update attendance command & endpoint                    |
-| 2.3     | Dec 17, 2025 | Phase 3 100% - Added certificate & get-student-courses    |
-| 2.2     | Dec 17, 2025 | Phase 3 ~95% complete - Full Learning Context implemented |
-|         |              | - StudentProgress aggregate & entities                    |
-|         |              | - Progress repository & mapper                            |
-|         |              | - All Section/Lesson/Exercise CRUD commands               |
-|         |              | - All Progress commands (complete, video, material, quiz) |
-|         |              | - All controllers & DTOs                                  |
-|         |              | - Progress queries (student progress, course stats)       |
-|         |              | - Seed data for student progress                          |
-| 2.1     | Dec 17, 2025 | Phase 3 progress update - Course CRUD & catalog APIs done |
-| 2.0     | Dec 16, 2025 | Major update - Full PRD alignment (27 modules)            |
-| 1.3     | Dec 16, 2025 | Mark Phase 2.3 queries as complete                        |
-| 1.2     | Dec 16, 2025 | Update development approach - testing at end              |
-| 1.1     | Dec 16, 2025 | Update Phase 2 status to 85% complete                     |
-| 1.0     | Dec 15, 2025 | Initial TODO list                                         |
+| Version | Date         | Changes                                                             |
+| ------- | ------------ | ------------------------------------------------------------------- |
+| 2.5     | Dec 18, 2025 | Phase 7 ~95% - Billing & Payment Context implemented                |
+|         |              | - Payment aggregate with full business logic                        |
+|         |              | - Value objects: PaymentId, PaymentStatus, PaymentMethod, Money     |
+|         |              | - Domain events: Created, Verified, Rejected, Refunded              |
+|         |              | - Commands: Create, Update, Verify, Reject, Refund, UploadProof     |
+|         |              | - Queries: GetPayments, GetPayment, GetPaymentStats                 |
+|         |              | - PaymentsController with 9 endpoints                               |
+|         |              | - Seed data: 11 payment records (5 verified, 5 pending, 1 refunded) |
+| 2.4     | Dec 17, 2025 | Phase 4 ~90% - Class Management Context implemented                 |
+|         |              | - Cancel class command & endpoint                                   |
+|         |              | - Get unlocked lessons query & endpoint                             |
+|         |              | - Get credit history query & endpoint                               |
+|         |              | - Update attendance command & endpoint                              |
+| 2.3     | Dec 17, 2025 | Phase 3 100% - Added certificate & get-student-courses              |
+| 2.2     | Dec 17, 2025 | Phase 3 ~95% complete - Full Learning Context implemented           |
+|         |              | - StudentProgress aggregate & entities                              |
+|         |              | - Progress repository & mapper                                      |
+|         |              | - All Section/Lesson/Exercise CRUD commands                         |
+|         |              | - All Progress commands (complete, video, material, quiz)           |
+|         |              | - All controllers & DTOs                                            |
+|         |              | - Progress queries (student progress, course stats)                 |
+|         |              | - Seed data for student progress                                    |
+| 2.1     | Dec 17, 2025 | Phase 3 progress update - Course CRUD & catalog APIs done           |
+| 2.0     | Dec 16, 2025 | Major update - Full PRD alignment (27 modules)                      |
+| 1.3     | Dec 16, 2025 | Mark Phase 2.3 queries as complete                                  |
+| 1.2     | Dec 16, 2025 | Update development approach - testing at end                        |
+| 1.1     | Dec 16, 2025 | Update Phase 2 status to 85% complete                               |
+| 1.0     | Dec 15, 2025 | Initial TODO list                                                   |
