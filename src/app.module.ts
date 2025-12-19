@@ -28,6 +28,7 @@ import { BillingModule } from './modules/billing';
 import { GamificationModule } from './modules/gamification';
 import { StaffModule } from './modules/staff/staff.module';
 import { InstructorModule } from './modules/instructor/instructor.module';
+import { StudentModule } from './modules/student/student.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { InstructorModule } from './modules/instructor/instructor.module';
     GamificationModule,
     StaffModule,
     InstructorModule,
+    StudentModule,
     // AssessmentModule,
     // CommunityModule,
   ],

@@ -33,7 +33,8 @@
       "@community/*": ["src/modules/community/*"],
       "@billing/*": ["src/modules/billing/*"],
       "@staff/*": ["src/modules/staff/*"],
-      "@instructor/*": ["src/modules/instructor/*"]
+      "@instructor/*": ["src/modules/instructor/*"],
+      "@student/*": ["src/modules/student/*"]
     }
   }
 }
