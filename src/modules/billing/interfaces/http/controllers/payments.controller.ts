@@ -10,7 +10,10 @@ import {
   HttpCode,
   HttpStatus,
   BadRequestException,
+  Res,
+  Header,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   ApiTags,
@@ -45,6 +48,7 @@ import {
   GetPaymentQuery,
   GetPaymentsQuery,
   GetPaymentStatsQuery,
+  ExportPaymentsQuery,
   PaymentDto,
   PaginatedPaymentsResult,
 } from '@billing/application/queries';
@@ -95,6 +99,31 @@ export class PaymentsController {
     return this.queryBus.execute<GetPaymentStatsQuery, PaymentStats>(
       new GetPaymentStatsQuery(),
     );
+  }
+
+  @Get('export')
+  @Roles('staff', 'super_admin')
+  @ApiOperation({ summary: 'Export payments to CSV' })
+  @ApiResponse({ status: 200, description: 'CSV file downloaded' })
+  @Header('Content-Type', 'text/csv')
+  async exportPayments(
+    @Query() query: PaymentQueryDto,
+    @Res() res: Response,
+  ): Promise<void> {
+    const csv = await this.queryBus.execute<ExportPaymentsQuery, string>(
+      new ExportPaymentsQuery(
+        query.status,
+        query.method,
+        query.courseId,
+        query.search,
+        query.startDate ? new Date(query.startDate) : undefined,
+        query.endDate ? new Date(query.endDate) : undefined,
+      ),
+    );
+
+    const filename = `payments-export-${new Date().toISOString().split('T')[0]}.csv`;
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send(csv);
   }
 
   @Get(':id')

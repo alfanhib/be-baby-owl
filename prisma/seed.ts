@@ -10,6 +10,8 @@ import {
   EnrollmentStatus,
   AttendanceStatus,
   PaymentStatus,
+  BadgeRarity,
+  SubmissionStatus,
   Prisma,
 } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -1626,6 +1628,588 @@ async function seedPaymentsData(
 }
 
 // ============================================================================
+// GAMIFICATION SEEDS
+// ============================================================================
+
+interface SeedBadge {
+  name: string;
+  description: string;
+  imageUrl: string;
+  rarity: BadgeRarity;
+  criteria: Prisma.InputJsonValue;
+}
+
+const seedBadges: SeedBadge[] = [
+  {
+    name: 'Welcome Aboard',
+    description: 'Login untuk pertama kalinya',
+    imageUrl: '/badges/welcome.png',
+    rarity: BadgeRarity.common,
+    criteria: { type: 'login', count: 1 },
+  },
+  {
+    name: 'First Steps',
+    description: 'Selesaikan lesson pertama',
+    imageUrl: '/badges/first-lesson.png',
+    rarity: BadgeRarity.common,
+    criteria: { type: 'lesson_complete', count: 1 },
+  },
+  {
+    name: 'Quick Learner',
+    description: 'Selesaikan 5 lessons',
+    imageUrl: '/badges/quick-learner.png',
+    rarity: BadgeRarity.rare,
+    criteria: { type: 'lesson_complete', count: 5 },
+  },
+  {
+    name: 'Quiz Starter',
+    description: 'Selesaikan quiz pertama',
+    imageUrl: '/badges/quiz-starter.png',
+    rarity: BadgeRarity.common,
+    criteria: { type: 'quiz_complete', count: 1 },
+  },
+  {
+    name: 'Perfect Score',
+    description: 'Dapatkan nilai 100% di quiz',
+    imageUrl: '/badges/perfect-score.png',
+    rarity: BadgeRarity.rare,
+    criteria: { type: 'quiz_perfect', count: 1 },
+  },
+  {
+    name: 'On Fire',
+    description: 'Maintain 3-day streak',
+    imageUrl: '/badges/streak-3.png',
+    rarity: BadgeRarity.common,
+    criteria: { type: 'streak', days: 3 },
+  },
+  {
+    name: 'Week Warrior',
+    description: 'Maintain 7-day streak',
+    imageUrl: '/badges/streak-7.png',
+    rarity: BadgeRarity.rare,
+    criteria: { type: 'streak', days: 7 },
+  },
+  {
+    name: 'Month Master',
+    description: 'Maintain 30-day streak',
+    imageUrl: '/badges/streak-30.png',
+    rarity: BadgeRarity.epic,
+    criteria: { type: 'streak', days: 30 },
+  },
+  {
+    name: 'Graduate',
+    description: 'Selesaikan course pertama',
+    imageUrl: '/badges/graduate.png',
+    rarity: BadgeRarity.rare,
+    criteria: { type: 'course_complete', count: 1 },
+  },
+  {
+    name: 'Coding Hero',
+    description: 'Selesaikan 10 coding exercises',
+    imageUrl: '/badges/coding-hero.png',
+    rarity: BadgeRarity.epic,
+    criteria: { type: 'coding_complete', count: 10 },
+  },
+  {
+    name: 'Early Bird',
+    description: 'Belajar sebelum jam 7 pagi',
+    imageUrl: '/badges/early-bird.png',
+    rarity: BadgeRarity.common,
+    criteria: { type: 'time_based', hour_before: 7 },
+  },
+  {
+    name: 'Night Owl',
+    description: 'Belajar setelah jam 10 malam',
+    imageUrl: '/badges/night-owl.png',
+    rarity: BadgeRarity.common,
+    criteria: { type: 'time_based', hour_after: 22 },
+  },
+  {
+    name: 'Badge Collector',
+    description: 'Kumpulkan 10 badges',
+    imageUrl: '/badges/collector.png',
+    rarity: BadgeRarity.legendary,
+    criteria: { type: 'badge_count', count: 10 },
+  },
+];
+
+async function seedGamificationData(
+  userIdMap: Map<string, string>,
+): Promise<void> {
+  console.log('\n🎮 Seeding gamification data...\n');
+
+  // Seed Badges
+  console.log('   📛 Seeding badges...');
+  const badgeMap = new Map<string, string>();
+
+  for (const badgeData of seedBadges) {
+    const existingBadge = await prisma.badge.findFirst({
+      where: { name: badgeData.name },
+    });
+
+    if (existingBadge) {
+      badgeMap.set(badgeData.name, existingBadge.id);
+      continue;
+    }
+
+    const badge = await prisma.badge.create({
+      data: {
+        name: badgeData.name,
+        description: badgeData.description,
+        imageUrl: badgeData.imageUrl,
+        rarity: badgeData.rarity,
+        criteria: badgeData.criteria,
+      },
+    });
+    badgeMap.set(badgeData.name, badge.id);
+  }
+  console.log(`      ✅ Created ${seedBadges.length} badges`);
+
+  // Get student IDs
+  const student1Id = userIdMap.get('student@inntexia.com');
+  const student2Id = userIdMap.get('student2@inntexia.com');
+  const student3Id = userIdMap.get('student3@inntexia.com');
+
+  if (!student1Id || !student2Id || !student3Id) {
+    console.log('   ⚠️  Students not found, skipping user level seed');
+    return;
+  }
+
+  // Seed User Levels
+  console.log('   📊 Seeding user levels...');
+  const userLevelData = [
+    {
+      userId: student1Id,
+      currentLevel: 5,
+      totalXp: 1850,
+      currentStreak: 12,
+    },
+    {
+      userId: student2Id,
+      currentLevel: 2,
+      totalXp: 380,
+      currentStreak: 3,
+    },
+    {
+      userId: student3Id,
+      currentLevel: 3,
+      totalXp: 620,
+      currentStreak: 0,
+    },
+  ];
+
+  for (const levelData of userLevelData) {
+    const existingLevel = await prisma.userLevel.findUnique({
+      where: { userId: levelData.userId },
+    });
+
+    if (!existingLevel) {
+      await prisma.userLevel.create({
+        data: {
+          userId: levelData.userId,
+          currentLevel: levelData.currentLevel,
+          totalXp: levelData.totalXp,
+          currentStreak: levelData.currentStreak,
+          lastActivityDate: new Date(),
+        },
+      });
+    }
+  }
+  console.log(`      ✅ Created user levels for 3 students`);
+
+  // Seed XP Transactions
+  console.log('   💰 Seeding XP transactions...');
+  const xpTransactions = [
+    // Student 1 - lots of activity
+    { userId: student1Id, amount: 10, reason: 'login', daysAgo: 0 },
+    { userId: student1Id, amount: 25, reason: 'lesson_complete', daysAgo: 1 },
+    { userId: student1Id, amount: 50, reason: 'quiz_complete', daysAgo: 1 },
+    { userId: student1Id, amount: 100, reason: 'badge_earned', daysAgo: 2 },
+    { userId: student1Id, amount: 25, reason: 'lesson_complete', daysAgo: 3 },
+    { userId: student1Id, amount: 30, reason: 'streak_bonus', daysAgo: 3 },
+    { userId: student1Id, amount: 25, reason: 'lesson_complete', daysAgo: 4 },
+    { userId: student1Id, amount: 25, reason: 'lesson_complete', daysAgo: 5 },
+    { userId: student1Id, amount: 75, reason: 'streak_bonus', daysAgo: 7 },
+    { userId: student1Id, amount: 200, reason: 'course_complete', daysAgo: 10 },
+
+    // Student 2 - moderate activity
+    { userId: student2Id, amount: 10, reason: 'login', daysAgo: 0 },
+    { userId: student2Id, amount: 25, reason: 'lesson_complete', daysAgo: 2 },
+    { userId: student2Id, amount: 30, reason: 'quiz_complete', daysAgo: 3 },
+    { userId: student2Id, amount: 30, reason: 'streak_bonus', daysAgo: 5 },
+
+    // Student 3 - quiz focus
+    { userId: student3Id, amount: 10, reason: 'login', daysAgo: 1 },
+    { userId: student3Id, amount: 100, reason: 'badge_earned', daysAgo: 3 },
+    { userId: student3Id, amount: 50, reason: 'quiz_complete', daysAgo: 3 },
+    { userId: student3Id, amount: 50, reason: 'quiz_complete', daysAgo: 4 },
+    { userId: student3Id, amount: 50, reason: 'quiz_complete', daysAgo: 5 },
+  ];
+
+  for (const tx of xpTransactions) {
+    const createdAt = new Date();
+    createdAt.setDate(createdAt.getDate() - tx.daysAgo);
+
+    // Check if similar transaction exists
+    const existingTx = await prisma.xpTransaction.findFirst({
+      where: {
+        userId: tx.userId,
+        reason: tx.reason,
+        createdAt: {
+          gte: new Date(createdAt.setHours(0, 0, 0, 0)),
+          lt: new Date(createdAt.setHours(23, 59, 59, 999)),
+        },
+      },
+    });
+
+    if (!existingTx) {
+      await prisma.xpTransaction.create({
+        data: {
+          userId: tx.userId,
+          amount: tx.amount,
+          reason: tx.reason,
+          createdAt,
+        },
+      });
+    }
+  }
+  console.log(`      ✅ Created ${xpTransactions.length} XP transactions`);
+
+  // Seed User Badges
+  console.log('   🏅 Assigning badges to users...');
+  const userBadges = [
+    // Student 1 - many badges
+    { userId: student1Id, badgeName: 'Welcome Aboard', daysAgo: 30 },
+    { userId: student1Id, badgeName: 'First Steps', daysAgo: 28 },
+    { userId: student1Id, badgeName: 'Quiz Starter', daysAgo: 25 },
+    { userId: student1Id, badgeName: 'Quick Learner', daysAgo: 20 },
+    { userId: student1Id, badgeName: 'Perfect Score', daysAgo: 15 },
+    { userId: student1Id, badgeName: 'On Fire', daysAgo: 18 },
+    { userId: student1Id, badgeName: 'Week Warrior', daysAgo: 12 },
+    { userId: student1Id, badgeName: 'Graduate', daysAgo: 10 },
+
+    // Student 2 - starter badges
+    { userId: student2Id, badgeName: 'Welcome Aboard', daysAgo: 15 },
+    { userId: student2Id, badgeName: 'First Steps', daysAgo: 12 },
+    { userId: student2Id, badgeName: 'On Fire', daysAgo: 5 },
+
+    // Student 3 - quiz focused
+    { userId: student3Id, badgeName: 'Welcome Aboard', daysAgo: 10 },
+    { userId: student3Id, badgeName: 'Quiz Starter', daysAgo: 8 },
+    { userId: student3Id, badgeName: 'Perfect Score', daysAgo: 5 },
+  ];
+
+  for (const ub of userBadges) {
+    const badgeId = badgeMap.get(ub.badgeName);
+    if (!badgeId) continue;
+
+    const existingUB = await prisma.userBadge.findFirst({
+      where: {
+        userId: ub.userId,
+        badgeId,
+      },
+    });
+
+    if (!existingUB) {
+      const earnedAt = new Date();
+      earnedAt.setDate(earnedAt.getDate() - ub.daysAgo);
+
+      await prisma.userBadge.create({
+        data: {
+          userId: ub.userId,
+          badgeId,
+          earnedAt,
+        },
+      });
+    }
+  }
+  console.log(`      ✅ Assigned badges to users`);
+}
+
+// ============================================================================
+// ASSESSMENT SEEDS (Submissions)
+// ============================================================================
+
+async function seedAssessmentData(
+  userIdMap: Map<string, string>,
+): Promise<void> {
+  console.log('\n📝 Seeding assessment data...\n');
+
+  const student1Id = userIdMap.get('student@inntexia.com');
+  const student2Id = userIdMap.get('student2@inntexia.com');
+  const student3Id = userIdMap.get('student3@inntexia.com');
+  const instructorId = userIdMap.get('instructor@inntexia.com');
+
+  if (!student1Id || !student2Id || !student3Id || !instructorId) {
+    console.log('   ⚠️  Required users not found, skipping assessment seed');
+    return;
+  }
+
+  // Get assignment exercises
+  const assignmentExercises = await prisma.exercise.findMany({
+    where: { type: ExerciseType.coding },
+    take: 5,
+  });
+
+  if (assignmentExercises.length === 0) {
+    console.log('   ⚠️  No coding exercises found, skipping submission seed');
+    return;
+  }
+
+  const submissions = [
+    // Student 1 - graded submissions
+    {
+      studentId: student1Id,
+      exerciseIdx: 0,
+      status: SubmissionStatus.graded,
+      grade: 95,
+      comment: 'Here is my solution!',
+      daysAgo: 5,
+    },
+    {
+      studentId: student1Id,
+      exerciseIdx: 1,
+      status: SubmissionStatus.graded,
+      grade: 88,
+      comment: 'Second attempt with improvements',
+      daysAgo: 3,
+    },
+
+    // Student 2 - pending & returned
+    {
+      studentId: student2Id,
+      exerciseIdx: 0,
+      status: SubmissionStatus.pending,
+      comment: 'Please review my code',
+      daysAgo: 2,
+    },
+    {
+      studentId: student2Id,
+      exerciseIdx: 1,
+      status: SubmissionStatus.returned,
+      comment: 'I tried my best',
+      daysAgo: 4,
+    },
+
+    // Student 3 - mix of statuses
+    {
+      studentId: student3Id,
+      exerciseIdx: 0,
+      status: SubmissionStatus.graded,
+      grade: 100,
+      comment: 'All test cases should pass now',
+      daysAgo: 6,
+    },
+    {
+      studentId: student3Id,
+      exerciseIdx: 1,
+      status: SubmissionStatus.pending,
+      comment: 'Submission for FizzBuzz',
+      daysAgo: 1,
+    },
+  ];
+
+  let createdCount = 0;
+  for (const sub of submissions) {
+    const exercise = assignmentExercises[sub.exerciseIdx];
+    if (!exercise) continue;
+
+    const existingSub = await prisma.assignmentSubmission.findFirst({
+      where: {
+        studentId: sub.studentId,
+        exerciseId: exercise.id,
+      },
+    });
+
+    if (!existingSub) {
+      const submittedAt = new Date();
+      submittedAt.setDate(submittedAt.getDate() - sub.daysAgo);
+
+      await prisma.assignmentSubmission.create({
+        data: {
+          studentId: sub.studentId,
+          exerciseId: exercise.id,
+          type: 'text',
+          textContent: `# Solution for ${exercise.title}\n\ndef solution():\n    # Implementation here\n    pass`,
+          comment: sub.comment,
+          status: sub.status,
+          grade: sub.grade,
+          maxGrade: 100,
+          submittedAt,
+          gradedAt: sub.status === SubmissionStatus.graded ? new Date() : null,
+          gradedById:
+            sub.status === SubmissionStatus.graded ? instructorId : null,
+        },
+      });
+      createdCount++;
+    }
+  }
+
+  console.log(`   ✅ Created ${createdCount} assignment submissions`);
+  console.log(`      └─ Graded: 3`);
+  console.log(`      └─ Pending: 2`);
+  console.log(`      └─ Returned: 1`);
+}
+
+// ============================================================================
+// NOTIFICATION SEEDS
+// ============================================================================
+
+async function seedNotificationData(
+  userIdMap: Map<string, string>,
+): Promise<void> {
+  console.log('\n🔔 Seeding notification data...\n');
+
+  const student1Id = userIdMap.get('student@inntexia.com');
+  const student2Id = userIdMap.get('student2@inntexia.com');
+  const instructorId = userIdMap.get('instructor@inntexia.com');
+  const staffId = userIdMap.get('staff@inntexia.com');
+
+  if (!student1Id || !student2Id || !instructorId || !staffId) {
+    console.log('   ⚠️  Required users not found, skipping notification seed');
+    return;
+  }
+
+  const notifications = [
+    // Student 1 notifications
+    {
+      userId: student1Id,
+      title: 'New Lesson Unlocked',
+      message: 'Variabel di Python is now available!',
+      type: 'lesson_unlock',
+      read: true,
+      daysAgo: 3,
+    },
+    {
+      userId: student1Id,
+      title: 'Assignment Graded',
+      message:
+        'Your submission for "Coding: Sum Function" has been graded. Score: 95',
+      type: 'assignment_graded',
+      read: true,
+      daysAgo: 2,
+    },
+    {
+      userId: student1Id,
+      title: 'Badge Earned!',
+      message: 'Congratulations! You earned the "Week Warrior" badge.',
+      type: 'badge_earned',
+      read: false,
+      daysAgo: 1,
+    },
+    {
+      userId: student1Id,
+      title: 'Upcoming Class',
+      message: 'Python Batch 1 - Group class starts in 1 hour.',
+      type: 'class_reminder',
+      read: false,
+      daysAgo: 0,
+    },
+
+    // Student 2 notifications
+    {
+      userId: student2Id,
+      title: 'Welcome to Inntexia!',
+      message: 'Start your learning journey today.',
+      type: 'system',
+      read: true,
+      daysAgo: 15,
+    },
+    {
+      userId: student2Id,
+      title: 'Assignment Returned',
+      message: 'Your submission needs revision. Check the feedback.',
+      type: 'assignment_returned',
+      read: false,
+      daysAgo: 4,
+    },
+    {
+      userId: student2Id,
+      title: 'Streak Alert',
+      message: "Don't break your 3-day streak! Learn something today.",
+      type: 'streak_reminder',
+      read: false,
+      daysAgo: 0,
+    },
+
+    // Instructor notifications
+    {
+      userId: instructorId,
+      title: 'New Submission',
+      message: 'Bob Learner submitted "Coding: Sum Function".',
+      type: 'new_submission',
+      read: false,
+      daysAgo: 2,
+    },
+    {
+      userId: instructorId,
+      title: 'New Submission',
+      message: 'Alice Coder submitted "Coding: FizzBuzz".',
+      type: 'new_submission',
+      read: false,
+      daysAgo: 1,
+    },
+    {
+      userId: instructorId,
+      title: 'Class Reminder',
+      message: 'Python Batch 1 - Group class starts in 1 hour.',
+      type: 'class_reminder',
+      read: false,
+      daysAgo: 0,
+    },
+
+    // Staff notifications
+    {
+      userId: staffId,
+      title: 'New Payment',
+      message: 'Budi Santoso submitted payment for Python course.',
+      type: 'payment_received',
+      read: false,
+      daysAgo: 1,
+    },
+    {
+      userId: staffId,
+      title: 'Pending Verifications',
+      message: '5 payments are awaiting verification.',
+      type: 'payment_pending',
+      read: false,
+      daysAgo: 0,
+    },
+  ];
+
+  let createdCount = 0;
+  for (const notif of notifications) {
+    const createdAt = new Date();
+    createdAt.setDate(createdAt.getDate() - notif.daysAgo);
+
+    // Check if similar notification exists
+    const existingNotif = await prisma.notification.findFirst({
+      where: {
+        userId: notif.userId,
+        title: notif.title,
+        message: notif.message,
+      },
+    });
+
+    if (!existingNotif) {
+      await prisma.notification.create({
+        data: {
+          userId: notif.userId,
+          title: notif.title,
+          message: notif.message,
+          type: notif.type,
+          read: notif.read,
+          createdAt,
+        },
+      });
+      createdCount++;
+    }
+  }
+
+  console.log(`   ✅ Created ${createdCount} notifications`);
+}
+
+// ============================================================================
 // MAIN
 // ============================================================================
 
@@ -1653,6 +2237,15 @@ async function main() {
 
   // Seed payments data
   const paymentIds = await seedPaymentsData(userIdMap);
+
+  // Seed gamification data
+  await seedGamificationData(userIdMap);
+
+  // Seed assessment data (submissions)
+  await seedAssessmentData(userIdMap);
+
+  // Seed notification data
+  await seedNotificationData(userIdMap);
 
   console.log('\n' + '═'.repeat(50));
   console.log('\n🎉 Seed completed!\n');
@@ -1740,6 +2333,39 @@ async function main() {
     console.log('   ... and more');
     console.log('─'.repeat(50));
   }
+
+  // Print gamification summary
+  console.log('\n🎮 Gamification Data:');
+  console.log('─'.repeat(50));
+  console.log(`   Badges: ${seedBadges.length} badges created`);
+  console.log('   User Levels:');
+  console.log('      student@inntexia.com  : Level 5 (1850 XP, 12-day streak)');
+  console.log('      student2@inntexia.com : Level 2 (380 XP, 3-day streak)');
+  console.log('      student3@inntexia.com : Level 3 (620 XP)');
+  console.log('   Badges Earned:');
+  console.log('      student@inntexia.com  : 8 badges (Graduate badge!)');
+  console.log('      student2@inntexia.com : 3 badges');
+  console.log('      student3@inntexia.com : 3 badges (Perfect Score!)');
+  console.log('   XP Transactions: 19 transactions logged');
+  console.log('─'.repeat(50));
+
+  // Print assessment summary
+  console.log('\n📝 Assessment Data:');
+  console.log('─'.repeat(50));
+  console.log('   Assignment Submissions:');
+  console.log('      [graded   ] 3 submissions (scores: 95, 88, 100)');
+  console.log('      [submitted] 2 submissions (awaiting grading)');
+  console.log('      [returned ] 1 submission (needs revision)');
+  console.log('─'.repeat(50));
+
+  // Print notification summary
+  console.log('\n🔔 Notification Data:');
+  console.log('─'.repeat(50));
+  console.log('   student@inntexia.com  : 4 notifications (2 unread)');
+  console.log('   student2@inntexia.com : 3 notifications (2 unread)');
+  console.log('   instructor            : 3 notifications (3 unread)');
+  console.log('   staff                 : 2 notifications (2 unread)');
+  console.log('─'.repeat(50));
 }
 
 main()

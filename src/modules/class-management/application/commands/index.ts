@@ -36,6 +36,20 @@ export * from './adjust-credits/adjust-credits.handler';
 export * from './unlock-lesson/unlock-lesson.command';
 export * from './unlock-lesson/unlock-lesson.handler';
 
+// Bulk Commands
+export * from './duplicate-class/duplicate-class.command';
+export * from './duplicate-class/duplicate-class.handler';
+export * from './bulk-mark-attendance/bulk-mark-attendance.command';
+export * from './bulk-mark-attendance/bulk-mark-attendance.handler';
+export * from './bulk-unlock-lessons/bulk-unlock-lessons.command';
+export * from './bulk-unlock-lessons/bulk-unlock-lessons.handler';
+
+// Package Management Commands
+export * from './add-meetings/add-meetings.command';
+export * from './add-meetings/add-meetings.handler';
+export * from './continue-as-private/continue-as-private.command';
+export * from './continue-as-private/continue-as-private.handler';
+
 import { CreateClassHandler } from './create-class/create-class.handler';
 import { UpdateClassHandler } from './update-class/update-class.handler';
 import { OpenEnrollmentHandler } from './open-enrollment/open-enrollment.handler';
@@ -50,6 +64,11 @@ import { MarkAttendanceHandler } from './mark-attendance/mark-attendance.handler
 import { UpdateAttendanceHandler } from './update-attendance/update-attendance.handler';
 import { AdjustCreditsHandler } from './adjust-credits/adjust-credits.handler';
 import { UnlockLessonHandler } from './unlock-lesson/unlock-lesson.handler';
+import { DuplicateClassHandler } from './duplicate-class/duplicate-class.handler';
+import { BulkMarkAttendanceHandler } from './bulk-mark-attendance/bulk-mark-attendance.handler';
+import { BulkUnlockLessonsHandler } from './bulk-unlock-lessons/bulk-unlock-lessons.handler';
+import { AddMeetingsHandler } from './add-meetings/add-meetings.handler';
+import { ContinueAsPrivateHandler } from './continue-as-private/continue-as-private.handler';
 
 export const CommandHandlers = [
   // Class
@@ -71,4 +90,11 @@ export const CommandHandlers = [
   AdjustCreditsHandler,
   // Lesson Unlock
   UnlockLessonHandler,
+  // Bulk Operations
+  DuplicateClassHandler,
+  BulkMarkAttendanceHandler,
+  BulkUnlockLessonsHandler,
+  // Package Management
+  AddMeetingsHandler,
+  ContinueAsPrivateHandler,
 ];

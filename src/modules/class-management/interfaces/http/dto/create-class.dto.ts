@@ -12,7 +12,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-class ScheduleDto {
+export class ScheduleDto {
   @ApiProperty({ example: 'monday' })
   @IsString()
   dayOfWeek: string;

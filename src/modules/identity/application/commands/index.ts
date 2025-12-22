@@ -9,6 +9,9 @@ export * from './create-user';
 export * from './update-user';
 export * from './deactivate-user';
 export * from './change-user-role';
+export * from './forgot-password';
+export * from './reset-password';
+export * from './request-verification-email';
 
 import { RegisterUserHandler } from './register-user';
 import { LoginHandler } from './login';
@@ -21,6 +24,9 @@ import { CreateUserHandler } from './create-user';
 import { UpdateUserHandler } from './update-user';
 import { DeactivateUserHandler } from './deactivate-user';
 import { ChangeUserRoleHandler } from './change-user-role';
+import { ForgotPasswordHandler } from './forgot-password';
+import { ResetPasswordHandler } from './reset-password';
+import { RequestVerificationEmailHandler } from './request-verification-email';
 
 export const CommandHandlers = [
   RegisterUserHandler,
@@ -34,4 +40,7 @@ export const CommandHandlers = [
   UpdateUserHandler,
   DeactivateUserHandler,
   ChangeUserRoleHandler,
+  ForgotPasswordHandler,
+  ResetPasswordHandler,
+  RequestVerificationEmailHandler,
 ];

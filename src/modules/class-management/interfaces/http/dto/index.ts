@@ -5,3 +5,7 @@ export * from './mark-attendance.dto';
 export * from './update-attendance.dto';
 export * from './adjust-credits.dto';
 export * from './unlock-lesson.dto';
+export * from './duplicate-class.dto';
+export * from './bulk-unlock-lessons.dto';
+export * from './add-meetings.dto';
+export * from './continue-as-private.dto';

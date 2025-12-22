@@ -21,12 +21,18 @@ import { RefreshTokenCommand } from '@identity/application/commands/refresh-toke
 import { LogoutCommand } from '@identity/application/commands/logout';
 import { VerifyEmailCommand } from '@identity/application/commands/verify-email';
 import { ChangePasswordCommand } from '@identity/application/commands/change-password';
+import { ForgotPasswordCommand } from '@identity/application/commands/forgot-password';
+import { ResetPasswordCommand } from '@identity/application/commands/reset-password';
+import { RequestVerificationEmailCommand } from '@identity/application/commands/request-verification-email';
 import {
   RegisterDto,
   LoginDto,
   RefreshTokenDto,
   VerifyEmailDto,
   ChangePasswordDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
+  RequestVerificationDto,
 } from '@identity/interfaces/http/dto';
 
 interface JwtPayload {
@@ -72,7 +78,12 @@ export class AuthController {
   async register(
     @Body() dto: RegisterDto,
   ): Promise<{ message: string; userId: string }> {
-    const command = new RegisterCommand(dto.email, dto.password, dto.fullName);
+    const command = new RegisterCommand(
+      dto.email,
+      dto.password,
+      dto.fullName,
+      dto.username,
+    );
     const result = await this.commandBus.execute<
       RegisterCommand,
       RegisterResult
@@ -145,5 +156,46 @@ export class AuthController {
     );
     await this.commandBus.execute<ChangePasswordCommand, void>(command);
     return { message: 'Password changed successfully' };
+  }
+
+  @Public()
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Request password reset email' })
+  @ApiResponse({ status: 200, description: 'Reset email sent if account exists' })
+  async forgotPassword(
+    @Body() dto: ForgotPasswordDto,
+  ): Promise<{ message: string }> {
+    const command = new ForgotPasswordCommand(dto.email);
+    await this.commandBus.execute<ForgotPasswordCommand, void>(command);
+    // Always return success to prevent email enumeration
+    return { message: 'If an account exists, a reset email has been sent' };
+  }
+
+  @Public()
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Reset password with token' })
+  @ApiResponse({ status: 200, description: 'Password reset successful' })
+  @ApiResponse({ status: 400, description: 'Invalid or expired token' })
+  async resetPassword(
+    @Body() dto: ResetPasswordDto,
+  ): Promise<{ message: string }> {
+    const command = new ResetPasswordCommand(dto.token, dto.newPassword);
+    await this.commandBus.execute<ResetPasswordCommand, void>(command);
+    return { message: 'Password reset successful' };
+  }
+
+  @Public()
+  @Post('request-verification')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Request email verification resend' })
+  @ApiResponse({ status: 200, description: 'Verification email sent if account exists' })
+  async requestVerification(
+    @Body() dto: RequestVerificationDto,
+  ): Promise<{ message: string }> {
+    const command = new RequestVerificationEmailCommand(dto.email);
+    await this.commandBus.execute<RequestVerificationEmailCommand, void>(command);
+    return { message: 'If an account exists and is not verified, an email has been sent' };
   }
 }

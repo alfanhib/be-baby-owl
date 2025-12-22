@@ -20,6 +20,7 @@ import {
   GetInstructorClassesQuery,
   GetClassStudentsQuery,
   GetAtRiskStudentsQuery,
+  GetInstructorAnalyticsQuery,
 } from '@instructor/application/queries';
 
 // Result types for type safety
@@ -49,6 +50,13 @@ interface AtRiskStudentResult {
   studentName: string;
   classId: string;
   reason: string;
+}
+
+interface InstructorAnalyticsResult {
+  overview: unknown;
+  classPerformance: unknown[];
+  monthlyTrend: unknown[];
+  courseBreakdown: unknown[];
 }
 
 @ApiTags('Instructor')
@@ -130,6 +138,28 @@ export class InstructorController {
       GetAtRiskStudentsQuery,
       AtRiskStudentResult[]
     >(new GetAtRiskStudentsQuery(user.userId));
+    return { success: true, data: result };
+  }
+
+  // ========== Analytics ==========
+
+  @Get('analytics')
+  @ApiOperation({ summary: 'Get teaching analytics' })
+  @ApiQuery({
+    name: 'period',
+    required: false,
+    enum: ['week', 'month', 'year'],
+    description: 'Analytics period',
+  })
+  @ApiResponse({ status: 200, description: 'Analytics retrieved' })
+  async getAnalytics(
+    @CurrentUser() user: CurrentUserPayload,
+    @Query('period') period?: 'week' | 'month' | 'year',
+  ): Promise<{ success: boolean; data: InstructorAnalyticsResult }> {
+    const result = await this.queryBus.execute<
+      GetInstructorAnalyticsQuery,
+      InstructorAnalyticsResult
+    >(new GetInstructorAnalyticsQuery(user.userId, period || 'month'));
     return { success: true, data: result };
   }
 }

@@ -41,7 +41,16 @@ import {
   UpdateAttendanceCommand,
   AdjustCreditsCommand,
   UnlockLessonCommand,
+  DuplicateClassCommand,
+  BulkMarkAttendanceCommand,
+  BulkUnlockLessonsCommand,
+  AddMeetingsCommand,
+  ContinueAsPrivateCommand,
 } from '@class-management/application/commands';
+import { AddMeetingsResult } from '@class-management/application/commands/add-meetings/add-meetings.handler';
+import { ContinueAsPrivateResult } from '@class-management/application/commands/continue-as-private/continue-as-private.handler';
+import { BulkAttendanceResult } from '@class-management/application/commands/bulk-mark-attendance/bulk-mark-attendance.handler';
+import { BulkUnlockResult } from '@class-management/application/commands/bulk-unlock-lessons/bulk-unlock-lessons.handler';
 import {
   GetClassQuery,
   GetClassesQuery,
@@ -52,15 +61,22 @@ import {
   GetStudentAttendanceQuery,
   GetUnlockedLessonsQuery,
   GetCreditHistoryQuery,
+  GetPackageInfoQuery,
 } from '@class-management/application/queries';
+import { PackageInfoResult } from '@class-management/application/queries/get-package-info/get-package-info.handler';
 import {
   CreateClassDto,
   UpdateClassDto,
   EnrollStudentDto,
   MarkAttendanceDto,
+  BulkMarkAttendanceDto,
   UpdateAttendanceDto,
   AdjustCreditsDto,
   UnlockLessonDto,
+  DuplicateClassDto,
+  BulkUnlockLessonsDto,
+  AddMeetingsDto,
+  ContinueAsPrivateDto,
 } from '../dto';
 
 @ApiTags('Classes')
@@ -238,6 +254,27 @@ export class ClassesController {
     return { success: true, message: 'Class cancelled' };
   }
 
+  @Post(':classId/duplicate')
+  @Roles('staff', 'super_admin')
+  @ApiOperation({ summary: 'Duplicate a class (without enrollments/unlocks)' })
+  @ApiParam({ name: 'classId', description: 'Source class ID to duplicate' })
+  async duplicateClass(
+    @Param('classId') classId: string,
+    @Body() dto: DuplicateClassDto,
+  ): Promise<{ success: boolean; data: { classId: string } }> {
+    const result: { classId: string } = await this.commandBus.execute(
+      new DuplicateClassCommand(
+        classId,
+        dto.newName,
+        dto.newInstructorId,
+        dto.newStartDate ? new Date(dto.newStartDate) : undefined,
+        dto.newEndDate ? new Date(dto.newEndDate) : undefined,
+        dto.newEnrollmentDeadline ? new Date(dto.newEnrollmentDeadline) : undefined,
+      ),
+    );
+    return { success: true, data: result };
+  }
+
   // ========== Enrollment ==========
 
   @Post(':classId/enroll')
@@ -365,6 +402,34 @@ export class ClassesController {
     return { success: true, message: 'Attendance updated successfully' };
   }
 
+  @Post(':classId/attendance/bulk')
+  @Roles('instructor', 'staff', 'super_admin')
+  @ApiOperation({ summary: 'Mark attendance for multiple students at once' })
+  @ApiParam({ name: 'classId' })
+  async bulkMarkAttendance(
+    @Param('classId') classId: string,
+    @Body() dto: BulkMarkAttendanceDto,
+    @CurrentUser() user: CurrentUserPayload,
+  ): Promise<{ success: boolean; data: BulkAttendanceResult }> {
+    const result = await this.commandBus.execute<
+      BulkMarkAttendanceCommand,
+      BulkAttendanceResult
+    >(
+      new BulkMarkAttendanceCommand(
+        classId,
+        dto.meetingNumber,
+        new Date(dto.meetingDate),
+        dto.attendances.map((a) => ({
+          enrollmentId: a.enrollmentId,
+          status: a.status,
+          notes: a.notes,
+        })),
+        user.userId,
+      ),
+    );
+    return { success: true, data: result };
+  }
+
   // ========== Credits ==========
 
   @Post(':classId/credits')
@@ -429,6 +494,32 @@ export class ClassesController {
     return { success: true, data: result };
   }
 
+  @Post(':classId/unlock-lessons/bulk')
+  @Roles('instructor', 'staff', 'super_admin')
+  @ApiOperation({ summary: 'Unlock multiple lessons at once' })
+  @ApiParam({ name: 'classId' })
+  async bulkUnlockLessons(
+    @Param('classId') classId: string,
+    @Body() dto: BulkUnlockLessonsDto,
+    @CurrentUser() user: CurrentUserPayload,
+  ): Promise<{ success: boolean; data: BulkUnlockResult }> {
+    const result = await this.commandBus.execute<
+      BulkUnlockLessonsCommand,
+      BulkUnlockResult
+    >(
+      new BulkUnlockLessonsCommand(
+        classId,
+        dto.lessons.map((l) => ({
+          lessonId: l.lessonId,
+          meetingNumber: l.meetingNumber,
+          notes: l.notes,
+        })),
+        user.userId,
+      ),
+    );
+    return { success: true, data: result };
+  }
+
   @Get(':classId/unlocked-lessons')
   @Roles('instructor', 'staff', 'super_admin', 'student')
   @ApiOperation({ summary: 'Get all unlocked lessons for the class' })
@@ -442,6 +533,61 @@ export class ClassesController {
     if (!result) {
       throw new NotFoundException('Class not found');
     }
+    return { success: true, data: result };
+  }
+
+  // ========== Package Management ==========
+
+  @Get(':classId/package')
+  @Roles('instructor', 'staff', 'super_admin', 'student')
+  @ApiOperation({ summary: 'Get package information for a class' })
+  @ApiParam({ name: 'classId' })
+  @ApiQuery({ name: 'studentId', required: false, description: 'Get package info for specific student' })
+  async getPackageInfo(
+    @Param('classId') classId: string,
+    @Query('studentId') studentId?: string,
+  ): Promise<{ success: boolean; data: PackageInfoResult }> {
+    const result = await this.queryBus.execute<GetPackageInfoQuery, PackageInfoResult>(
+      new GetPackageInfoQuery(classId, studentId),
+    );
+    return { success: true, data: result };
+  }
+
+  @Post(':classId/add-meetings')
+  @Roles('staff', 'super_admin')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Add meetings to a private class package' })
+  @ApiParam({ name: 'classId' })
+  async addMeetings(
+    @Param('classId') classId: string,
+    @Body() dto: AddMeetingsDto,
+    @CurrentUser() user: CurrentUserPayload,
+  ): Promise<{ success: boolean; data: AddMeetingsResult }> {
+    const result = await this.commandBus.execute<AddMeetingsCommand, AddMeetingsResult>(
+      new AddMeetingsCommand(classId, dto.meetingsToAdd, user.userId),
+    );
+    return { success: true, data: result };
+  }
+
+  @Post(':classId/continue-as-private')
+  @Roles('staff', 'super_admin')
+  @ApiOperation({ summary: 'Continue a student from group class to private class' })
+  @ApiParam({ name: 'classId', description: 'Source group class ID' })
+  async continueAsPrivate(
+    @Param('classId') classId: string,
+    @Body() dto: ContinueAsPrivateDto,
+    @CurrentUser() user: CurrentUserPayload,
+  ): Promise<{ success: boolean; data: ContinueAsPrivateResult }> {
+    const result = await this.commandBus.execute<ContinueAsPrivateCommand, ContinueAsPrivateResult>(
+      new ContinueAsPrivateCommand(
+        classId,
+        dto.studentId,
+        dto.packageMeetings,
+        dto.instructorId,
+        dto.schedules,
+        user.userId,
+      ),
+    );
     return { success: true, data: result };
   }
 }

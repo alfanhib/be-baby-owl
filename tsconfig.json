@@ -34,7 +34,10 @@
       "@billing/*": ["src/modules/billing/*"],
       "@staff/*": ["src/modules/staff/*"],
       "@instructor/*": ["src/modules/instructor/*"],
-      "@student/*": ["src/modules/student/*"]
+      "@student/*": ["src/modules/student/*"],
+      "@notification/*": ["src/modules/notification/*"],
+      "@admin/*": ["src/modules/admin/*"],
+      "@whatsapp/*": ["src/modules/whatsapp/*"]
     }
   }
 }

@@ -8,3 +8,6 @@ export * from './create-user.dto';
 export * from './update-user.dto';
 export * from './deactivate-user.dto';
 export * from './change-user-role.dto';
+export * from './forgot-password.dto';
+export * from './reset-password.dto';
+export * from './request-verification.dto';

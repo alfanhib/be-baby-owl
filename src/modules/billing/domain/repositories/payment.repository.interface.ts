@@ -44,6 +44,7 @@ export interface IPaymentRepository {
     page: number,
     limit: number,
   ): Promise<PaginatedPayments>;
+  findAllForExport(filters: PaymentFilters): Promise<Payment[]>;
   findByCourseId(courseId: string): Promise<Payment[]>;
   findByStudentEmail(email: string): Promise<Payment[]>;
   save(payment: Payment): Promise<void>;

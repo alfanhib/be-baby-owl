@@ -14,13 +14,16 @@ import {
   CurrentUser,
   CurrentUserPayload,
 } from '@shared/interfaces/decorators/current-user.decorator';
-import { QuickEnrollCommand } from '@staff/application/commands';
+import { QuickEnrollCommand, BulkEnrollCommand } from '@staff/application/commands';
 import {
   GetStaffDashboardQuery,
   SearchStudentsQuery,
   GetAvailableClassesQuery,
+  GetEnrollmentHistoryQuery,
+  GetEnrollmentAnalyticsQuery,
 } from '@staff/application/queries';
 import { QuickEnrollDto } from '../dto';
+import { BulkEnrollDto } from '../dto/bulk-enroll.dto';
 
 interface QuickEnrollResult {
   enrollmentId: string;
@@ -53,6 +56,18 @@ interface AvailableClassResult {
   capacity: unknown;
   canEnroll: boolean;
   packages: unknown[];
+}
+
+interface BulkEnrollResult {
+  total: number;
+  successful: number;
+  failed: number;
+  results: Array<{
+    email: string;
+    success: boolean;
+    enrollmentId?: string;
+    error?: string;
+  }>;
 }
 
 @ApiTags('Staff')
@@ -176,6 +191,95 @@ export class StaffController {
       data: dashboardResult.pendingActions.filter(
         (a) => a.type === 'verify_payment',
       ),
+    };
+  }
+
+  // ========== Enrollment History & Analytics ==========
+
+  @Get('enrollments/history')
+  @ApiOperation({ summary: 'Get enrollment history (audit log)' })
+  @ApiQuery({ name: 'classId', required: false })
+  @ApiQuery({ name: 'studentId', required: false })
+  @ApiQuery({ name: 'startDate', required: false })
+  @ApiQuery({ name: 'endDate', required: false })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiResponse({ status: 200, description: 'Enrollment history retrieved' })
+  async getEnrollmentHistory(
+    @Query('classId') classId?: string,
+    @Query('studentId') studentId?: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ): Promise<{ success: boolean; data: unknown }> {
+    const result: unknown = await this.queryBus.execute(
+      new GetEnrollmentHistoryQuery(
+        classId,
+        studentId,
+        startDate ? new Date(startDate) : undefined,
+        endDate ? new Date(endDate) : undefined,
+        page ?? 1,
+        limit ?? 20,
+      ),
+    );
+    return { success: true, data: result };
+  }
+
+  @Get('enrollments/analytics')
+  @ApiOperation({ summary: 'Get enrollment analytics and trends' })
+  @ApiQuery({ name: 'startDate', required: false })
+  @ApiQuery({ name: 'endDate', required: false })
+  @ApiQuery({ name: 'courseId', required: false })
+  @ApiResponse({ status: 200, description: 'Enrollment analytics retrieved' })
+  async getEnrollmentAnalytics(
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+    @Query('courseId') courseId?: string,
+  ): Promise<{ success: boolean; data: unknown }> {
+    const result: unknown = await this.queryBus.execute(
+      new GetEnrollmentAnalyticsQuery(
+        startDate ? new Date(startDate) : undefined,
+        endDate ? new Date(endDate) : undefined,
+        courseId,
+      ),
+    );
+    return { success: true, data: result };
+  }
+
+  // ========== Bulk Enrollment ==========
+
+  @Post('bulk-enroll')
+  @ApiOperation({ summary: 'Bulk enroll multiple students to a class' })
+  @ApiResponse({ status: 201, description: 'Bulk enrollment completed' })
+  @ApiResponse({ status: 400, description: 'Invalid input or capacity exceeded' })
+  @ApiResponse({ status: 404, description: 'Class not found' })
+  async bulkEnroll(
+    @Body() dto: BulkEnrollDto,
+    @CurrentUser() user: CurrentUserPayload,
+  ): Promise<{ success: boolean; message: string; data: BulkEnrollResult }> {
+    const command = new BulkEnrollCommand(
+      dto.classId,
+      dto.students.map((s) => ({
+        email: s.email,
+        name: s.name,
+        phone: s.phone,
+        packageMeetings: s.packageMeetings,
+        packagePrice: s.packagePrice,
+        notes: s.notes,
+      })),
+      dto.paymentStatus,
+      user.userId,
+    );
+
+    const result = await this.commandBus.execute<BulkEnrollCommand, BulkEnrollResult>(
+      command,
+    );
+
+    return {
+      success: true,
+      message: `Enrolled ${result.successful}/${result.total} students`,
+      data: result,
     };
   }
 }

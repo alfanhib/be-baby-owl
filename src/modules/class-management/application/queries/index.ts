@@ -20,6 +20,10 @@ export * from './get-unlocked-lessons/get-unlocked-lessons.handler';
 export * from './get-credit-history/get-credit-history.query';
 export * from './get-credit-history/get-credit-history.handler';
 
+// Package Queries
+export * from './get-package-info/get-package-info.query';
+export * from './get-package-info/get-package-info.handler';
+
 import { GetClassHandler } from './get-class/get-class.handler';
 import {
   GetClassesHandler,
@@ -33,6 +37,7 @@ import {
 } from './get-class-attendance/get-class-attendance.handler';
 import { GetUnlockedLessonsHandler } from './get-unlocked-lessons/get-unlocked-lessons.handler';
 import { GetCreditHistoryHandler } from './get-credit-history/get-credit-history.handler';
+import { GetPackageInfoHandler } from './get-package-info/get-package-info.handler';
 
 export const QueryHandlers = [
   // Class
@@ -49,4 +54,6 @@ export const QueryHandlers = [
   GetUnlockedLessonsHandler,
   // Credit
   GetCreditHistoryHandler,
+  // Package
+  GetPackageInfoHandler,
 ];

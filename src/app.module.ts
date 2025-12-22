@@ -7,6 +7,9 @@ import { configurations } from './config';
 import { PrismaModule } from './shared/infrastructure/prisma/prisma.module';
 import { RedisModule } from './shared/infrastructure/redis/redis.module';
 import { EventBusModule } from './shared/infrastructure/event-bus/event-bus.module';
+import { StorageModule } from './shared/infrastructure/storage/storage.module';
+import { CacheModule } from './shared/infrastructure/cache/cache.module';
+import { QueueModule } from './shared/infrastructure/queue/queue.module';
 
 import { JwtAuthGuard } from './shared/interfaces/guards/jwt-auth.guard';
 import { RolesGuard } from './shared/interfaces/guards/roles.guard';
@@ -19,6 +22,7 @@ import { CustomValidationPipe } from './shared/interfaces/pipes/validation.pipe'
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UploadController } from './shared/interfaces/controllers/upload.controller';
 
 // Feature Modules
 import { IdentityModule } from './modules/identity';
@@ -29,6 +33,10 @@ import { GamificationModule } from './modules/gamification';
 import { StaffModule } from './modules/staff/staff.module';
 import { InstructorModule } from './modules/instructor/instructor.module';
 import { StudentModule } from './modules/student/student.module';
+import { AssessmentModule } from './modules/assessment/assessment.module';
+import { NotificationModule } from './modules/notification/notification.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { WhatsAppModule } from './modules/whatsapp/whatsapp.module';
 
 @Module({
   imports: [
@@ -53,6 +61,9 @@ import { StudentModule } from './modules/student/student.module';
     PrismaModule,
     RedisModule,
     EventBusModule,
+    StorageModule,
+    CacheModule,
+    QueueModule,
 
     // Feature Modules
     IdentityModule,
@@ -63,10 +74,13 @@ import { StudentModule } from './modules/student/student.module';
     StaffModule,
     InstructorModule,
     StudentModule,
-    // AssessmentModule,
+    AssessmentModule,
+    NotificationModule,
+    AdminModule,
+    WhatsAppModule,
     // CommunityModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, UploadController],
   providers: [
     AppService,
 

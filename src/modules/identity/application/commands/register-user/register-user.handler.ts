@@ -9,6 +9,7 @@ import { USER_REPOSITORY } from '@identity/domain/repositories/user.repository.i
 import type { IPasswordHasher } from '@identity/domain/services/password-hasher.interface';
 import { PASSWORD_HASHER } from '@identity/domain/services/password-hasher.interface';
 import { EmailAlreadyExistsError } from '@identity/domain/errors/email-already-exists.error';
+import { UsernameAlreadyExistsError } from '@identity/domain/errors/username-already-exists.error';
 import { EventBusService } from '@shared/infrastructure/event-bus/event-bus.service';
 
 export interface RegisterResult {
@@ -36,12 +37,24 @@ export class RegisterUserHandler implements ICommandHandler<RegisterCommand> {
       throw new EmailAlreadyExistsError(command.email);
     }
 
+    // Check if username already exists (if provided)
+    if (command.username) {
+      const usernameExists = await this.userRepository.usernameExists(
+        command.username,
+      );
+
+      if (usernameExists) {
+        throw new UsernameAlreadyExistsError(command.username);
+      }
+    }
+
     // Hash password
     const passwordHash = await this.passwordHasher.hash(command.password);
 
     // Create user aggregate
     const user = User.create({
       email: command.email,
+      username: command.username,
       passwordHash,
       fullName: command.fullName,
       role: command.role as UserRoleEnum | undefined,

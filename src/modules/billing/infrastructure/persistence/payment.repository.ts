@@ -81,6 +81,47 @@ export class PaymentRepository implements IPaymentRepository {
     };
   }
 
+  async findAllForExport(filters: PaymentFilters): Promise<Payment[]> {
+    const where: Prisma.PaymentWhereInput = {};
+
+    if (filters.status) {
+      where.status = filters.status as 'pending' | 'verified' | 'refunded';
+    }
+
+    if (filters.method) {
+      where.paymentMethod = filters.method;
+    }
+
+    if (filters.courseId) {
+      where.courseId = filters.courseId;
+    }
+
+    if (filters.search) {
+      where.OR = [
+        { studentName: { contains: filters.search, mode: 'insensitive' } },
+        { studentEmail: { contains: filters.search, mode: 'insensitive' } },
+        { paymentRef: { contains: filters.search, mode: 'insensitive' } },
+      ];
+    }
+
+    if (filters.startDate || filters.endDate) {
+      where.createdAt = {};
+      if (filters.startDate) {
+        where.createdAt.gte = filters.startDate;
+      }
+      if (filters.endDate) {
+        where.createdAt.lte = filters.endDate;
+      }
+    }
+
+    const payments = await this.prisma.payment.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return payments.map((p) => PaymentMapper.toDomain(p));
+  }
+
   async findByCourseId(courseId: string): Promise<Payment[]> {
     const payments = await this.prisma.payment.findMany({
       where: { courseId },
