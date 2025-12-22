@@ -16,6 +16,7 @@ export interface LoginResult {
   accessToken: string;
   refreshToken: string;
   expiresIn: number;
+  mustChangePassword: boolean;
   user: {
     id: string;
     email: string;
@@ -98,6 +99,7 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
       accessToken,
       refreshToken,
       expiresIn: 86400, // 24 hours in seconds
+      mustChangePassword: user.mustChangePassword,
       user: {
         id: user.id.value,
         email: user.email.value,

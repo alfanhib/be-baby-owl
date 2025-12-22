@@ -49,13 +49,8 @@ export class NotificationsController {
     @CurrentUser() user: CurrentUserPayload,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 20,
-  ): Promise<{ success: boolean; data: PaginatedNotifications }> {
-    const result = await this.notificationService.getUserNotifications(
-      user.userId,
-      page,
-      limit,
-    );
-    return { success: true, data: result };
+  ): Promise<PaginatedNotifications> {
+    return this.notificationService.getUserNotifications(user.userId, page, limit);
   }
 
   @Get('unread-count')
@@ -64,9 +59,9 @@ export class NotificationsController {
   @ApiResponse({ status: 200, description: 'Unread count' })
   async getUnreadCount(
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; data: { count: number } }> {
+  ): Promise<{ count: number }> {
     const count = await this.notificationService.getUnreadCount(user.userId);
-    return { success: true, data: { count } };
+    return { count };
   }
 
   @Put(':notificationId/read')
@@ -78,9 +73,9 @@ export class NotificationsController {
   async markAsRead(
     @Param('notificationId') notificationId: string,
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; message: string }> {
+  ): Promise<{ message: string }> {
     await this.notificationService.markAsRead(notificationId, user.userId);
-    return { success: true, message: 'Notification marked as read' };
+    return { message: 'Notification marked as read' };
   }
 
   @Put('mark-all-read')
@@ -90,9 +85,9 @@ export class NotificationsController {
   @ApiResponse({ status: 200, description: 'All marked as read' })
   async markAllAsRead(
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; data: { count: number } }> {
+  ): Promise<{ count: number }> {
     const count = await this.notificationService.markAllAsRead(user.userId);
-    return { success: true, data: { count } };
+    return { count };
   }
 
   @Delete(':notificationId')
@@ -104,9 +99,9 @@ export class NotificationsController {
   async deleteNotification(
     @Param('notificationId') notificationId: string,
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; message: string }> {
+  ): Promise<{ message: string }> {
     await this.notificationService.delete(notificationId, user.userId);
-    return { success: true, message: 'Notification deleted' };
+    return { message: 'Notification deleted' };
   }
 }
 

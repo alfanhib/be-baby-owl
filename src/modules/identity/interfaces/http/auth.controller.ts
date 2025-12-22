@@ -25,6 +25,10 @@ import { ForgotPasswordCommand } from '@identity/application/commands/forgot-pas
 import { ResetPasswordCommand } from '@identity/application/commands/reset-password';
 import { RequestVerificationEmailCommand } from '@identity/application/commands/request-verification-email';
 import {
+  SetupPasswordCommand,
+  SetupPasswordResult,
+} from '@identity/application/commands/setup-password';
+import {
   RegisterDto,
   LoginDto,
   RefreshTokenDto,
@@ -34,6 +38,7 @@ import {
   ResetPasswordDto,
   RequestVerificationDto,
 } from '@identity/interfaces/http/dto';
+import { SetupPasswordDto } from '@identity/interfaces/http/dto/setup-password.dto';
 
 interface JwtPayload {
   sub: string;
@@ -197,5 +202,20 @@ export class AuthController {
     const command = new RequestVerificationEmailCommand(dto.email);
     await this.commandBus.execute<RequestVerificationEmailCommand, void>(command);
     return { message: 'If an account exists and is not verified, an email has been sent' };
+  }
+
+  @Public()
+  @Post('setup-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Set password for first time (using invite token)' })
+  @ApiResponse({ status: 200, description: 'Password set successfully' })
+  @ApiResponse({ status: 401, description: 'Invalid or expired invite token' })
+  async setupPassword(
+    @Body() dto: SetupPasswordDto,
+  ): Promise<SetupPasswordResult> {
+    const command = new SetupPasswordCommand(dto.token, dto.newPassword);
+    return this.commandBus.execute<SetupPasswordCommand, SetupPasswordResult>(
+      command,
+    );
   }
 }

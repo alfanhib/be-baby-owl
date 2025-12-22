@@ -63,6 +63,12 @@ import {
   GetCreditHistoryQuery,
   GetPackageInfoQuery,
 } from '@class-management/application/queries';
+import { ClassDetailResult } from '@class-management/application/queries/get-class/get-class.handler';
+import { ClassRosterResult } from '@class-management/application/queries/get-class-roster/get-class-roster.handler';
+import {
+  ClassAttendanceResult,
+  StudentAttendanceResult,
+} from '@class-management/application/queries/get-class-attendance/get-class-attendance.handler';
 import { PackageInfoResult } from '@class-management/application/queries/get-package-info/get-package-info.handler';
 import {
   CreateClassDto,
@@ -97,8 +103,8 @@ export class ClassesController {
   @ApiResponse({ status: 201, description: 'Class created successfully' })
   async createClass(
     @Body() dto: CreateClassDto,
-  ): Promise<{ success: boolean; data: { classId: string } }> {
-    const result: { classId: string } = await this.commandBus.execute(
+  ): Promise<{ classId: string }> {
+    return this.commandBus.execute(
       new CreateClassCommand(
         dto.name,
         dto.courseId,
@@ -113,7 +119,6 @@ export class ClassesController {
         dto.notes,
       ),
     );
-    return { success: true, data: result };
   }
 
   @Get()
@@ -132,11 +137,10 @@ export class ClassesController {
     @Query('type') type?: string,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
-  ): Promise<{ success: boolean; data: unknown }> {
-    const result: unknown = await this.queryBus.execute(
+  ): Promise<unknown> {
+    return this.queryBus.execute(
       new GetClassesQuery(courseId, instructorId, status, type, page, limit),
     );
-    return { success: true, data: result };
   }
 
   @Get('my-classes')
@@ -146,11 +150,8 @@ export class ClassesController {
   async getMyClasses(
     @CurrentUser() user: CurrentUserPayload,
     @Query('status') status?: string,
-  ): Promise<{ success: boolean; data: unknown }> {
-    const result: unknown = await this.queryBus.execute(
-      new GetInstructorClassesQuery(user.userId, status),
-    );
-    return { success: true, data: result };
+  ): Promise<unknown> {
+    return this.queryBus.execute(new GetInstructorClassesQuery(user.userId, status));
   }
 
   @Get('enrolled')
@@ -160,27 +161,22 @@ export class ClassesController {
   async getEnrolledClasses(
     @CurrentUser() user: CurrentUserPayload,
     @Query('status') status?: string,
-  ): Promise<{ success: boolean; data: unknown }> {
-    const result: unknown = await this.queryBus.execute(
-      new GetStudentClassesQuery(user.userId, status),
-    );
-    return { success: true, data: result };
+  ): Promise<unknown> {
+    return this.queryBus.execute(new GetStudentClassesQuery(user.userId, status));
   }
 
   @Get(':classId')
   @Roles('instructor', 'staff', 'super_admin')
   @ApiOperation({ summary: 'Get class details' })
   @ApiParam({ name: 'classId' })
-  async getClass(
-    @Param('classId') classId: string,
-  ): Promise<{ success: boolean; data: unknown }> {
-    const result: unknown = await this.queryBus.execute(
+  async getClass(@Param('classId') classId: string): Promise<ClassDetailResult> {
+    const result = (await this.queryBus.execute(
       new GetClassQuery(classId),
-    );
+    )) as unknown as ClassDetailResult | null;
     if (!result) {
       throw new NotFoundException('Class not found');
     }
-    return { success: true, data: result };
+    return result;
   }
 
   @Put(':classId')
@@ -190,7 +186,7 @@ export class ClassesController {
   async updateClass(
     @Param('classId') classId: string,
     @Body() dto: UpdateClassDto,
-  ): Promise<{ success: boolean; message: string }> {
+  ): Promise<{ message: string }> {
     await this.commandBus.execute<UpdateClassCommand, void>(
       new UpdateClassCommand(
         classId,
@@ -202,7 +198,7 @@ export class ClassesController {
         dto.notes,
       ),
     );
-    return { success: true, message: 'Class updated successfully' };
+    return { message: 'Class updated successfully' };
   }
 
   // ========== Class Status ==========
@@ -214,9 +210,9 @@ export class ClassesController {
   @ApiParam({ name: 'classId' })
   async openEnrollment(
     @Param('classId') classId: string,
-  ): Promise<{ success: boolean; message: string }> {
+  ): Promise<{ message: string }> {
     await this.commandBus.execute(new OpenEnrollmentCommand(classId));
-    return { success: true, message: 'Enrollment opened' };
+    return { message: 'Enrollment opened' };
   }
 
   @Post(':classId/activate')
@@ -226,9 +222,9 @@ export class ClassesController {
   @ApiParam({ name: 'classId' })
   async activateClass(
     @Param('classId') classId: string,
-  ): Promise<{ success: boolean; message: string }> {
+  ): Promise<{ message: string }> {
     await this.commandBus.execute(new ActivateClassCommand(classId));
-    return { success: true, message: 'Class activated' };
+    return { message: 'Class activated' };
   }
 
   @Post(':classId/complete')
@@ -238,9 +234,9 @@ export class ClassesController {
   @ApiParam({ name: 'classId' })
   async completeClass(
     @Param('classId') classId: string,
-  ): Promise<{ success: boolean; message: string }> {
+  ): Promise<{ message: string }> {
     await this.commandBus.execute(new CompleteClassCommand(classId));
-    return { success: true, message: 'Class completed' };
+    return { message: 'Class completed' };
   }
 
   @Delete(':classId')
@@ -249,9 +245,9 @@ export class ClassesController {
   @ApiParam({ name: 'classId' })
   async cancelClass(
     @Param('classId') classId: string,
-  ): Promise<{ success: boolean; message: string }> {
+  ): Promise<{ message: string }> {
     await this.commandBus.execute(new CancelClassCommand(classId));
-    return { success: true, message: 'Class cancelled' };
+    return { message: 'Class cancelled' };
   }
 
   @Post(':classId/duplicate')
@@ -261,8 +257,8 @@ export class ClassesController {
   async duplicateClass(
     @Param('classId') classId: string,
     @Body() dto: DuplicateClassDto,
-  ): Promise<{ success: boolean; data: { classId: string } }> {
-    const result: { classId: string } = await this.commandBus.execute(
+  ): Promise<{ classId: string }> {
+    return this.commandBus.execute(
       new DuplicateClassCommand(
         classId,
         dto.newName,
@@ -272,7 +268,6 @@ export class ClassesController {
         dto.newEnrollmentDeadline ? new Date(dto.newEnrollmentDeadline) : undefined,
       ),
     );
-    return { success: true, data: result };
   }
 
   // ========== Enrollment ==========
@@ -284,11 +279,10 @@ export class ClassesController {
   async enrollStudent(
     @Param('classId') classId: string,
     @Body() dto: EnrollStudentDto,
-  ): Promise<{ success: boolean; data: { enrollmentId: string } }> {
-    const result: { enrollmentId: string } = await this.commandBus.execute(
+  ): Promise<{ enrollmentId: string }> {
+    return this.commandBus.execute(
       new EnrollStudentCommand(classId, dto.studentId, dto.notes),
     );
-    return { success: true, data: result };
   }
 
   @Delete(':classId/students/:studentId')
@@ -299,25 +293,23 @@ export class ClassesController {
   async removeStudent(
     @Param('classId') classId: string,
     @Param('studentId') studentId: string,
-  ): Promise<{ success: boolean; message: string }> {
+  ): Promise<{ message: string }> {
     await this.commandBus.execute(new RemoveStudentCommand(classId, studentId));
-    return { success: true, message: 'Student removed from class' };
+    return { message: 'Student removed from class' };
   }
 
   @Get(':classId/roster')
   @Roles('instructor', 'staff', 'super_admin')
   @ApiOperation({ summary: 'Get class roster' })
   @ApiParam({ name: 'classId' })
-  async getClassRoster(
-    @Param('classId') classId: string,
-  ): Promise<{ success: boolean; data: unknown }> {
-    const result: unknown = await this.queryBus.execute(
+  async getClassRoster(@Param('classId') classId: string): Promise<ClassRosterResult> {
+    const result = (await this.queryBus.execute(
       new GetClassRosterQuery(classId),
-    );
+    )) as unknown as ClassRosterResult | null;
     if (!result) {
       throw new NotFoundException('Class not found');
     }
-    return { success: true, data: result };
+    return result;
   }
 
   // ========== Attendance ==========
@@ -330,8 +322,8 @@ export class ClassesController {
     @Param('classId') classId: string,
     @Body() dto: MarkAttendanceDto,
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; data: { attendanceId: string } }> {
-    const result: { attendanceId: string } = await this.commandBus.execute(
+  ): Promise<{ attendanceId: string }> {
+    return this.commandBus.execute(
       new MarkAttendanceCommand(
         classId,
         dto.enrollmentId,
@@ -342,7 +334,6 @@ export class ClassesController {
         dto.notes,
       ),
     );
-    return { success: true, data: result };
   }
 
   @Get(':classId/attendance')
@@ -353,14 +344,14 @@ export class ClassesController {
   async getClassAttendance(
     @Param('classId') classId: string,
     @Query('meetingNumber') meetingNumber?: number,
-  ): Promise<{ success: boolean; data: unknown }> {
-    const result: unknown = await this.queryBus.execute(
+  ): Promise<ClassAttendanceResult> {
+    const result = (await this.queryBus.execute(
       new GetClassAttendanceQuery(classId, meetingNumber),
-    );
+    )) as unknown as ClassAttendanceResult | null;
     if (!result) {
       throw new NotFoundException('Class not found');
     }
-    return { success: true, data: result };
+    return result;
   }
 
   @Get(':classId/attendance/students/:studentId')
@@ -371,14 +362,14 @@ export class ClassesController {
   async getStudentAttendance(
     @Param('classId') classId: string,
     @Param('studentId') studentId: string,
-  ): Promise<{ success: boolean; data: unknown }> {
-    const result: unknown = await this.queryBus.execute(
+  ): Promise<StudentAttendanceResult> {
+    const result = (await this.queryBus.execute(
       new GetStudentAttendanceQuery(classId, studentId),
-    );
+    )) as unknown as StudentAttendanceResult | null;
     if (!result) {
       throw new NotFoundException('Enrollment not found');
     }
-    return { success: true, data: result };
+    return result;
   }
 
   @Put(':classId/attendance/:attendanceId')
@@ -390,16 +381,11 @@ export class ClassesController {
     @Param('attendanceId') attendanceId: string,
     @Body() dto: UpdateAttendanceDto,
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; message: string }> {
+  ): Promise<{ message: string }> {
     await this.commandBus.execute(
-      new UpdateAttendanceCommand(
-        attendanceId,
-        dto.status,
-        user.userId,
-        dto.notes,
-      ),
+      new UpdateAttendanceCommand(attendanceId, dto.status, user.userId, dto.notes),
     );
-    return { success: true, message: 'Attendance updated successfully' };
+    return { message: 'Attendance updated successfully' };
   }
 
   @Post(':classId/attendance/bulk')
@@ -410,11 +396,8 @@ export class ClassesController {
     @Param('classId') classId: string,
     @Body() dto: BulkMarkAttendanceDto,
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; data: BulkAttendanceResult }> {
-    const result = await this.commandBus.execute<
-      BulkMarkAttendanceCommand,
-      BulkAttendanceResult
-    >(
+  ): Promise<BulkAttendanceResult> {
+    return this.commandBus.execute<BulkMarkAttendanceCommand, BulkAttendanceResult>(
       new BulkMarkAttendanceCommand(
         classId,
         dto.meetingNumber,
@@ -427,7 +410,6 @@ export class ClassesController {
         user.userId,
       ),
     );
-    return { success: true, data: result };
   }
 
   // ========== Credits ==========
@@ -440,8 +422,8 @@ export class ClassesController {
     @Param('classId') classId: string,
     @Body() dto: AdjustCreditsDto,
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; data: { adjustmentId: string } }> {
-    const result: { adjustmentId: string } = await this.commandBus.execute(
+  ): Promise<{ adjustmentId: string }> {
+    return this.commandBus.execute(
       new AdjustCreditsCommand(
         classId,
         dto.enrollmentId,
@@ -451,7 +433,6 @@ export class ClassesController {
         user.userId,
       ),
     );
-    return { success: true, data: result };
   }
 
   @Get(':classId/enrollments/:enrollmentId/credits/history')
@@ -459,16 +440,12 @@ export class ClassesController {
   @ApiOperation({ summary: 'Get credit adjustment history for an enrollment' })
   @ApiParam({ name: 'classId' })
   @ApiParam({ name: 'enrollmentId' })
-  async getCreditHistory(
-    @Param('enrollmentId') enrollmentId: string,
-  ): Promise<{ success: boolean; data: unknown }> {
-    const result: unknown = await this.queryBus.execute(
-      new GetCreditHistoryQuery(enrollmentId),
-    );
+  async getCreditHistory(@Param('enrollmentId') enrollmentId: string): Promise<unknown> {
+    const result = await this.queryBus.execute(new GetCreditHistoryQuery(enrollmentId));
     if (!result) {
       throw new NotFoundException('Enrollment not found');
     }
-    return { success: true, data: result };
+    return result;
   }
 
   // ========== Lesson Unlock ==========
@@ -481,8 +458,9 @@ export class ClassesController {
     @Param('classId') classId: string,
     @Body() dto: UnlockLessonDto,
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; data: { lessonUnlockId: string } }> {
-    const result: { lessonUnlockId: string } = await this.commandBus.execute(
+  ): Promise<{ lessonUnlockId: string }> {
+    /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return */
+    return (await this.commandBus.execute(
       new UnlockLessonCommand(
         classId,
         dto.lessonId,
@@ -490,8 +468,8 @@ export class ClassesController {
         dto.meetingNumber,
         dto.notes,
       ),
-    );
-    return { success: true, data: result };
+    )) as unknown as { lessonUnlockId: string };
+    /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return */
   }
 
   @Post(':classId/unlock-lessons/bulk')
@@ -502,11 +480,9 @@ export class ClassesController {
     @Param('classId') classId: string,
     @Body() dto: BulkUnlockLessonsDto,
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; data: BulkUnlockResult }> {
-    const result = await this.commandBus.execute<
-      BulkUnlockLessonsCommand,
-      BulkUnlockResult
-    >(
+  ): Promise<BulkUnlockResult> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const result = await this.commandBus.execute<BulkUnlockLessonsCommand, BulkUnlockResult>(
       new BulkUnlockLessonsCommand(
         classId,
         dto.lessons.map((l) => ({
@@ -517,23 +493,19 @@ export class ClassesController {
         user.userId,
       ),
     );
-    return { success: true, data: result };
+    return result as unknown as BulkUnlockResult;
   }
 
   @Get(':classId/unlocked-lessons')
   @Roles('instructor', 'staff', 'super_admin', 'student')
   @ApiOperation({ summary: 'Get all unlocked lessons for the class' })
   @ApiParam({ name: 'classId' })
-  async getUnlockedLessons(
-    @Param('classId') classId: string,
-  ): Promise<{ success: boolean; data: unknown }> {
-    const result: unknown = await this.queryBus.execute(
-      new GetUnlockedLessonsQuery(classId),
-    );
+  async getUnlockedLessons(@Param('classId') classId: string): Promise<unknown> {
+    const result = await this.queryBus.execute(new GetUnlockedLessonsQuery(classId));
     if (!result) {
       throw new NotFoundException('Class not found');
     }
-    return { success: true, data: result };
+    return result;
   }
 
   // ========== Package Management ==========
@@ -546,11 +518,12 @@ export class ClassesController {
   async getPackageInfo(
     @Param('classId') classId: string,
     @Query('studentId') studentId?: string,
-  ): Promise<{ success: boolean; data: PackageInfoResult }> {
-    const result = await this.queryBus.execute<GetPackageInfoQuery, PackageInfoResult>(
+  ): Promise<PackageInfoResult> {
+    /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return */
+    return (await this.queryBus.execute<GetPackageInfoQuery, PackageInfoResult>(
       new GetPackageInfoQuery(classId, studentId),
-    );
-    return { success: true, data: result };
+    )) as unknown as PackageInfoResult;
+    /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return */
   }
 
   @Post(':classId/add-meetings')
@@ -562,11 +535,10 @@ export class ClassesController {
     @Param('classId') classId: string,
     @Body() dto: AddMeetingsDto,
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; data: AddMeetingsResult }> {
-    const result = await this.commandBus.execute<AddMeetingsCommand, AddMeetingsResult>(
+  ): Promise<AddMeetingsResult> {
+    return this.commandBus.execute<AddMeetingsCommand, AddMeetingsResult>(
       new AddMeetingsCommand(classId, dto.meetingsToAdd, user.userId),
     );
-    return { success: true, data: result };
   }
 
   @Post(':classId/continue-as-private')
@@ -577,8 +549,8 @@ export class ClassesController {
     @Param('classId') classId: string,
     @Body() dto: ContinueAsPrivateDto,
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; data: ContinueAsPrivateResult }> {
-    const result = await this.commandBus.execute<ContinueAsPrivateCommand, ContinueAsPrivateResult>(
+  ): Promise<ContinueAsPrivateResult> {
+    return this.commandBus.execute<ContinueAsPrivateCommand, ContinueAsPrivateResult>(
       new ContinueAsPrivateCommand(
         classId,
         dto.studentId,
@@ -588,6 +560,5 @@ export class ClassesController {
         user.userId,
       ),
     );
-    return { success: true, data: result };
   }
 }

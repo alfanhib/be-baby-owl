@@ -49,17 +49,15 @@ export class UploadController {
   @ApiResponse({ status: 201, description: 'Image uploaded successfully' })
   async uploadImage(
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<{ success: boolean; data: UploadResult }> {
+  ): Promise<UploadResult> {
     this.validateFile(file);
     this.validateImageType(file);
 
-    const result = await this.storageService.uploadImage(
+    return this.storageService.uploadImage(
       file.buffer,
       file.mimetype,
       file.originalname,
     );
-
-    return { success: true, data: result };
   }
 
   @Post('file')
@@ -82,17 +80,15 @@ export class UploadController {
   @ApiResponse({ status: 201, description: 'File uploaded successfully' })
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<{ success: boolean; data: UploadResult }> {
+  ): Promise<UploadResult> {
     this.validateFile(file);
     this.validateDocumentType(file);
 
-    const result = await this.storageService.uploadFile(
+    return this.storageService.uploadFile(
       file.buffer,
       file.mimetype,
       file.originalname,
     );
-
-    return { success: true, data: result };
   }
 
   @Post('video')
@@ -115,17 +111,15 @@ export class UploadController {
   @ApiResponse({ status: 201, description: 'Video uploaded successfully' })
   async uploadVideo(
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<{ success: boolean; data: UploadResult }> {
+  ): Promise<UploadResult> {
     this.validateFile(file);
     this.validateVideoType(file);
 
-    const result = await this.storageService.uploadVideo(
+    return this.storageService.uploadVideo(
       file.buffer,
       file.mimetype,
       file.originalname,
     );
-
-    return { success: true, data: result };
   }
 
   private validateFile(file: Express.Multer.File): void {

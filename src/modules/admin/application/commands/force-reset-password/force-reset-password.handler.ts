@@ -46,7 +46,7 @@ export class ForceResetPasswordHandler
       where: { id: command.userId },
       data: {
         passwordHash,
-        // Force password change on next login (would need field in schema)
+        mustChangePassword: true, // Force password change on next login
       },
     });
 

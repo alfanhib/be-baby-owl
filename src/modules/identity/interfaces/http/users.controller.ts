@@ -45,6 +45,10 @@ import {
   ChangeUserRoleResult,
 } from '@identity/application/commands/change-user-role';
 import {
+  RegenerateInviteCommand,
+  RegenerateInviteResult,
+} from '@identity/application/commands/regenerate-invite';
+import {
   UpdateProfileDto,
   CreateUserDto,
   UpdateUserDto,
@@ -120,6 +124,7 @@ export class UsersController {
       dto.fullName,
       dto.role,
       user.id,
+      dto.username,
     );
     return this.commandBus.execute<CreateUserCommand, CreateUserResult>(
       command,
@@ -136,15 +141,15 @@ export class UsersController {
   @ApiQuery({ name: 'status', required: false, type: String })
   @ApiQuery({ name: 'search', required: false, type: String })
   async getList(
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
     @Query('role') role?: string,
     @Query('status') status?: string,
     @Query('search') search?: string,
   ): Promise<UsersListResponse> {
     const query = new GetUsersListQuery(
-      page ?? 1,
-      limit ?? 20,
+      page ? parseInt(page, 10) : 1,
+      limit ? parseInt(limit, 10) : 20,
       role,
       status,
       search,
@@ -224,5 +229,37 @@ export class UsersController {
     return this.commandBus.execute<ChangeUserRoleCommand, ChangeUserRoleResult>(
       command,
     );
+  }
+
+  @Post(':id/regenerate-invite')
+  @Roles('staff', 'super_admin')
+  @ApiOperation({
+    summary: 'Regenerate invite URL for user (Staff/Super Admin only)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Invite URL regenerated',
+    schema: {
+      properties: {
+        userId: { type: 'string' },
+        email: { type: 'string' },
+        inviteUrl: { type: 'string' },
+        inviteTokenExpiry: { type: 'string', format: 'date-time' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'User has already set their password',
+  })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async regenerateInvite(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<RegenerateInviteResult> {
+    const command = new RegenerateInviteCommand(id);
+    return this.commandBus.execute<
+      RegenerateInviteCommand,
+      RegenerateInviteResult
+    >(command);
   }
 }

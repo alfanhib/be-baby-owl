@@ -43,10 +43,7 @@ export class WhatsAppController {
     @Param('courseId') courseId: string,
     @Query('packageMeetings') packageMeetings?: number,
     @CurrentUser() user?: CurrentUserPayload,
-  ): Promise<{
-    success: boolean;
-    data: { link: string; message: string };
-  }> {
+  ): Promise<{ link: string; message: string }> {
     // Get course info
     const course = await this.prisma.course.findUnique({
       where: { id: courseId },
@@ -80,10 +77,7 @@ export class WhatsAppController {
     const link = this.whatsAppService.generatePurchaseLink(messageData);
     const message = this.whatsAppService.generatePurchaseMessage(messageData);
 
-    return {
-      success: true,
-      data: { link, message },
-    };
+    return { link, message };
   }
 
   @Get('continue-link/:enrollmentId')
@@ -94,10 +88,7 @@ export class WhatsAppController {
   @ApiParam({ name: 'enrollmentId' })
   async getContinueLink(
     @Param('enrollmentId') enrollmentId: string,
-  ): Promise<{
-    success: boolean;
-    data: { link: string; message: string };
-  }> {
+  ): Promise<{ link: string; message: string }> {
     // Get enrollment with class and course info
     const enrollment = await this.prisma.classEnrollment.findUnique({
       where: { id: enrollmentId },
@@ -143,10 +134,7 @@ export class WhatsAppController {
     const link = this.whatsAppService.generateContinuePrivateLink(messageData);
     const message = this.whatsAppService.generateContinuePrivateMessage(messageData);
 
-    return {
-      success: true,
-      data: { link, message },
-    };
+    return { link, message };
   }
 
   @Get('settings')
@@ -154,19 +142,9 @@ export class WhatsAppController {
   @Roles('staff', 'super_admin')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get WhatsApp settings (admin only)' })
-  getSettings(): Promise<{
-    success: boolean;
-    data: { phone: string; configured: boolean };
-  }> {
+  getSettings(): Promise<{ phone: string; configured: boolean }> {
     const phone = this.whatsAppService.getDefaultPhone();
-
-    return Promise.resolve({
-      success: true,
-      data: {
-        phone,
-        configured: !!phone,
-      },
-    });
+    return Promise.resolve({ phone, configured: !!phone });
   }
 }
 

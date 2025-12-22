@@ -74,12 +74,10 @@ export class InstructorController {
   @ApiResponse({ status: 200, description: 'Dashboard data retrieved' })
   async getDashboard(
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; data: InstructorDashboardResult }> {
-    const result = await this.queryBus.execute<
-      GetInstructorDashboardQuery,
-      InstructorDashboardResult
-    >(new GetInstructorDashboardQuery(user.userId));
-    return { success: true, data: result };
+  ): Promise<InstructorDashboardResult> {
+    return this.queryBus.execute<GetInstructorDashboardQuery, InstructorDashboardResult>(
+      new GetInstructorDashboardQuery(user.userId),
+    );
   }
 
   // ========== Classes ==========
@@ -101,12 +99,10 @@ export class InstructorController {
     @CurrentUser() user: CurrentUserPayload,
     @Query('status') status?: string,
     @Query('courseId') courseId?: string,
-  ): Promise<{ success: boolean; data: InstructorClassResult[] }> {
-    const result = await this.queryBus.execute<
-      GetInstructorClassesQuery,
-      InstructorClassResult[]
-    >(new GetInstructorClassesQuery(user.userId, status, courseId));
-    return { success: true, data: result };
+  ): Promise<InstructorClassResult[]> {
+    return this.queryBus.execute<GetInstructorClassesQuery, InstructorClassResult[]>(
+      new GetInstructorClassesQuery(user.userId, status, courseId),
+    );
   }
 
   // ========== Student Monitoring ==========
@@ -120,12 +116,10 @@ export class InstructorController {
   async getClassStudents(
     @Param('classId') classId: string,
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; data: StudentInClassResult[] }> {
-    const result = await this.queryBus.execute<
-      GetClassStudentsQuery,
-      StudentInClassResult[]
-    >(new GetClassStudentsQuery(classId, user.userId));
-    return { success: true, data: result };
+  ): Promise<StudentInClassResult[]> {
+    return this.queryBus.execute<GetClassStudentsQuery, StudentInClassResult[]>(
+      new GetClassStudentsQuery(classId, user.userId),
+    );
   }
 
   @Get('at-risk-students')
@@ -133,12 +127,10 @@ export class InstructorController {
   @ApiResponse({ status: 200, description: 'At-risk students retrieved' })
   async getAtRiskStudents(
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; data: AtRiskStudentResult[] }> {
-    const result = await this.queryBus.execute<
-      GetAtRiskStudentsQuery,
-      AtRiskStudentResult[]
-    >(new GetAtRiskStudentsQuery(user.userId));
-    return { success: true, data: result };
+  ): Promise<AtRiskStudentResult[]> {
+    return this.queryBus.execute<GetAtRiskStudentsQuery, AtRiskStudentResult[]>(
+      new GetAtRiskStudentsQuery(user.userId),
+    );
   }
 
   // ========== Analytics ==========
@@ -155,11 +147,9 @@ export class InstructorController {
   async getAnalytics(
     @CurrentUser() user: CurrentUserPayload,
     @Query('period') period?: 'week' | 'month' | 'year',
-  ): Promise<{ success: boolean; data: InstructorAnalyticsResult }> {
-    const result = await this.queryBus.execute<
-      GetInstructorAnalyticsQuery,
-      InstructorAnalyticsResult
-    >(new GetInstructorAnalyticsQuery(user.userId, period || 'month'));
-    return { success: true, data: result };
+  ): Promise<InstructorAnalyticsResult> {
+    return this.queryBus.execute<GetInstructorAnalyticsQuery, InstructorAnalyticsResult>(
+      new GetInstructorAnalyticsQuery(user.userId, period || 'month'),
+    );
   }
 }

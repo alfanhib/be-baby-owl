@@ -1,10 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
   IsString,
   MinLength,
   IsEnum,
+  IsOptional,
+  Matches,
 } from 'class-validator';
 
 export enum CreateUserRoleEnum {
@@ -18,6 +20,17 @@ export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
+
+  @ApiPropertyOptional({
+    example: 'johndoe',
+    description: 'Username (optional, alphanumeric and underscore only)',
+  })
+  @IsOptional()
+  @IsString()
+  @Matches(/^[a-zA-Z0-9_]+$/, {
+    message: 'Username can only contain letters, numbers, and underscores',
+  })
+  username?: string;
 
   @ApiProperty({
     example: 'SecureP@ss123',

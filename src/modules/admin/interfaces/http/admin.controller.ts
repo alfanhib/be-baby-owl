@@ -69,11 +69,10 @@ export class AdminController {
   @Get('dashboard')
   @ApiOperation({ summary: 'Get super admin dashboard data' })
   @ApiResponse({ status: 200, description: 'Dashboard data' })
-  async getDashboard(): Promise<{ success: boolean; data: DashboardDto }> {
-    const result = await this.queryBus.execute<GetDashboardQuery, DashboardDto>(
+  async getDashboard(): Promise<DashboardDto> {
+    return this.queryBus.execute<GetDashboardQuery, DashboardDto>(
       new GetDashboardQuery(),
     );
-    return { success: true, data: result };
   }
 
   // ========== System Configuration ==========
@@ -81,12 +80,10 @@ export class AdminController {
   @Get('config')
   @ApiOperation({ summary: 'Get system configuration' })
   @ApiResponse({ status: 200, description: 'System configuration' })
-  async getConfig(): Promise<{ success: boolean; data: SystemConfigDto }> {
-    const result = await this.queryBus.execute<
-      GetSystemConfigQuery,
-      SystemConfigDto
-    >(new GetSystemConfigQuery());
-    return { success: true, data: result };
+  async getConfig(): Promise<SystemConfigDto> {
+    return this.queryBus.execute<GetSystemConfigQuery, SystemConfigDto>(
+      new GetSystemConfigQuery(),
+    );
   }
 
   @Patch('config')
@@ -105,8 +102,11 @@ export class AdminController {
   @ApiResponse({ status: 200, description: 'Configuration updated' })
   async updateConfig(
     @Body() body: Record<string, unknown>,
-  ): Promise<{ success: boolean; message: string }> {
-    return this.commandBus.execute(new UpdateSystemConfigCommand(body));
+  ): Promise<{ message: string }> {
+    const result = (await this.commandBus.execute(
+      new UpdateSystemConfigCommand(body),
+    )) as unknown as { success: boolean; message: string };
+    return { message: result.message };
   }
 
   // ========== User Management ==========
@@ -133,25 +133,19 @@ export class AdminController {
     @Query('status') status?: string,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
-  ): Promise<{ success: boolean; data: PaginatedUsers }> {
-    const result = await this.queryBus.execute<GetUsersQuery, PaginatedUsers>(
+  ): Promise<PaginatedUsers> {
+    return this.queryBus.execute<GetUsersQuery, PaginatedUsers>(
       new GetUsersQuery(search, role, status, page || 1, limit || 20),
     );
-    return { success: true, data: result };
   }
 
   @Get('users/overview')
   @ApiOperation({ summary: 'Get user statistics overview' })
   @ApiResponse({ status: 200, description: 'User overview statistics' })
-  async getUsersOverview(): Promise<{
-    success: boolean;
-    data: UsersOverviewDto;
-  }> {
-    const result = await this.queryBus.execute<
-      GetUsersOverviewQuery,
-      UsersOverviewDto
-    >(new GetUsersOverviewQuery());
-    return { success: true, data: result };
+  async getUsersOverview(): Promise<UsersOverviewDto> {
+    return this.queryBus.execute<GetUsersOverviewQuery, UsersOverviewDto>(
+      new GetUsersOverviewQuery(),
+    );
   }
 
   @Get('users/export')
@@ -191,14 +185,11 @@ export class AdminController {
   async resetUserPassword(
     @Param('id') userId: string,
     @Body() body: { newPassword?: string },
-  ): Promise<{
-    success: boolean;
-    message: string;
-    temporaryPassword?: string;
-  }> {
-    return this.commandBus.execute(
+  ): Promise<{ message: string; temporaryPassword?: string }> {
+    const result = (await this.commandBus.execute(
       new ForceResetPasswordCommand(userId, body.newPassword),
-    );
+    )) as unknown as { success: boolean; message: string; temporaryPassword?: string };
+    return { message: result.message, temporaryPassword: result.temporaryPassword };
   }
 
   // ========== System Analytics ==========
@@ -211,17 +202,13 @@ export class AdminController {
   async getSystemAnalytics(
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
-  ): Promise<{ success: boolean; data: SystemAnalyticsDto }> {
-    const result = await this.queryBus.execute<
-      GetSystemAnalyticsQuery,
-      SystemAnalyticsDto
-    >(
+  ): Promise<SystemAnalyticsDto> {
+    return this.queryBus.execute<GetSystemAnalyticsQuery, SystemAnalyticsDto>(
       new GetSystemAnalyticsQuery(
         startDate ? new Date(startDate) : undefined,
         endDate ? new Date(endDate) : undefined,
       ),
     );
-    return { success: true, data: result };
   }
 
   // ========== System Operations ==========
@@ -229,15 +216,10 @@ export class AdminController {
   @Get('system/health')
   @ApiOperation({ summary: 'Get detailed system health' })
   @ApiResponse({ status: 200, description: 'System health status' })
-  async getSystemHealth(): Promise<{
-    success: boolean;
-    data: SystemHealthDto;
-  }> {
-    const result = await this.queryBus.execute<
-      GetSystemHealthQuery,
-      SystemHealthDto
-    >(new GetSystemHealthQuery());
-    return { success: true, data: result };
+  async getSystemHealth(): Promise<SystemHealthDto> {
+    return this.queryBus.execute<GetSystemHealthQuery, SystemHealthDto>(
+      new GetSystemHealthQuery(),
+    );
   }
 
   @Post('system/cache/clear')
@@ -254,8 +236,11 @@ export class AdminController {
   @ApiResponse({ status: 200, description: 'Cache cleared' })
   async clearCache(
     @Body() body: { pattern?: string },
-  ): Promise<{ success: boolean; message: string }> {
-    return this.commandBus.execute(new ClearCacheCommand(body?.pattern));
+  ): Promise<{ message: string }> {
+    const result = (await this.commandBus.execute(
+      new ClearCacheCommand(body?.pattern),
+    )) as unknown as { success: boolean; message: string };
+    return { message: result.message };
   }
 
   // ========== Audit Logs ==========
@@ -278,8 +263,8 @@ export class AdminController {
     @Query('endDate') endDate?: string,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
-  ): Promise<{ success: boolean; data: AuditLogsDto['data']; meta: AuditLogsDto['meta'] }> {
-    const result = await this.queryBus.execute<GetAuditLogsQuery, AuditLogsDto>(
+  ): Promise<AuditLogsDto> {
+    return this.queryBus.execute<GetAuditLogsQuery, AuditLogsDto>(
       new GetAuditLogsQuery(
         userId,
         action,
@@ -290,7 +275,6 @@ export class AdminController {
         limit || 50,
       ),
     );
-    return { success: true, data: result.data, meta: result.meta };
   }
 
   // ========== Reports ==========
@@ -305,18 +289,14 @@ export class AdminController {
     @Query('period') period?: 'month' | 'quarter' | 'year',
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
-  ): Promise<{ success: boolean; data: FinancialReportDto }> {
-    const result = await this.queryBus.execute<
-      GetFinancialReportQuery,
-      FinancialReportDto
-    >(
+  ): Promise<FinancialReportDto> {
+    return this.queryBus.execute<GetFinancialReportQuery, FinancialReportDto>(
       new GetFinancialReportQuery(
         period,
         startDate ? new Date(startDate) : undefined,
         endDate ? new Date(endDate) : undefined,
       ),
     );
-    return { success: true, data: result };
   }
 
   @Get('reports/user-growth')
@@ -329,18 +309,14 @@ export class AdminController {
     @Query('period') period?: 'month' | 'quarter' | 'year',
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
-  ): Promise<{ success: boolean; data: UserGrowthReportDto }> {
-    const result = await this.queryBus.execute<
-      GetUserGrowthReportQuery,
-      UserGrowthReportDto
-    >(
+  ): Promise<UserGrowthReportDto> {
+    return this.queryBus.execute<GetUserGrowthReportQuery, UserGrowthReportDto>(
       new GetUserGrowthReportQuery(
         period,
         startDate ? new Date(startDate) : undefined,
         endDate ? new Date(endDate) : undefined,
       ),
     );
-    return { success: true, data: result };
   }
 
   @Get('reports/course-performance')
@@ -351,16 +327,12 @@ export class AdminController {
   async getCoursePerformanceReport(
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
-  ): Promise<{ success: boolean; data: CoursePerformanceReportDto }> {
-    const result = await this.queryBus.execute<
-      GetCoursePerformanceQuery,
-      CoursePerformanceReportDto
-    >(
+  ): Promise<CoursePerformanceReportDto> {
+    return this.queryBus.execute<GetCoursePerformanceQuery, CoursePerformanceReportDto>(
       new GetCoursePerformanceQuery(
         startDate ? new Date(startDate) : undefined,
         endDate ? new Date(endDate) : undefined,
       ),
     );
-    return { success: true, data: result };
   }
 }

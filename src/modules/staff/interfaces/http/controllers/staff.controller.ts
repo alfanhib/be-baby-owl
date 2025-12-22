@@ -86,15 +86,10 @@ export class StaffController {
   @Get('dashboard')
   @ApiOperation({ summary: 'Get staff dashboard data' })
   @ApiResponse({ status: 200, description: 'Dashboard data retrieved' })
-  async getDashboard(): Promise<{
-    success: boolean;
-    data: StaffDashboardResult;
-  }> {
-    const result = await this.queryBus.execute<
-      GetStaffDashboardQuery,
-      StaffDashboardResult
-    >(new GetStaffDashboardQuery());
-    return { success: true, data: result };
+  async getDashboard(): Promise<StaffDashboardResult> {
+    return this.queryBus.execute<GetStaffDashboardQuery, StaffDashboardResult>(
+      new GetStaffDashboardQuery(),
+    );
   }
 
   // ========== Quick Enrollment ==========
@@ -105,12 +100,10 @@ export class StaffController {
   @ApiResponse({ status: 200, description: 'Students found' })
   async searchStudent(
     @Query('q') searchTerm: string,
-  ): Promise<{ success: boolean; data: StudentSearchResult[] }> {
-    const result = await this.queryBus.execute<
-      SearchStudentsQuery,
-      StudentSearchResult[]
-    >(new SearchStudentsQuery(searchTerm));
-    return { success: true, data: result };
+  ): Promise<StudentSearchResult[]> {
+    return this.queryBus.execute<SearchStudentsQuery, StudentSearchResult[]>(
+      new SearchStudentsQuery(searchTerm),
+    );
   }
 
   @Get('quick-enroll/available-classes')
@@ -125,12 +118,10 @@ export class StaffController {
   async getAvailableClasses(
     @Query('courseId') courseId?: string,
     @Query('type') type?: 'group' | 'private',
-  ): Promise<{ success: boolean; data: AvailableClassResult[] }> {
-    const result = await this.queryBus.execute<
-      GetAvailableClassesQuery,
-      AvailableClassResult[]
-    >(new GetAvailableClassesQuery(courseId, type));
-    return { success: true, data: result };
+  ): Promise<AvailableClassResult[]> {
+    return this.queryBus.execute<GetAvailableClassesQuery, AvailableClassResult[]>(
+      new GetAvailableClassesQuery(courseId, type),
+    );
   }
 
   @Post('quick-enroll')
@@ -144,7 +135,7 @@ export class StaffController {
   async quickEnroll(
     @Body() dto: QuickEnrollDto,
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; message: string; data: QuickEnrollResult }> {
+  ): Promise<QuickEnrollResult> {
     const command = new QuickEnrollCommand(
       dto.student.id || null,
       dto.student.name || null,
@@ -158,18 +149,7 @@ export class StaffController {
       user.userId,
     );
 
-    const result = await this.commandBus.execute<
-      QuickEnrollCommand,
-      QuickEnrollResult
-    >(command);
-
-    return {
-      success: true,
-      message: result.studentCreated
-        ? 'Student created and enrolled successfully'
-        : 'Student enrolled successfully',
-      data: result,
-    };
+    return this.commandBus.execute<QuickEnrollCommand, QuickEnrollResult>(command);
   }
 
   // ========== Staff Tools ==========
@@ -177,21 +157,12 @@ export class StaffController {
   @Get('pending-payments')
   @ApiOperation({ summary: 'Get payments pending verification' })
   @ApiResponse({ status: 200, description: 'Pending payments retrieved' })
-  async getPendingPayments(): Promise<{
-    success: boolean;
-    data: Array<{ id: string; type: string; title: string }>;
-  }> {
-    // For now, returning from dashboard query which includes pending actions
+  async getPendingPayments(): Promise<Array<{ id: string; type: string; title: string }>> {
     const dashboardResult = await this.queryBus.execute<
       GetStaffDashboardQuery,
       StaffDashboardResult
     >(new GetStaffDashboardQuery());
-    return {
-      success: true,
-      data: dashboardResult.pendingActions.filter(
-        (a) => a.type === 'verify_payment',
-      ),
-    };
+    return dashboardResult.pendingActions.filter((a) => a.type === 'verify_payment');
   }
 
   // ========== Enrollment History & Analytics ==========
@@ -210,20 +181,19 @@ export class StaffController {
     @Query('studentId') studentId?: string,
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
-  ): Promise<{ success: boolean; data: unknown }> {
-    const result: unknown = await this.queryBus.execute(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ): Promise<unknown> {
+    return this.queryBus.execute(
       new GetEnrollmentHistoryQuery(
         classId,
         studentId,
         startDate ? new Date(startDate) : undefined,
         endDate ? new Date(endDate) : undefined,
-        page ?? 1,
-        limit ?? 20,
+        page ? parseInt(page, 10) : 1,
+        limit ? parseInt(limit, 10) : 20,
       ),
     );
-    return { success: true, data: result };
   }
 
   @Get('enrollments/analytics')
@@ -236,15 +206,14 @@ export class StaffController {
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
     @Query('courseId') courseId?: string,
-  ): Promise<{ success: boolean; data: unknown }> {
-    const result: unknown = await this.queryBus.execute(
+  ): Promise<unknown> {
+    return this.queryBus.execute(
       new GetEnrollmentAnalyticsQuery(
         startDate ? new Date(startDate) : undefined,
         endDate ? new Date(endDate) : undefined,
         courseId,
       ),
     );
-    return { success: true, data: result };
   }
 
   // ========== Bulk Enrollment ==========
@@ -257,7 +226,7 @@ export class StaffController {
   async bulkEnroll(
     @Body() dto: BulkEnrollDto,
     @CurrentUser() user: CurrentUserPayload,
-  ): Promise<{ success: boolean; message: string; data: BulkEnrollResult }> {
+  ): Promise<BulkEnrollResult> {
     const command = new BulkEnrollCommand(
       dto.classId,
       dto.students.map((s) => ({
@@ -272,14 +241,6 @@ export class StaffController {
       user.userId,
     );
 
-    const result = await this.commandBus.execute<BulkEnrollCommand, BulkEnrollResult>(
-      command,
-    );
-
-    return {
-      success: true,
-      message: `Enrolled ${result.successful}/${result.total} students`,
-      data: result,
-    };
+    return this.commandBus.execute<BulkEnrollCommand, BulkEnrollResult>(command);
   }
 }

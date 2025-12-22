@@ -1,5 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Inject, ForbiddenException } from '@nestjs/common';
+import { Inject, ForbiddenException, ConflictException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import * as crypto from 'crypto';
 import { CreateUserCommand } from './create-user.command';
 import { User } from '@identity/domain/aggregates/user.aggregate';
 import { Password } from '@identity/domain/value-objects/password.vo';
@@ -17,6 +19,8 @@ export interface CreateUserResult {
   email: string;
   fullName: string;
   role: string;
+  inviteUrl: string;
+  inviteTokenExpiry: Date;
 }
 
 @CommandHandler(CreateUserCommand)
@@ -27,7 +31,12 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
     @Inject(PASSWORD_HASHER)
     private readonly passwordHasher: IPasswordHasher,
     private readonly eventBus: EventBusService,
+    private readonly configService: ConfigService,
   ) {}
+
+  private generateInviteToken(): string {
+    return crypto.randomBytes(32).toString('hex');
+  }
 
   async execute(command: CreateUserCommand): Promise<CreateUserResult> {
     // Validate role is valid
@@ -71,15 +80,33 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
       throw new EmailAlreadyExistsError(command.email);
     }
 
+    // Check if username already exists (if provided)
+    if (command.username) {
+      const usernameExists = await this.userRepository.usernameExists(
+        command.username,
+      );
+      if (usernameExists) {
+        throw new ConflictException('Username already exists');
+      }
+    }
+
     // Hash password
     const passwordHash = await this.passwordHasher.hash(command.password);
 
-    // Create user aggregate
+    // Generate invite token for first-time login
+    const inviteToken = this.generateInviteToken();
+    const inviteTokenExpiry = new Date(Date.now() + 72 * 60 * 60 * 1000); // 72 hours
+
+    // Create user aggregate - admin-created users must change password on first login
     const user = User.create({
       email: command.email,
+      username: command.username,
       passwordHash,
       fullName: command.fullName,
       role: targetRole,
+      mustChangePassword: true, // User must change password on first login
+      inviteToken,
+      inviteTokenExpiry,
     });
 
     // Save to repository
@@ -88,11 +115,20 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
     // Publish domain events
     await this.eventBus.publishFromAggregate(user);
 
+    // Generate invite URL
+    const frontendUrl = this.configService.get<string>(
+      'app.frontendUrl',
+      'http://localhost:3000',
+    );
+    const inviteUrl = `${frontendUrl}/auth/setup-password?token=${inviteToken}`;
+
     return {
       userId: user.id.value,
       email: user.email.value,
       fullName: user.fullName,
       role: user.role.value,
+      inviteUrl,
+      inviteTokenExpiry,
     };
   }
 }

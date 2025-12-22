@@ -12,6 +12,8 @@ export * from './change-user-role';
 export * from './forgot-password';
 export * from './reset-password';
 export * from './request-verification-email';
+export * from './regenerate-invite';
+export * from './setup-password';
 
 import { RegisterUserHandler } from './register-user';
 import { LoginHandler } from './login';
@@ -27,6 +29,8 @@ import { ChangeUserRoleHandler } from './change-user-role';
 import { ForgotPasswordHandler } from './forgot-password';
 import { ResetPasswordHandler } from './reset-password';
 import { RequestVerificationEmailHandler } from './request-verification-email';
+import { RegenerateInviteHandler } from './regenerate-invite';
+import { SetupPasswordHandler } from './setup-password';
 
 export const CommandHandlers = [
   RegisterUserHandler,
@@ -43,4 +47,6 @@ export const CommandHandlers = [
   ForgotPasswordHandler,
   ResetPasswordHandler,
   RequestVerificationEmailHandler,
+  RegenerateInviteHandler,
+  SetupPasswordHandler,
 ];

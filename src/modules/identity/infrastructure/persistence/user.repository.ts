@@ -110,6 +110,18 @@ export class UserRepository implements IUserRepository {
     });
   }
 
+  async findByInviteToken(token: string): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { inviteToken: token },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return UserMapper.toDomain(user);
+  }
+
   async findAll(params: {
     skip?: number;
     take?: number;

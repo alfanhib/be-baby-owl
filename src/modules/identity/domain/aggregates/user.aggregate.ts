@@ -24,6 +24,9 @@ export interface UserProps {
   status: UserStatus;
   emailVerified: boolean;
   onboardingCompleted: boolean;
+  mustChangePassword: boolean;
+  inviteToken?: string;
+  inviteTokenExpiry?: Date;
   lastLoginAt?: Date;
 }
 
@@ -33,6 +36,9 @@ export interface CreateUserProps {
   passwordHash: string;
   fullName: string;
   role?: UserRoleEnum;
+  mustChangePassword?: boolean;
+  inviteToken?: string;
+  inviteTokenExpiry?: Date;
 }
 
 export interface RestoreUserProps {
@@ -47,6 +53,9 @@ export interface RestoreUserProps {
   status: string;
   emailVerified: boolean;
   onboardingCompleted: boolean;
+  mustChangePassword: boolean;
+  inviteToken?: string;
+  inviteTokenExpiry?: Date;
   lastLoginAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -63,6 +72,9 @@ export class User extends AggregateRoot<UserId> {
   private _status: UserStatus;
   private _emailVerified: boolean;
   private _onboardingCompleted: boolean;
+  private _mustChangePassword: boolean;
+  private _inviteToken?: string;
+  private _inviteTokenExpiry?: Date;
   private _lastLoginAt?: Date;
 
   private constructor(
@@ -82,6 +94,9 @@ export class User extends AggregateRoot<UserId> {
     this._status = props.status;
     this._emailVerified = props.emailVerified;
     this._onboardingCompleted = props.onboardingCompleted;
+    this._mustChangePassword = props.mustChangePassword;
+    this._inviteToken = props.inviteToken;
+    this._inviteTokenExpiry = props.inviteTokenExpiry;
     this._lastLoginAt = props.lastLoginAt;
   }
 
@@ -129,6 +144,18 @@ export class User extends AggregateRoot<UserId> {
     return this._onboardingCompleted;
   }
 
+  get mustChangePassword(): boolean {
+    return this._mustChangePassword;
+  }
+
+  get inviteToken(): string | undefined {
+    return this._inviteToken;
+  }
+
+  get inviteTokenExpiry(): Date | undefined {
+    return this._inviteTokenExpiry;
+  }
+
   get lastLoginAt(): Date | undefined {
     return this._lastLoginAt;
   }
@@ -156,6 +183,9 @@ export class User extends AggregateRoot<UserId> {
       status,
       emailVerified: false,
       onboardingCompleted: false,
+      mustChangePassword: props.mustChangePassword ?? false,
+      inviteToken: props.inviteToken,
+      inviteTokenExpiry: props.inviteTokenExpiry,
     });
 
     user.addDomainEvent(
@@ -193,6 +223,9 @@ export class User extends AggregateRoot<UserId> {
         status,
         emailVerified: props.emailVerified,
         onboardingCompleted: props.onboardingCompleted,
+        mustChangePassword: props.mustChangePassword,
+        inviteToken: props.inviteToken,
+        inviteTokenExpiry: props.inviteTokenExpiry,
         lastLoginAt: props.lastLoginAt,
       },
       props.createdAt,
@@ -225,11 +258,48 @@ export class User extends AggregateRoot<UserId> {
    */
   changePassword(newPasswordHash: string): void {
     this._passwordHash = Password.createFromHashed(newPasswordHash);
+    this._mustChangePassword = false; // Clear flag after password change
     this.touch();
 
     this.addDomainEvent(
       new PasswordChangedEvent(this.id.value, this._email.value),
     );
+  }
+
+  /**
+   * Set must change password flag
+   */
+  setMustChangePassword(value: boolean): void {
+    this._mustChangePassword = value;
+    this.touch();
+  }
+
+  /**
+   * Set invite token for first-time password setup
+   */
+  setInviteToken(token: string, expiryHours: number = 72): void {
+    this._inviteToken = token;
+    this._inviteTokenExpiry = new Date(Date.now() + expiryHours * 60 * 60 * 1000);
+    this.touch();
+  }
+
+  /**
+   * Clear invite token after password is set
+   */
+  clearInviteToken(): void {
+    this._inviteToken = undefined;
+    this._inviteTokenExpiry = undefined;
+    this.touch();
+  }
+
+  /**
+   * Check if invite token is valid
+   */
+  isInviteTokenValid(token: string): boolean {
+    if (!this._inviteToken || !this._inviteTokenExpiry) {
+      return false;
+    }
+    return this._inviteToken === token && this._inviteTokenExpiry > new Date();
   }
 
   /**

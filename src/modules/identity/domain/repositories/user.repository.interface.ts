@@ -50,6 +50,11 @@ export interface IUserRepository {
   delete(id: UserId): Promise<void>;
 
   /**
+   * Find user by invite token
+   */
+  findByInviteToken(token: string): Promise<User | null>;
+
+  /**
    * Find all users with pagination and filters
    */
   findAll(params: {

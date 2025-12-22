@@ -18,6 +18,9 @@ export class UserMapper {
       status: raw.status,
       emailVerified: raw.emailVerified,
       onboardingCompleted: raw.onboardingCompleted,
+      mustChangePassword: raw.mustChangePassword,
+      inviteToken: raw.inviteToken ?? undefined,
+      inviteTokenExpiry: raw.inviteTokenExpiry ?? undefined,
       lastLoginAt: raw.lastLoginAt ?? undefined,
       createdAt: raw.createdAt,
       updatedAt: raw.updatedAt,
@@ -42,6 +45,9 @@ export class UserMapper {
       status: user.status.value as PrismaUser['status'],
       emailVerified: user.emailVerified,
       onboardingCompleted: user.onboardingCompleted,
+      mustChangePassword: user.mustChangePassword,
+      inviteToken: user.inviteToken ?? null,
+      inviteTokenExpiry: user.inviteTokenExpiry ?? null,
       lastLoginAt: user.lastLoginAt ?? null,
     };
   }
@@ -61,6 +67,9 @@ export class UserMapper {
       status: user.status.value as PrismaUser['status'],
       emailVerified: user.emailVerified,
       onboardingCompleted: user.onboardingCompleted,
+      mustChangePassword: user.mustChangePassword,
+      inviteToken: user.inviteToken ?? null,
+      inviteTokenExpiry: user.inviteTokenExpiry ?? null,
       lastLoginAt: user.lastLoginAt ?? null,
     };
   }
