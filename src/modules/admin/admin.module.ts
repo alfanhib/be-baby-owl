@@ -17,4 +17,3 @@ import { AdminController } from './interfaces/http/admin.controller';
   providers: [...QueryHandlers, ...CommandHandlers],
 })
 export class AdminModule {}
-

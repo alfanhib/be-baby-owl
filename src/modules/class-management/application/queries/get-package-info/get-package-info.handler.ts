@@ -26,9 +26,10 @@ export interface PackageInfoResult {
 }
 
 @QueryHandler(GetPackageInfoQuery)
-export class GetPackageInfoHandler
-  implements IQueryHandler<GetPackageInfoQuery, PackageInfoResult>
-{
+export class GetPackageInfoHandler implements IQueryHandler<
+  GetPackageInfoQuery,
+  PackageInfoResult
+> {
   constructor(
     @Inject(CLASS_REPOSITORY)
     private readonly classRepository: IClassRepository,
@@ -37,7 +38,9 @@ export class GetPackageInfoHandler
   async execute(query: GetPackageInfoQuery): Promise<PackageInfoResult> {
     const { classId, studentId } = query;
 
-    const classAggregate = await this.classRepository.findById(ClassId.create(classId));
+    const classAggregate = await this.classRepository.findById(
+      ClassId.create(classId),
+    );
     if (!classAggregate) {
       throw new Error(`Class not found: ${classId}`);
     }
@@ -70,7 +73,8 @@ export class GetPackageInfoHandler
       meetingsRemaining,
       status,
       canAddMeetings: isPrivate, // Only private classes can add meetings
-      canContinueAsPrivate: isGroup && (status === 'CRITICAL' || status === 'EXHAUSTED'),
+      canContinueAsPrivate:
+        isGroup && (status === 'CRITICAL' || status === 'EXHAUSTED'),
     };
 
     // If studentId provided, get their specific package info
@@ -89,4 +93,3 @@ export class GetPackageInfoHandler
     return result;
   }
 }
-

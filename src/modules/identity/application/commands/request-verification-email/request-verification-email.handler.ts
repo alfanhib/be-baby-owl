@@ -9,9 +9,7 @@ import { EmailService } from '@notification/email/email.service';
 import { randomBytes } from 'crypto';
 
 @CommandHandler(RequestVerificationEmailCommand)
-export class RequestVerificationEmailHandler
-  implements ICommandHandler<RequestVerificationEmailCommand>
-{
+export class RequestVerificationEmailHandler implements ICommandHandler<RequestVerificationEmailCommand> {
   private readonly logger = new Logger(RequestVerificationEmailHandler.name);
 
   constructor(
@@ -58,4 +56,3 @@ export class RequestVerificationEmailHandler
     this.logger.log(`Verification email sent to: ${user.email.value}`);
   }
 }
-

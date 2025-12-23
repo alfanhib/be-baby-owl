@@ -8,5 +8,3 @@ export class DuplicateClassCommand {
     public readonly newEnrollmentDeadline?: Date,
   ) {}
 }
-
-

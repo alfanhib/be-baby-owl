@@ -74,7 +74,11 @@ export class ClassStatus extends ValueObject<ClassStatusProps> {
   }
 
   canActivate(): boolean {
-    return this.props.value === ClassStatusEnum.ENROLLMENT_OPEN;
+    // Can activate from draft (skip enrollment) or enrollment_open
+    return (
+      this.props.value === ClassStatusEnum.DRAFT ||
+      this.props.value === ClassStatusEnum.ENROLLMENT_OPEN
+    );
   }
 
   canComplete(): boolean {

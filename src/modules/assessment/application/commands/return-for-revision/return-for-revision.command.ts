@@ -5,4 +5,3 @@ export class ReturnForRevisionCommand {
     public readonly feedback: string,
   ) {}
 }
-

@@ -32,4 +32,3 @@ import { SubmissionsController } from './interfaces/http/controllers/submissions
   exports: [SUBMISSION_REPOSITORY],
 })
 export class AssessmentModule {}
-

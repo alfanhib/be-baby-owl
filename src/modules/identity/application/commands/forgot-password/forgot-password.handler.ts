@@ -9,9 +9,7 @@ import { EmailService } from '@notification/email/email.service';
 import { randomBytes } from 'crypto';
 
 @CommandHandler(ForgotPasswordCommand)
-export class ForgotPasswordHandler
-  implements ICommandHandler<ForgotPasswordCommand>
-{
+export class ForgotPasswordHandler implements ICommandHandler<ForgotPasswordCommand> {
   private readonly logger = new Logger(ForgotPasswordHandler.name);
 
   constructor(
@@ -54,4 +52,3 @@ export class ForgotPasswordHandler
     this.logger.log(`Password reset email sent to: ${user.email.value}`);
   }
 }
-

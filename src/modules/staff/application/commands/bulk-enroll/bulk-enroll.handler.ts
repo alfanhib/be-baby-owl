@@ -154,7 +154,8 @@ export class BulkEnrollHandler implements ICommandHandler<BulkEnrollCommand> {
             paymentStatus === 'verified'
               ? PaymentStatus.verified
               : PaymentStatus.pending,
-          notes: student.notes || `Bulk enrollment for class ${classEntity.name}`,
+          notes:
+            student.notes || `Bulk enrollment for class ${classEntity.name}`,
           verifiedById: paymentStatus === 'verified' ? enrolledById : null,
           verifiedAt: paymentStatus === 'verified' ? new Date() : null,
         },

@@ -33,9 +33,7 @@ export interface PaginatedStudentSubmissions {
 }
 
 @QueryHandler(GetStudentSubmissionsQuery)
-export class GetStudentSubmissionsHandler
-  implements IQueryHandler<GetStudentSubmissionsQuery>
-{
+export class GetStudentSubmissionsHandler implements IQueryHandler<GetStudentSubmissionsQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(
@@ -113,4 +111,3 @@ export class GetStudentSubmissionsHandler
     };
   }
 }
-

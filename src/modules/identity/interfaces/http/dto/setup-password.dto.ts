@@ -19,4 +19,3 @@ export class SetupPasswordDto {
   @MinLength(8)
   newPassword: string;
 }
-

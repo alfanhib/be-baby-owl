@@ -13,6 +13,7 @@ export interface ClassListItem {
   instructorName: string;
   type: string;
   status: string;
+  price: number | null;
   totalMeetings: number;
   meetingsCompleted: number;
   currentCapacity: number;
@@ -34,8 +35,8 @@ export class GetClassesHandler implements IQueryHandler<GetClassesQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(query: GetClassesQuery): Promise<ClassListResult> {
-    const page = query.page ?? 1;
-    const limit = query.limit ?? 20;
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 20;
     const skip = (page - 1) * limit;
 
     const where: Record<string, unknown> = {};
@@ -75,6 +76,7 @@ export class GetClassesHandler implements IQueryHandler<GetClassesQuery> {
       instructorName: c.instructor.fullName,
       type: c.type,
       status: c.status,
+      price: c.price ? Number(c.price) : null,
       totalMeetings: c.totalMeetings,
       meetingsCompleted: c.meetingsCompleted,
       currentCapacity: c.currentCapacity,
@@ -123,6 +125,7 @@ export class GetInstructorClassesHandler implements IQueryHandler<GetInstructorC
       instructorName: c.instructor.fullName,
       type: c.type,
       status: c.status,
+      price: c.price ? Number(c.price) : null,
       totalMeetings: c.totalMeetings,
       meetingsCompleted: c.meetingsCompleted,
       currentCapacity: c.currentCapacity,
@@ -172,6 +175,7 @@ export class GetStudentClassesHandler implements IQueryHandler<GetStudentClasses
       instructorName: c.instructor.fullName,
       type: c.type,
       status: c.status,
+      price: c.price ? Number(c.price) : null,
       totalMeetings: c.totalMeetings,
       meetingsCompleted: c.meetingsCompleted,
       currentCapacity: c.currentCapacity,

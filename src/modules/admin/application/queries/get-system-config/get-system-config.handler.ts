@@ -34,9 +34,7 @@ export function getSystemConfigStore(): Partial<SystemConfigDto> {
 }
 
 @QueryHandler(GetSystemConfigQuery)
-export class GetSystemConfigHandler
-  implements IQueryHandler<GetSystemConfigQuery>
-{
+export class GetSystemConfigHandler implements IQueryHandler<GetSystemConfigQuery> {
   constructor(private readonly configService: ConfigService) {}
 
   execute(): Promise<SystemConfigDto> {
@@ -75,4 +73,3 @@ export class GetSystemConfigHandler
     });
   }
 }
-

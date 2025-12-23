@@ -5,4 +5,3 @@ export class GetUserGrowthReportQuery {
     public readonly endDate?: Date,
   ) {}
 }
-

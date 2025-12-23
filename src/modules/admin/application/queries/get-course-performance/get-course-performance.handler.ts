@@ -36,9 +36,7 @@ export interface CoursePerformanceReportDto {
 }
 
 @QueryHandler(GetCoursePerformanceQuery)
-export class GetCoursePerformanceHandler
-  implements IQueryHandler<GetCoursePerformanceQuery>
-{
+export class GetCoursePerformanceHandler implements IQueryHandler<GetCoursePerformanceQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(
@@ -140,7 +138,10 @@ export class GetCoursePerformanceHandler
 
     // Sort for top performing (by revenue and enrollments)
     const topPerforming = [...courseItems]
-      .sort((a, b) => b.revenue - a.revenue || b.totalEnrollments - a.totalEnrollments)
+      .sort(
+        (a, b) =>
+          b.revenue - a.revenue || b.totalEnrollments - a.totalEnrollments,
+      )
       .slice(0, 5);
 
     // Courses needing attention (low completion, no enrollments)
@@ -170,4 +171,3 @@ export class GetCoursePerformanceHandler
     };
   }
 }
-

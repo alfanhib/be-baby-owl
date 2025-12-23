@@ -4,4 +4,3 @@ export class SetupPasswordCommand {
     public readonly newPassword: string,
   ) {}
 }
-

@@ -25,4 +25,3 @@ export class SubmissionGradedEvent extends DomainEvent {
     };
   }
 }
-

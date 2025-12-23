@@ -48,4 +48,3 @@ export class SubmissionType {
     return this._value === other._value;
   }
 }
-

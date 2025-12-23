@@ -7,4 +7,3 @@ export class GradeSubmissionCommand {
     public readonly feedback?: string,
   ) {}
 }
-

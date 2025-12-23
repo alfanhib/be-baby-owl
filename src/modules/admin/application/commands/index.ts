@@ -14,4 +14,3 @@ export * from './force-reset-password/force-reset-password.command';
 export * from './force-reset-password/force-reset-password.handler';
 export * from './clear-cache/clear-cache.command';
 export * from './clear-cache/clear-cache.handler';
-

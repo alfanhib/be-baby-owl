@@ -9,17 +9,13 @@ import { Class } from '@class-management/domain/aggregates/class.aggregate';
 import { ClassId } from '@class-management/domain/value-objects/class-id.vo';
 
 @CommandHandler(DuplicateClassCommand)
-export class DuplicateClassHandler
-  implements ICommandHandler<DuplicateClassCommand>
-{
+export class DuplicateClassHandler implements ICommandHandler<DuplicateClassCommand> {
   constructor(
     @Inject(CLASS_REPOSITORY)
     private readonly classRepository: IClassRepository,
   ) {}
 
-  async execute(
-    command: DuplicateClassCommand,
-  ): Promise<{ classId: string }> {
+  async execute(command: DuplicateClassCommand): Promise<{ classId: string }> {
     const sourceClass = await this.classRepository.findById(
       ClassId.create(command.sourceClassId),
     );
@@ -53,5 +49,3 @@ export class DuplicateClassHandler
     return { classId: newClass.id.value };
   }
 }
-
-

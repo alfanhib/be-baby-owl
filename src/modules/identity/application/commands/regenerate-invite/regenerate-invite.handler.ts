@@ -15,9 +15,7 @@ export interface RegenerateInviteResult {
 }
 
 @CommandHandler(RegenerateInviteCommand)
-export class RegenerateInviteHandler
-  implements ICommandHandler<RegenerateInviteCommand>
-{
+export class RegenerateInviteHandler implements ICommandHandler<RegenerateInviteCommand> {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
@@ -28,7 +26,9 @@ export class RegenerateInviteHandler
     return crypto.randomBytes(32).toString('hex');
   }
 
-  async execute(command: RegenerateInviteCommand): Promise<RegenerateInviteResult> {
+  async execute(
+    command: RegenerateInviteCommand,
+  ): Promise<RegenerateInviteResult> {
     const userId = UserId.create(command.userId);
     const user = await this.userRepository.findById(userId);
 
@@ -64,4 +64,3 @@ export class RegenerateInviteHandler
     };
   }
 }
-

@@ -12,4 +12,3 @@ import { WhatsAppController } from './interfaces/http/whatsapp.controller';
   exports: [WhatsAppService],
 })
 export class WhatsAppModule {}
-

@@ -18,4 +18,3 @@ export class GradeSubmissionDto {
   @IsString()
   feedback?: string;
 }
-

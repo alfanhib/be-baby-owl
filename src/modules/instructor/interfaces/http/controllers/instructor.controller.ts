@@ -75,9 +75,10 @@ export class InstructorController {
   async getDashboard(
     @CurrentUser() user: CurrentUserPayload,
   ): Promise<InstructorDashboardResult> {
-    return this.queryBus.execute<GetInstructorDashboardQuery, InstructorDashboardResult>(
-      new GetInstructorDashboardQuery(user.userId),
-    );
+    return this.queryBus.execute<
+      GetInstructorDashboardQuery,
+      InstructorDashboardResult
+    >(new GetInstructorDashboardQuery(user.userId));
   }
 
   // ========== Classes ==========
@@ -100,9 +101,10 @@ export class InstructorController {
     @Query('status') status?: string,
     @Query('courseId') courseId?: string,
   ): Promise<InstructorClassResult[]> {
-    return this.queryBus.execute<GetInstructorClassesQuery, InstructorClassResult[]>(
-      new GetInstructorClassesQuery(user.userId, status, courseId),
-    );
+    return this.queryBus.execute<
+      GetInstructorClassesQuery,
+      InstructorClassResult[]
+    >(new GetInstructorClassesQuery(user.userId, status, courseId));
   }
 
   // ========== Student Monitoring ==========
@@ -148,8 +150,9 @@ export class InstructorController {
     @CurrentUser() user: CurrentUserPayload,
     @Query('period') period?: 'week' | 'month' | 'year',
   ): Promise<InstructorAnalyticsResult> {
-    return this.queryBus.execute<GetInstructorAnalyticsQuery, InstructorAnalyticsResult>(
-      new GetInstructorAnalyticsQuery(user.userId, period || 'month'),
-    );
+    return this.queryBus.execute<
+      GetInstructorAnalyticsQuery,
+      InstructorAnalyticsResult
+    >(new GetInstructorAnalyticsQuery(user.userId, period || 'month'));
   }
 }

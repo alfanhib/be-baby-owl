@@ -26,9 +26,7 @@ export interface SystemHealthDto {
 }
 
 @QueryHandler(GetSystemHealthQuery)
-export class GetSystemHealthHandler
-  implements IQueryHandler<GetSystemHealthQuery>
-{
+export class GetSystemHealthHandler implements IQueryHandler<GetSystemHealthQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(): Promise<SystemHealthDto> {
@@ -115,4 +113,3 @@ export class GetSystemHealthHandler
     return 'healthy';
   }
 }
-

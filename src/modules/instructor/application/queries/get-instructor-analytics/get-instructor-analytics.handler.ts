@@ -28,13 +28,16 @@ interface InstructorAnalyticsResult {
   overview: OverviewStats;
   classPerformance: ClassPerformance[];
   monthlyTrend: MonthlyTrend[];
-  courseBreakdown: { courseId: string; name: string; students: number; percentage: number }[];
+  courseBreakdown: {
+    courseId: string;
+    name: string;
+    students: number;
+    percentage: number;
+  }[];
 }
 
 @QueryHandler(GetInstructorAnalyticsQuery)
-export class GetInstructorAnalyticsHandler
-  implements IQueryHandler<GetInstructorAnalyticsQuery>
-{
+export class GetInstructorAnalyticsHandler implements IQueryHandler<GetInstructorAnalyticsQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(
@@ -73,7 +76,9 @@ export class GetInstructorAnalyticsHandler
 
     const allEnrollments = classes.flatMap((c) => c.enrollments);
     const totalStudents = allEnrollments.length;
-    const uniqueStudentIds = [...new Set(allEnrollments.map((e) => e.studentId))];
+    const uniqueStudentIds = [
+      ...new Set(allEnrollments.map((e) => e.studentId)),
+    ];
 
     const completedEnrollments = allEnrollments.filter(
       (e) => e.status === 'completed',
@@ -156,7 +161,10 @@ export class GetInstructorAnalyticsHandler
     }
 
     // Course breakdown
-    const courseStudentCounts = new Map<string, { name: string; count: number }>();
+    const courseStudentCounts = new Map<
+      string,
+      { name: string; count: number }
+    >();
     for (const cls of classes) {
       const existing = courseStudentCounts.get(cls.courseId) || {
         name: cls.course.title,

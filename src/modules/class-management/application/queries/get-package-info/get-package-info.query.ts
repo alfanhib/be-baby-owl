@@ -6,4 +6,3 @@ export class GetPackageInfoQuery implements IQuery {
     public readonly studentId?: string, // Optional: get package info for specific student
   ) {}
 }
-

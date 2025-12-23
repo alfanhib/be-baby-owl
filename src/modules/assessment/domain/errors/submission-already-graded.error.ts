@@ -5,4 +5,3 @@ export class SubmissionAlreadyGradedError extends DomainError {
     super(`Submission ${submissionId} has already been graded`);
   }
 }
-

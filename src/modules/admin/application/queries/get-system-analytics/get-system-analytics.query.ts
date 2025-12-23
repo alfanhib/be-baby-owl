@@ -4,4 +4,3 @@ export class GetSystemAnalyticsQuery {
     public readonly endDate?: Date,
   ) {}
 }
-

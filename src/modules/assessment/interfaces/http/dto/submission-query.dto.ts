@@ -27,4 +27,3 @@ export class SubmissionQueryDto {
   @Min(1)
   limit?: number = 10;
 }
-

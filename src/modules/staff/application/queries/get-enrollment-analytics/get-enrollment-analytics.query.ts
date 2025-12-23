@@ -5,4 +5,3 @@ export class GetEnrollmentAnalyticsQuery {
     public readonly courseId?: string,
   ) {}
 }
-

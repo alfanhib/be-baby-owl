@@ -13,5 +13,3 @@ export class BulkMarkAttendanceCommand {
     public readonly markedBy: string,
   ) {}
 }
-
-

@@ -19,4 +19,3 @@ export class SubmissionId {
     return this._value;
   }
 }
-

@@ -5,4 +5,3 @@ export class GetPendingSubmissionsQuery {
     public readonly limit: number = 10,
   ) {}
 }
-

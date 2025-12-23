@@ -8,9 +8,7 @@ import {
 import { PaymentDto } from '../get-payment/payment.dto';
 
 @QueryHandler(ExportPaymentsQuery)
-export class ExportPaymentsHandler
-  implements IQueryHandler<ExportPaymentsQuery>
-{
+export class ExportPaymentsHandler implements IQueryHandler<ExportPaymentsQuery> {
   constructor(
     @Inject(PAYMENT_REPOSITORY)
     private readonly paymentRepository: IPaymentRepository,
@@ -86,5 +84,3 @@ export class ExportPaymentsHandler
     return stringValue;
   }
 }
-
-

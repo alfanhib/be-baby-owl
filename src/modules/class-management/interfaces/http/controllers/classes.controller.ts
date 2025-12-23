@@ -101,9 +101,7 @@ export class ClassesController {
   @Roles('instructor', 'staff', 'super_admin')
   @ApiOperation({ summary: 'Create a new class' })
   @ApiResponse({ status: 201, description: 'Class created successfully' })
-  async createClass(
-    @Body() dto: CreateClassDto,
-  ): Promise<{ classId: string }> {
+  async createClass(@Body() dto: CreateClassDto): Promise<{ classId: string }> {
     return this.commandBus.execute(
       new CreateClassCommand(
         dto.name,
@@ -111,6 +109,7 @@ export class ClassesController {
         dto.instructorId,
         dto.type,
         dto.totalMeetings,
+        dto.price,
         dto.maxStudents,
         dto.schedules,
         dto.startDate ? new Date(dto.startDate) : undefined,
@@ -151,7 +150,9 @@ export class ClassesController {
     @CurrentUser() user: CurrentUserPayload,
     @Query('status') status?: string,
   ): Promise<unknown> {
-    return this.queryBus.execute(new GetInstructorClassesQuery(user.userId, status));
+    return this.queryBus.execute(
+      new GetInstructorClassesQuery(user.userId, status),
+    );
   }
 
   @Get('enrolled')
@@ -162,14 +163,18 @@ export class ClassesController {
     @CurrentUser() user: CurrentUserPayload,
     @Query('status') status?: string,
   ): Promise<unknown> {
-    return this.queryBus.execute(new GetStudentClassesQuery(user.userId, status));
+    return this.queryBus.execute(
+      new GetStudentClassesQuery(user.userId, status),
+    );
   }
 
   @Get(':classId')
   @Roles('instructor', 'staff', 'super_admin')
   @ApiOperation({ summary: 'Get class details' })
   @ApiParam({ name: 'classId' })
-  async getClass(@Param('classId') classId: string): Promise<ClassDetailResult> {
+  async getClass(
+    @Param('classId') classId: string,
+  ): Promise<ClassDetailResult> {
     const result = (await this.queryBus.execute(
       new GetClassQuery(classId),
     )) as unknown as ClassDetailResult | null;
@@ -265,7 +270,9 @@ export class ClassesController {
         dto.newInstructorId,
         dto.newStartDate ? new Date(dto.newStartDate) : undefined,
         dto.newEndDate ? new Date(dto.newEndDate) : undefined,
-        dto.newEnrollmentDeadline ? new Date(dto.newEnrollmentDeadline) : undefined,
+        dto.newEnrollmentDeadline
+          ? new Date(dto.newEnrollmentDeadline)
+          : undefined,
       ),
     );
   }
@@ -302,7 +309,9 @@ export class ClassesController {
   @Roles('instructor', 'staff', 'super_admin')
   @ApiOperation({ summary: 'Get class roster' })
   @ApiParam({ name: 'classId' })
-  async getClassRoster(@Param('classId') classId: string): Promise<ClassRosterResult> {
+  async getClassRoster(
+    @Param('classId') classId: string,
+  ): Promise<ClassRosterResult> {
     const result = (await this.queryBus.execute(
       new GetClassRosterQuery(classId),
     )) as unknown as ClassRosterResult | null;
@@ -383,7 +392,12 @@ export class ClassesController {
     @CurrentUser() user: CurrentUserPayload,
   ): Promise<{ message: string }> {
     await this.commandBus.execute(
-      new UpdateAttendanceCommand(attendanceId, dto.status, user.userId, dto.notes),
+      new UpdateAttendanceCommand(
+        attendanceId,
+        dto.status,
+        user.userId,
+        dto.notes,
+      ),
     );
     return { message: 'Attendance updated successfully' };
   }
@@ -397,7 +411,10 @@ export class ClassesController {
     @Body() dto: BulkMarkAttendanceDto,
     @CurrentUser() user: CurrentUserPayload,
   ): Promise<BulkAttendanceResult> {
-    return this.commandBus.execute<BulkMarkAttendanceCommand, BulkAttendanceResult>(
+    return this.commandBus.execute<
+      BulkMarkAttendanceCommand,
+      BulkAttendanceResult
+    >(
       new BulkMarkAttendanceCommand(
         classId,
         dto.meetingNumber,
@@ -440,8 +457,13 @@ export class ClassesController {
   @ApiOperation({ summary: 'Get credit adjustment history for an enrollment' })
   @ApiParam({ name: 'classId' })
   @ApiParam({ name: 'enrollmentId' })
-  async getCreditHistory(@Param('enrollmentId') enrollmentId: string): Promise<unknown> {
-    const result = await this.queryBus.execute(new GetCreditHistoryQuery(enrollmentId));
+  async getCreditHistory(
+    @Param('enrollmentId') enrollmentId: string,
+  ): Promise<unknown> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const result = await this.queryBus.execute(
+      new GetCreditHistoryQuery(enrollmentId),
+    );
     if (!result) {
       throw new NotFoundException('Enrollment not found');
     }
@@ -459,7 +481,6 @@ export class ClassesController {
     @Body() dto: UnlockLessonDto,
     @CurrentUser() user: CurrentUserPayload,
   ): Promise<{ lessonUnlockId: string }> {
-    /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return */
     return (await this.commandBus.execute(
       new UnlockLessonCommand(
         classId,
@@ -469,7 +490,6 @@ export class ClassesController {
         dto.notes,
       ),
     )) as unknown as { lessonUnlockId: string };
-    /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return */
   }
 
   @Post(':classId/unlock-lessons/bulk')
@@ -481,8 +501,10 @@ export class ClassesController {
     @Body() dto: BulkUnlockLessonsDto,
     @CurrentUser() user: CurrentUserPayload,
   ): Promise<BulkUnlockResult> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const result = await this.commandBus.execute<BulkUnlockLessonsCommand, BulkUnlockResult>(
+    const result = await this.commandBus.execute<
+      BulkUnlockLessonsCommand,
+      BulkUnlockResult
+    >(
       new BulkUnlockLessonsCommand(
         classId,
         dto.lessons.map((l) => ({
@@ -500,8 +522,13 @@ export class ClassesController {
   @Roles('instructor', 'staff', 'super_admin', 'student')
   @ApiOperation({ summary: 'Get all unlocked lessons for the class' })
   @ApiParam({ name: 'classId' })
-  async getUnlockedLessons(@Param('classId') classId: string): Promise<unknown> {
-    const result = await this.queryBus.execute(new GetUnlockedLessonsQuery(classId));
+  async getUnlockedLessons(
+    @Param('classId') classId: string,
+  ): Promise<unknown> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const result = await this.queryBus.execute(
+      new GetUnlockedLessonsQuery(classId),
+    );
     if (!result) {
       throw new NotFoundException('Class not found');
     }
@@ -514,16 +541,18 @@ export class ClassesController {
   @Roles('instructor', 'staff', 'super_admin', 'student')
   @ApiOperation({ summary: 'Get package information for a class' })
   @ApiParam({ name: 'classId' })
-  @ApiQuery({ name: 'studentId', required: false, description: 'Get package info for specific student' })
+  @ApiQuery({
+    name: 'studentId',
+    required: false,
+    description: 'Get package info for specific student',
+  })
   async getPackageInfo(
     @Param('classId') classId: string,
     @Query('studentId') studentId?: string,
   ): Promise<PackageInfoResult> {
-    /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return */
     return (await this.queryBus.execute<GetPackageInfoQuery, PackageInfoResult>(
       new GetPackageInfoQuery(classId, studentId),
     )) as unknown as PackageInfoResult;
-    /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return */
   }
 
   @Post(':classId/add-meetings')
@@ -543,14 +572,19 @@ export class ClassesController {
 
   @Post(':classId/continue-as-private')
   @Roles('staff', 'super_admin')
-  @ApiOperation({ summary: 'Continue a student from group class to private class' })
+  @ApiOperation({
+    summary: 'Continue a student from group class to private class',
+  })
   @ApiParam({ name: 'classId', description: 'Source group class ID' })
   async continueAsPrivate(
     @Param('classId') classId: string,
     @Body() dto: ContinueAsPrivateDto,
     @CurrentUser() user: CurrentUserPayload,
   ): Promise<ContinueAsPrivateResult> {
-    return this.commandBus.execute<ContinueAsPrivateCommand, ContinueAsPrivateResult>(
+    return this.commandBus.execute<
+      ContinueAsPrivateCommand,
+      ContinueAsPrivateResult
+    >(
       new ContinueAsPrivateCommand(
         classId,
         dto.studentId,

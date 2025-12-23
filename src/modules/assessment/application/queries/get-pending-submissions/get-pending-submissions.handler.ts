@@ -28,9 +28,7 @@ export interface PaginatedPendingSubmissions {
 }
 
 @QueryHandler(GetPendingSubmissionsQuery)
-export class GetPendingSubmissionsHandler
-  implements IQueryHandler<GetPendingSubmissionsQuery>
-{
+export class GetPendingSubmissionsHandler implements IQueryHandler<GetPendingSubmissionsQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(
@@ -144,4 +142,3 @@ export class GetPendingSubmissionsHandler
     };
   }
 }
-

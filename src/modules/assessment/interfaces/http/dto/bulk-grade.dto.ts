@@ -39,4 +39,3 @@ export class BulkGradeDto {
   @Type(() => BulkGradeEntryDto)
   entries: BulkGradeEntryDto[];
 }
-

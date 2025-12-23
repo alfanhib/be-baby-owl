@@ -35,6 +35,7 @@ import {
   GetFinancialReportQuery,
   GetUserGrowthReportQuery,
   GetCoursePerformanceQuery,
+  GetCourseStudentsQuery,
   PaginatedUsers,
   SystemAnalyticsDto,
   DashboardDto,
@@ -45,6 +46,7 @@ import {
   FinancialReportDto,
   UserGrowthReportDto,
   CoursePerformanceReportDto,
+  PaginatedCourseStudents,
 } from '../../application/queries';
 
 import {
@@ -188,8 +190,15 @@ export class AdminController {
   ): Promise<{ message: string; temporaryPassword?: string }> {
     const result = (await this.commandBus.execute(
       new ForceResetPasswordCommand(userId, body.newPassword),
-    )) as unknown as { success: boolean; message: string; temporaryPassword?: string };
-    return { message: result.message, temporaryPassword: result.temporaryPassword };
+    )) as unknown as {
+      success: boolean;
+      message: string;
+      temporaryPassword?: string;
+    };
+    return {
+      message: result.message,
+      temporaryPassword: result.temporaryPassword,
+    };
   }
 
   // ========== System Analytics ==========
@@ -281,7 +290,11 @@ export class AdminController {
 
   @Get('reports/financial')
   @ApiOperation({ summary: 'Get financial report' })
-  @ApiQuery({ name: 'period', required: false, enum: ['month', 'quarter', 'year'] })
+  @ApiQuery({
+    name: 'period',
+    required: false,
+    enum: ['month', 'quarter', 'year'],
+  })
   @ApiQuery({ name: 'startDate', required: false })
   @ApiQuery({ name: 'endDate', required: false })
   @ApiResponse({ status: 200, description: 'Financial report' })
@@ -301,7 +314,11 @@ export class AdminController {
 
   @Get('reports/user-growth')
   @ApiOperation({ summary: 'Get user growth report' })
-  @ApiQuery({ name: 'period', required: false, enum: ['month', 'quarter', 'year'] })
+  @ApiQuery({
+    name: 'period',
+    required: false,
+    enum: ['month', 'quarter', 'year'],
+  })
   @ApiQuery({ name: 'startDate', required: false })
   @ApiQuery({ name: 'endDate', required: false })
   @ApiResponse({ status: 200, description: 'User growth report' })
@@ -328,10 +345,62 @@ export class AdminController {
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
   ): Promise<CoursePerformanceReportDto> {
-    return this.queryBus.execute<GetCoursePerformanceQuery, CoursePerformanceReportDto>(
+    return this.queryBus.execute<
+      GetCoursePerformanceQuery,
+      CoursePerformanceReportDto
+    >(
       new GetCoursePerformanceQuery(
         startDate ? new Date(startDate) : undefined,
         endDate ? new Date(endDate) : undefined,
+      ),
+    );
+  }
+
+  // ========== Course Students ==========
+
+  @Get('courses/:courseId/students')
+  @ApiOperation({ summary: 'Get students enrolled in a specific course' })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    description: 'Search by student name or email',
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: ['active', 'completed', 'withdrawn'],
+  })
+  @ApiQuery({
+    name: 'classId',
+    required: false,
+    description: 'Filter by specific class',
+  })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiResponse({
+    status: 200,
+    description: 'List of students enrolled in the course',
+  })
+  @ApiResponse({ status: 404, description: 'Course not found' })
+  async getCourseStudents(
+    @Param('courseId') courseId: string,
+    @Query('search') search?: string,
+    @Query('status') status?: string,
+    @Query('classId') classId?: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ): Promise<PaginatedCourseStudents | null> {
+    return this.queryBus.execute<
+      GetCourseStudentsQuery,
+      PaginatedCourseStudents | null
+    >(
+      new GetCourseStudentsQuery(
+        courseId,
+        search,
+        status,
+        classId,
+        page || 1,
+        limit || 20,
       ),
     );
   }

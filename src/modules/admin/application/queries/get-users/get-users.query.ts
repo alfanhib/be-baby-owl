@@ -7,4 +7,3 @@ export class GetUsersQuery {
     public readonly limit: number = 20,
   ) {}
 }
-

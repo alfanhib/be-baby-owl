@@ -44,7 +44,11 @@ export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
 
     // Generate invite URL if token exists and not expired
     let inviteUrl: string | null = null;
-    if (user.inviteToken && user.inviteTokenExpiry && user.inviteTokenExpiry > new Date()) {
+    if (
+      user.inviteToken &&
+      user.inviteTokenExpiry &&
+      user.inviteTokenExpiry > new Date()
+    ) {
       const frontendUrl = this.configService.get<string>(
         'app.frontendUrl',
         'http://localhost:3000',

@@ -9,18 +9,18 @@ import {
 import * as crypto from 'crypto';
 
 @CommandHandler(ForceResetPasswordCommand)
-export class ForceResetPasswordHandler
-  implements ICommandHandler<ForceResetPasswordCommand>
-{
+export class ForceResetPasswordHandler implements ICommandHandler<ForceResetPasswordCommand> {
   constructor(
     private readonly prisma: PrismaService,
     @Inject(PASSWORD_HASHER)
     private readonly passwordHasher: IPasswordHasher,
   ) {}
 
-  async execute(
-    command: ForceResetPasswordCommand,
-  ): Promise<{ success: boolean; message: string; temporaryPassword?: string }> {
+  async execute(command: ForceResetPasswordCommand): Promise<{
+    success: boolean;
+    message: string;
+    temporaryPassword?: string;
+  }> {
     // Find user
     const user = await this.prisma.user.findUnique({
       where: { id: command.userId },
@@ -69,4 +69,3 @@ export class ForceResetPasswordHandler
     return password;
   }
 }
-

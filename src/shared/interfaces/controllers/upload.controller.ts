@@ -1,6 +1,7 @@
 import {
   Controller,
   Post,
+  Get,
   UseGuards,
   UseInterceptors,
   UploadedFile,
@@ -20,7 +21,10 @@ import {
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 import { Roles } from '../decorators/roles.decorator';
-import { StorageService, UploadResult } from '../../infrastructure/storage/storage.service';
+import {
+  StorageService,
+  UploadResult,
+} from '../../infrastructure/storage/storage.service';
 
 @ApiTags('Upload')
 @Controller('upload')
@@ -28,6 +32,17 @@ import { StorageService, UploadResult } from '../../infrastructure/storage/stora
 @ApiBearerAuth()
 export class UploadController {
   constructor(private readonly storageService: StorageService) {}
+
+  @Get('info')
+  @Roles('student', 'instructor', 'staff', 'super_admin')
+  @ApiOperation({ summary: 'Get storage info' })
+  @ApiResponse({ status: 200, description: 'Storage info' })
+  getStorageInfo(): { driver: string; configured: boolean } {
+    return {
+      driver: this.storageService.getDriver(),
+      configured: this.storageService.isConfigured(),
+    };
+  }
 
   @Post('image')
   @Roles('instructor', 'staff', 'super_admin')
@@ -60,6 +75,37 @@ export class UploadController {
     );
   }
 
+  @Post('avatar')
+  @Roles('student', 'instructor', 'staff', 'super_admin')
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Upload a user avatar' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 201, description: 'Avatar uploaded successfully' })
+  async uploadAvatar(
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<UploadResult> {
+    this.validateFile(file);
+    this.validateAvatarType(file);
+
+    return this.storageService.uploadAvatar(
+      file.buffer,
+      file.mimetype,
+      file.originalname,
+    );
+  }
+
   @Post('file')
   @Roles('instructor', 'staff', 'super_admin')
   @HttpCode(HttpStatus.CREATED)
@@ -85,6 +131,37 @@ export class UploadController {
     this.validateDocumentType(file);
 
     return this.storageService.uploadFile(
+      file.buffer,
+      file.mimetype,
+      file.originalname,
+    );
+  }
+
+  @Post('submission')
+  @Roles('student', 'instructor', 'staff', 'super_admin')
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Upload a submission file (assignments)' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 201, description: 'Submission uploaded successfully' })
+  async uploadSubmission(
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<UploadResult> {
+    this.validateFile(file);
+    this.validateSubmissionType(file);
+
+    return this.storageService.uploadSubmission(
       file.buffer,
       file.mimetype,
       file.originalname,
@@ -129,7 +206,13 @@ export class UploadController {
   }
 
   private validateImageType(file: Express.Multer.File): void {
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    const allowedTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/webp',
+      'image/svg+xml',
+    ];
     if (!allowedTypes.includes(file.mimetype)) {
       throw new BadRequestException(
         `Invalid image type. Allowed: ${allowedTypes.join(', ')}`,
@@ -142,23 +225,66 @@ export class UploadController {
     }
   }
 
+  private validateAvatarType(file: Express.Multer.File): void {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.mimetype)) {
+      throw new BadRequestException(
+        `Invalid avatar type. Allowed: JPEG, PNG, WebP`,
+      );
+    }
+
+    // Max 5MB for avatars
+    if (file.size > 5 * 1024 * 1024) {
+      throw new BadRequestException('Avatar size must be less than 5MB');
+    }
+  }
+
   private validateDocumentType(file: Express.Multer.File): void {
     const allowedTypes = [
       'application/pdf',
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'text/plain',
       'application/zip',
+      'application/x-rar-compressed',
     ];
     if (!allowedTypes.includes(file.mimetype)) {
       throw new BadRequestException(
-        `Invalid file type. Allowed: PDF, DOC, DOCX, TXT, ZIP`,
+        `Invalid file type. Allowed: PDF, DOC, DOCX, XLS, XLSX, TXT, ZIP, RAR`,
       );
     }
 
     // Max 50MB for documents
     if (file.size > 50 * 1024 * 1024) {
       throw new BadRequestException('File size must be less than 50MB');
+    }
+  }
+
+  private validateSubmissionType(file: Express.Multer.File): void {
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'text/plain',
+      'application/zip',
+      'application/x-rar-compressed',
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+    ];
+    if (!allowedTypes.includes(file.mimetype)) {
+      throw new BadRequestException(
+        `Invalid submission type. Allowed: PDF, DOC, DOCX, XLS, XLSX, TXT, ZIP, RAR, images`,
+      );
+    }
+
+    // Max 100MB for submissions
+    if (file.size > 100 * 1024 * 1024) {
+      throw new BadRequestException('Submission size must be less than 100MB');
     }
   }
 
@@ -176,4 +302,3 @@ export class UploadController {
     }
   }
 }
-

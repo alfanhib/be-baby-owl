@@ -50,7 +50,11 @@ export class NotificationsController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 20,
   ): Promise<PaginatedNotifications> {
-    return this.notificationService.getUserNotifications(user.userId, page, limit);
+    return this.notificationService.getUserNotifications(
+      user.userId,
+      page,
+      limit,
+    );
   }
 
   @Get('unread-count')
@@ -104,4 +108,3 @@ export class NotificationsController {
     return { message: 'Notification deleted' };
   }
 }
-

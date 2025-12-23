@@ -381,6 +381,7 @@ model Class {
   courseId              String      @map("course_id")
   instructorId          String      @map("instructor_id")
   type                  ClassType
+  price                 Decimal?    @db.Decimal(15, 2) // Class price
   maxCapacity           Int         @map("max_capacity")
   currentCapacity       Int         @default(0) @map("current_capacity")
   totalMeetings         Int         @map("total_meetings") // Package: 10, 20, 30, 50

@@ -11,4 +11,3 @@ export class BulkGradeSubmissionsCommand {
     public readonly entries: BulkGradeEntry[],
   ) {}
 }
-

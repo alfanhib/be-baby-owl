@@ -244,7 +244,9 @@ export class GetDashboardHandler implements IQueryHandler<GetDashboardQuery> {
     for (let i = 2; i >= 0; i--) {
       const monthStart = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
-      const monthName = monthStart.toLocaleString('default', { month: 'short' });
+      const monthName = monthStart.toLocaleString('default', {
+        month: 'short',
+      });
       labels.push(monthName);
 
       const [revenueResult, enrollmentCount] = await Promise.all([
@@ -328,4 +330,3 @@ export class GetDashboardHandler implements IQueryHandler<GetDashboardQuery> {
     return 'healthy';
   }
 }
-

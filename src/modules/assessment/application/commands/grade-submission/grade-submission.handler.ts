@@ -9,9 +9,7 @@ import { SubmissionId } from '@assessment/domain/value-objects/submission-id.vo'
 import { SubmissionNotFoundError } from '@assessment/domain/errors';
 
 @CommandHandler(GradeSubmissionCommand)
-export class GradeSubmissionHandler
-  implements ICommandHandler<GradeSubmissionCommand>
-{
+export class GradeSubmissionHandler implements ICommandHandler<GradeSubmissionCommand> {
   constructor(
     @Inject(SUBMISSION_REPOSITORY)
     private readonly submissionRepository: ISubmissionRepository,
@@ -36,4 +34,3 @@ export class GradeSubmissionHandler
     await this.submissionRepository.save(submission);
   }
 }
-

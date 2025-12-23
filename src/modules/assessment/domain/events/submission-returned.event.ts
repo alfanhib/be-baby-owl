@@ -21,4 +21,3 @@ export class SubmissionReturnedEvent extends DomainEvent {
     };
   }
 }
-

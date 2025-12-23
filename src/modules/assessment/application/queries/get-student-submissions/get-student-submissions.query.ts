@@ -7,4 +7,3 @@ export class GetStudentSubmissionsQuery {
     public readonly limit: number = 10,
   ) {}
 }
-

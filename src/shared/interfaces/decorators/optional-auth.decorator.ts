@@ -8,4 +8,3 @@ export const IS_OPTIONAL_AUTH_KEY = 'isOptionalAuth';
  * authenticated and unauthenticated users.
  */
 export const OptionalAuth = () => SetMetadata(IS_OPTIONAL_AUTH_KEY, true);
-

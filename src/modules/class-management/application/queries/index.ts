@@ -24,6 +24,14 @@ export * from './get-credit-history/get-credit-history.handler';
 export * from './get-package-info/get-package-info.query';
 export * from './get-package-info/get-package-info.handler';
 
+// Enrollment Queries
+export * from './get-enrollments/get-enrollments.query';
+export * from './get-enrollments/get-enrollments.handler';
+export * from './get-enrollment/get-enrollment.query';
+export * from './get-enrollment/get-enrollment.handler';
+export * from './get-enrollment-stats/get-enrollment-stats.query';
+export * from './get-enrollment-stats/get-enrollment-stats.handler';
+
 import { GetClassHandler } from './get-class/get-class.handler';
 import {
   GetClassesHandler,
@@ -38,6 +46,9 @@ import {
 import { GetUnlockedLessonsHandler } from './get-unlocked-lessons/get-unlocked-lessons.handler';
 import { GetCreditHistoryHandler } from './get-credit-history/get-credit-history.handler';
 import { GetPackageInfoHandler } from './get-package-info/get-package-info.handler';
+import { GetEnrollmentsHandler } from './get-enrollments/get-enrollments.handler';
+import { GetEnrollmentHandler } from './get-enrollment/get-enrollment.handler';
+import { GetEnrollmentStatsHandler } from './get-enrollment-stats/get-enrollment-stats.handler';
 
 export const QueryHandlers = [
   // Class
@@ -56,4 +67,8 @@ export const QueryHandlers = [
   GetCreditHistoryHandler,
   // Package
   GetPackageInfoHandler,
+  // Enrollment
+  GetEnrollmentsHandler,
+  GetEnrollmentHandler,
+  GetEnrollmentStatsHandler,
 ];

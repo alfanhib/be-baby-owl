@@ -10,9 +10,7 @@ import { PrismaService } from '@shared/infrastructure/prisma/prisma.service';
 import { ExerciseNotAssignmentError } from '@assessment/domain/errors';
 
 @CommandHandler(SubmitAssignmentCommand)
-export class SubmitAssignmentHandler
-  implements ICommandHandler<SubmitAssignmentCommand>
-{
+export class SubmitAssignmentHandler implements ICommandHandler<SubmitAssignmentCommand> {
   constructor(
     @Inject(SUBMISSION_REPOSITORY)
     private readonly submissionRepository: ISubmissionRepository,
@@ -76,4 +74,3 @@ export class SubmitAssignmentHandler
     return { submissionId: submission.id.value };
   }
 }
-

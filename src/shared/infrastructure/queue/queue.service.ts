@@ -68,7 +68,9 @@ export class QueueService implements OnModuleInit {
     });
 
     queueEvents.on('failed', ({ jobId, failedReason }) => {
-      this.logger.error(`Job ${jobId} failed on queue ${name}: ${failedReason}`);
+      this.logger.error(
+        `Job ${jobId} failed on queue ${name}: ${failedReason}`,
+      );
     });
   }
 
@@ -86,7 +88,10 @@ export class QueueService implements OnModuleInit {
   /**
    * Add a job to the email queue
    */
-  async addEmailJob(data: EmailJobData, options?: { delay?: number; priority?: number }): Promise<Job<EmailJobData>> {
+  async addEmailJob(
+    data: EmailJobData,
+    options?: { delay?: number; priority?: number },
+  ): Promise<Job<EmailJobData>> {
     const queue = this.getQueue('email');
     const job = await queue.add('send-email', data, {
       delay: options?.delay,
@@ -122,7 +127,9 @@ export class QueueService implements OnModuleInit {
   /**
    * Add a job to the analytics queue
    */
-  async addAnalyticsJob(data: AnalyticsJobData): Promise<Job<AnalyticsJobData>> {
+  async addAnalyticsJob(
+    data: AnalyticsJobData,
+  ): Promise<Job<AnalyticsJobData>> {
     const queue = this.getQueue('analytics');
     const job = await queue.add('track-event', data, {
       attempts: 2,
@@ -229,4 +236,3 @@ export class QueueService implements OnModuleInit {
     this.logger.log('Queue service shutdown complete');
   }
 }
-

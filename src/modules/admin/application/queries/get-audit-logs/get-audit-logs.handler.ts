@@ -77,7 +77,9 @@ const auditLogs: AuditLogEntry[] = [
 ];
 
 // Export function to add audit logs from other parts of the app
-export function addAuditLog(entry: Omit<AuditLogEntry, 'id' | 'timestamp'>): void {
+export function addAuditLog(
+  entry: Omit<AuditLogEntry, 'id' | 'timestamp'>,
+): void {
   auditLogs.unshift({
     ...entry,
     id: `audit-${Date.now()}`,
@@ -131,4 +133,3 @@ export class GetAuditLogsHandler implements IQueryHandler<GetAuditLogsQuery> {
     });
   }
 }
-

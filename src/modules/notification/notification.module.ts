@@ -17,4 +17,3 @@ import { NotificationsController } from './interfaces/http/notifications.control
   exports: [EmailService, NotificationService],
 })
 export class NotificationModule {}
-

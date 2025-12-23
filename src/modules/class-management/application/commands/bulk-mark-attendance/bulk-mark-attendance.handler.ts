@@ -14,9 +14,7 @@ export interface BulkAttendanceResult {
 }
 
 @CommandHandler(BulkMarkAttendanceCommand)
-export class BulkMarkAttendanceHandler
-  implements ICommandHandler<BulkMarkAttendanceCommand>
-{
+export class BulkMarkAttendanceHandler implements ICommandHandler<BulkMarkAttendanceCommand> {
   constructor(
     @Inject(CLASS_REPOSITORY)
     private readonly classRepository: IClassRepository,
@@ -67,5 +65,3 @@ export class BulkMarkAttendanceHandler
     return result;
   }
 }
-
-

@@ -73,9 +73,10 @@ export class ExportUsersHandler implements IQueryHandler<ExportUsersQuery> {
       u.lastLoginAt?.toISOString() || '',
     ]);
 
-    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join(
-      '\n',
-    );
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((r) => r.join(',')),
+    ].join('\n');
 
     return csvContent;
   }
@@ -87,4 +88,3 @@ export class ExportUsersHandler implements IQueryHandler<ExportUsersQuery> {
     return value;
   }
 }
-

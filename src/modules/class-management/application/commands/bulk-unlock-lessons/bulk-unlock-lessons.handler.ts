@@ -13,17 +13,13 @@ export interface BulkUnlockResult {
 }
 
 @CommandHandler(BulkUnlockLessonsCommand)
-export class BulkUnlockLessonsHandler
-  implements ICommandHandler<BulkUnlockLessonsCommand>
-{
+export class BulkUnlockLessonsHandler implements ICommandHandler<BulkUnlockLessonsCommand> {
   constructor(
     @Inject(CLASS_REPOSITORY)
     private readonly classRepository: IClassRepository,
   ) {}
 
-  async execute(
-    command: BulkUnlockLessonsCommand,
-  ): Promise<BulkUnlockResult> {
+  async execute(command: BulkUnlockLessonsCommand): Promise<BulkUnlockResult> {
     const classEntity = await this.classRepository.findById(
       ClassId.create(command.classId),
     );
@@ -63,5 +59,3 @@ export class BulkUnlockLessonsHandler
     return result;
   }
 }
-
-

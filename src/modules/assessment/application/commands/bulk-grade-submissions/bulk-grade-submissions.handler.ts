@@ -13,15 +13,15 @@ interface BulkGradeResult {
 }
 
 @CommandHandler(BulkGradeSubmissionsCommand)
-export class BulkGradeSubmissionsHandler
-  implements ICommandHandler<BulkGradeSubmissionsCommand>
-{
+export class BulkGradeSubmissionsHandler implements ICommandHandler<BulkGradeSubmissionsCommand> {
   constructor(
     @Inject(SUBMISSION_REPOSITORY)
     private readonly submissionRepository: ISubmissionRepository,
   ) {}
 
-  async execute(command: BulkGradeSubmissionsCommand): Promise<BulkGradeResult> {
+  async execute(
+    command: BulkGradeSubmissionsCommand,
+  ): Promise<BulkGradeResult> {
     const result: BulkGradeResult = {
       success: [],
       failed: [],
@@ -61,4 +61,3 @@ export class BulkGradeSubmissionsHandler
     return result;
   }
 }
-

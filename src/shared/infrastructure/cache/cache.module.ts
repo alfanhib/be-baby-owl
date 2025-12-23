@@ -9,4 +9,3 @@ import { RedisModule } from '../redis/redis.module';
   exports: [CacheService],
 })
 export class CacheModule {}
-

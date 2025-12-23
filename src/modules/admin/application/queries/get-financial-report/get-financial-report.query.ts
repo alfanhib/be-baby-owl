@@ -5,4 +5,3 @@ export class GetFinancialReportQuery {
     public readonly endDate?: Date,
   ) {}
 }
-

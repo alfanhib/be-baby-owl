@@ -5,4 +5,3 @@ export class SubmissionNotFoundError extends DomainError {
     super(`Submission with ID ${submissionId} not found`);
   }
 }
-

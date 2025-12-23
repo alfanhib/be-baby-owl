@@ -51,7 +51,10 @@ export class BulkEnrollDto {
   @IsNotEmpty()
   classId: string;
 
-  @ApiProperty({ description: 'Students to enroll', type: [BulkEnrollStudentDto] })
+  @ApiProperty({
+    description: 'Students to enroll',
+    type: [BulkEnrollStudentDto],
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => BulkEnrollStudentDto)

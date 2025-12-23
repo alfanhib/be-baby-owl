@@ -28,7 +28,6 @@ export class ContinueAsPrivateHandler implements ICommandHandler<
     private readonly eventBus: EventBus,
   ) {}
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   async execute(
     command: ContinueAsPrivateCommand,
   ): Promise<ContinueAsPrivateResult> {
@@ -81,6 +80,7 @@ export class ContinueAsPrivateHandler implements ICommandHandler<
 
     // 8. Publish domain events
     const events = newPrivateClass.clearEvents();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     events.forEach((event) => this.eventBus.publish(event));
 
     const newClassId: string = newPrivateClass.id.value;

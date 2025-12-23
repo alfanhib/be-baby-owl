@@ -55,4 +55,3 @@ export class ClearCacheHandler implements ICommandHandler<ClearCacheCommand> {
     }
   }
 }
-

@@ -12,9 +12,7 @@ import { RedisService } from '@shared/infrastructure/redis/redis.service';
 import { EventBusService } from '@shared/infrastructure/event-bus/event-bus.service';
 
 @CommandHandler(ResetPasswordCommand)
-export class ResetPasswordHandler
-  implements ICommandHandler<ResetPasswordCommand>
-{
+export class ResetPasswordHandler implements ICommandHandler<ResetPasswordCommand> {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
@@ -57,4 +55,3 @@ export class ResetPasswordHandler
     await this.eventBus.publishFromAggregate(user);
   }
 }
-

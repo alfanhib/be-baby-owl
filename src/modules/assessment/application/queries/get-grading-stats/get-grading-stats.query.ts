@@ -4,4 +4,3 @@ export class GetGradingStatsQuery {
     public readonly classId?: string,
   ) {}
 }
-

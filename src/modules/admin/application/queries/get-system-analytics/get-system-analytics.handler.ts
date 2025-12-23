@@ -45,9 +45,7 @@ export interface SystemAnalyticsDto {
 }
 
 @QueryHandler(GetSystemAnalyticsQuery)
-export class GetSystemAnalyticsHandler
-  implements IQueryHandler<GetSystemAnalyticsQuery>
-{
+export class GetSystemAnalyticsHandler implements IQueryHandler<GetSystemAnalyticsQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(): Promise<SystemAnalyticsDto> {
@@ -136,10 +134,16 @@ export class GetSystemAnalyticsHandler
     const [totalSubmissions, pendingSubmissions, gradedSubmissions, avgGrade] =
       await Promise.all([
         this.prisma.assignmentSubmission.count(),
-        this.prisma.assignmentSubmission.count({ where: { status: 'pending' } }),
+        this.prisma.assignmentSubmission.count({
+          where: { status: 'pending' },
+        }),
         this.prisma.assignmentSubmission.count({ where: { status: 'graded' } }),
         this.prisma.assignmentSubmission.aggregate({
-          where: { status: 'graded', grade: { not: null }, maxGrade: { not: null } },
+          where: {
+            status: 'graded',
+            grade: { not: null },
+            maxGrade: { not: null },
+          },
           _avg: { grade: true, maxGrade: true },
         }),
       ]);
@@ -147,7 +151,9 @@ export class GetSystemAnalyticsHandler
     const avgGradeValue = avgGrade._avg.grade;
     const avgMaxGradeValue = avgGrade._avg.maxGrade;
     const avgGradePercentage =
-      avgGradeValue !== null && avgMaxGradeValue !== null && avgMaxGradeValue > 0
+      avgGradeValue !== null &&
+      avgMaxGradeValue !== null &&
+      avgMaxGradeValue > 0
         ? Math.round((avgGradeValue / avgMaxGradeValue) * 100)
         : null;
 
@@ -194,4 +200,3 @@ export class GetSystemAnalyticsHandler
     };
   }
 }
-

@@ -33,9 +33,7 @@ interface EnrollmentAnalyticsResult {
 }
 
 @QueryHandler(GetEnrollmentAnalyticsQuery)
-export class GetEnrollmentAnalyticsHandler
-  implements IQueryHandler<GetEnrollmentAnalyticsQuery>
-{
+export class GetEnrollmentAnalyticsHandler implements IQueryHandler<GetEnrollmentAnalyticsQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(
@@ -96,7 +94,10 @@ export class GetEnrollmentAnalyticsHandler
       },
     });
 
-    const courseMap = new Map<string, { id: string; title: string; count: number }>();
+    const courseMap = new Map<
+      string,
+      { id: string; title: string; count: number }
+    >();
     for (const c of classes) {
       const existing = courseMap.get(c.course.id);
       const classCount =
@@ -154,4 +155,3 @@ export class GetEnrollmentAnalyticsHandler
     };
   }
 }
-

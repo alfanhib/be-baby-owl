@@ -6,7 +6,9 @@ export class DuplicateClassDto {
   @IsString()
   newName: string;
 
-  @ApiPropertyOptional({ description: 'New instructor ID (optional, defaults to source)' })
+  @ApiPropertyOptional({
+    description: 'New instructor ID (optional, defaults to source)',
+  })
   @IsOptional()
   @IsUUID()
   newInstructorId?: string;
@@ -26,5 +28,3 @@ export class DuplicateClassDto {
   @IsDateString()
   newEnrollmentDeadline?: string;
 }
-
-

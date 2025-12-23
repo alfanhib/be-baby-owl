@@ -4,4 +4,3 @@ export class ForceResetPasswordCommand {
     public readonly newPassword?: string, // If not provided, send reset email
   ) {}
 }
-

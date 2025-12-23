@@ -7,4 +7,3 @@ export class AddMeetingsCommand implements ICommand {
     public readonly performedBy: string,
   ) {}
 }
-

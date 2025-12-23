@@ -56,4 +56,3 @@ export class SubmissionStatus {
     return this._value === other._value;
   }
 }
-

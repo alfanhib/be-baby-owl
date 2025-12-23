@@ -8,5 +8,3 @@ export class ExportPaymentsQuery {
     public readonly endDate?: Date,
   ) {}
 }
-
-

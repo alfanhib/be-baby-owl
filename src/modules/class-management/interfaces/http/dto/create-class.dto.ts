@@ -56,6 +56,12 @@ export class CreateClassDto {
   @Min(1)
   totalMeetings: number;
 
+  @ApiPropertyOptional({ example: 3000000, description: 'Class price' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  price?: number;
+
   @ApiPropertyOptional({
     example: 20,
     description: 'Max students for group class',

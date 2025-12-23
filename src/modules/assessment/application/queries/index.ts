@@ -18,4 +18,3 @@ export * from './get-submission-detail/get-submission-detail.query';
 export * from './get-submission-detail/get-submission-detail.handler';
 export * from './get-grading-stats/get-grading-stats.query';
 export * from './get-grading-stats/get-grading-stats.handler';
-

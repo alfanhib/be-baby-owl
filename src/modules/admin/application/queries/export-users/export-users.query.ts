@@ -4,4 +4,3 @@ export class ExportUsersQuery {
     public readonly status?: string,
   ) {}
 }
-

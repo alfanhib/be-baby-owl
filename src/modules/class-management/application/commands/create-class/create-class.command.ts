@@ -5,6 +5,7 @@ export class CreateClassCommand {
     public readonly instructorId: string,
     public readonly type: string, // 'group' | 'private'
     public readonly totalMeetings: number,
+    public readonly price?: number,
     public readonly maxStudents?: number,
     public readonly schedules?: Array<{
       dayOfWeek: string;

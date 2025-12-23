@@ -33,15 +33,13 @@ export interface FinancialReportDto {
 }
 
 @QueryHandler(GetFinancialReportQuery)
-export class GetFinancialReportHandler
-  implements IQueryHandler<GetFinancialReportQuery>
-{
+export class GetFinancialReportHandler implements IQueryHandler<GetFinancialReportQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(query: GetFinancialReportQuery): Promise<FinancialReportDto> {
     const now = new Date();
     let startDate = query.startDate;
-    let endDate = query.endDate || now;
+    const endDate = query.endDate || now;
 
     // Calculate date range based on period
     if (!startDate) {
@@ -135,10 +133,12 @@ export class GetFinancialReportHandler
       courseMap.set(payment.course.id, existing);
     }
 
-    const byCourse = Array.from(courseMap.entries()).map(([courseId, data]) => ({
-      courseId,
-      ...data,
-    }));
+    const byCourse = Array.from(courseMap.entries()).map(
+      ([courseId, data]) => ({
+        courseId,
+        ...data,
+      }),
+    );
 
     // Get revenue by period (monthly breakdown)
     const byPeriod = await this.getMonthlyBreakdown(startDate, endDate);
@@ -164,12 +164,17 @@ export class GetFinancialReportHandler
     startDate: Date,
     endDate: Date,
   ): Promise<{ label: string; revenue: number; transactions: number }[]> {
-    const result: { label: string; revenue: number; transactions: number }[] = [];
+    const result: { label: string; revenue: number; transactions: number }[] =
+      [];
     const current = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
 
     while (current <= endDate) {
       const monthStart = new Date(current);
-      const monthEnd = new Date(current.getFullYear(), current.getMonth() + 1, 0);
+      const monthEnd = new Date(
+        current.getFullYear(),
+        current.getMonth() + 1,
+        0,
+      );
 
       const data = await this.prisma.payment.aggregate({
         where: {
@@ -195,4 +200,3 @@ export class GetFinancialReportHandler
     return result;
   }
 }
-

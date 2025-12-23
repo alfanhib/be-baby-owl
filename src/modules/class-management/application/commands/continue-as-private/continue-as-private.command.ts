@@ -15,4 +15,3 @@ export class ContinueAsPrivateCommand implements ICommand {
     public readonly performedBy?: string,
   ) {}
 }
-

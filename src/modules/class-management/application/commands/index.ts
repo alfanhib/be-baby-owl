@@ -50,6 +50,18 @@ export * from './add-meetings/add-meetings.handler';
 export * from './continue-as-private/continue-as-private.command';
 export * from './continue-as-private/continue-as-private.handler';
 
+// Additional Enrollment Commands
+export * from './create-enrollment/create-enrollment.command';
+export * from './create-enrollment/create-enrollment.handler';
+export * from './update-enrollment-status/update-enrollment-status.command';
+export * from './update-enrollment-status/update-enrollment-status.handler';
+export * from './update-payment-status/update-payment-status.command';
+export * from './update-payment-status/update-payment-status.handler';
+export * from './upgrade-package/upgrade-package.command';
+export * from './upgrade-package/upgrade-package.handler';
+export * from './bulk-enroll/bulk-enroll.command';
+export * from './bulk-enroll/bulk-enroll.handler';
+
 import { CreateClassHandler } from './create-class/create-class.handler';
 import { UpdateClassHandler } from './update-class/update-class.handler';
 import { OpenEnrollmentHandler } from './open-enrollment/open-enrollment.handler';
@@ -69,6 +81,11 @@ import { BulkMarkAttendanceHandler } from './bulk-mark-attendance/bulk-mark-atte
 import { BulkUnlockLessonsHandler } from './bulk-unlock-lessons/bulk-unlock-lessons.handler';
 import { AddMeetingsHandler } from './add-meetings/add-meetings.handler';
 import { ContinueAsPrivateHandler } from './continue-as-private/continue-as-private.handler';
+import { CreateEnrollmentHandler } from './create-enrollment/create-enrollment.handler';
+import { UpdateEnrollmentStatusHandler } from './update-enrollment-status/update-enrollment-status.handler';
+import { UpdatePaymentStatusHandler } from './update-payment-status/update-payment-status.handler';
+import { UpgradePackageHandler } from './upgrade-package/upgrade-package.handler';
+import { BulkEnrollHandler } from './bulk-enroll/bulk-enroll.handler';
 
 export const CommandHandlers = [
   // Class
@@ -97,4 +114,10 @@ export const CommandHandlers = [
   // Package Management
   AddMeetingsHandler,
   ContinueAsPrivateHandler,
+  // Additional Enrollment
+  CreateEnrollmentHandler,
+  UpdateEnrollmentStatusHandler,
+  UpdatePaymentStatusHandler,
+  UpgradePackageHandler,
+  BulkEnrollHandler,
 ];

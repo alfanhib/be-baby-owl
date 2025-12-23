@@ -8,4 +8,3 @@ export class GetEnrollmentHistoryQuery {
     public readonly limit: number = 20,
   ) {}
 }
-

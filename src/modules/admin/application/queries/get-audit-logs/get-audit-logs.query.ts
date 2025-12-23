@@ -9,4 +9,3 @@ export class GetAuditLogsQuery {
     public readonly limit: number = 50,
   ) {}
 }
-

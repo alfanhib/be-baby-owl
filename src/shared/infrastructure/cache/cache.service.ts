@@ -35,7 +35,11 @@ export class CacheService {
   /**
    * Set a value in cache
    */
-  async set<T>(key: string, value: T, options: CacheOptions = {}): Promise<void> {
+  async set<T>(
+    key: string,
+    value: T,
+    options: CacheOptions = {},
+  ): Promise<void> {
     const cacheKey = this.buildKey(key, options.prefix);
     await this.redis.setJson(cacheKey, value, options.ttl || this.defaultTtl);
   }
@@ -65,7 +69,11 @@ export class CacheService {
     options: CacheOptions = {},
   ): Promise<T> {
     const cacheKey = this.buildKey(key, options.prefix);
-    return this.redis.getOrSet(cacheKey, factory, options.ttl || this.defaultTtl);
+    return this.redis.getOrSet(
+      cacheKey,
+      factory,
+      options.ttl || this.defaultTtl,
+    );
   }
 
   /**
@@ -92,14 +100,23 @@ export class CacheService {
    * Cache course catalog
    */
   async getCachedCourses<T>(factory: () => Promise<T>): Promise<T> {
-    return this.getOrSet('catalog:all', factory, { ttl: 300, prefix: 'courses' }); // 5 min
+    return this.getOrSet('catalog:all', factory, {
+      ttl: 300,
+      prefix: 'courses',
+    }); // 5 min
   }
 
   /**
    * Cache course detail
    */
-  async getCachedCourse<T>(courseId: string, factory: () => Promise<T>): Promise<T> {
-    return this.getOrSet(`detail:${courseId}`, factory, { ttl: 600, prefix: 'courses' }); // 10 min
+  async getCachedCourse<T>(
+    courseId: string,
+    factory: () => Promise<T>,
+  ): Promise<T> {
+    return this.getOrSet(`detail:${courseId}`, factory, {
+      ttl: 600,
+      prefix: 'courses',
+    }); // 10 min
   }
 
   /**
@@ -129,7 +146,10 @@ export class CacheService {
     userId: string,
     factory: () => Promise<T>,
   ): Promise<T> {
-    return this.getOrSet(`session:${userId}`, factory, { ttl: 1800, prefix: 'user' }); // 30 min
+    return this.getOrSet(`session:${userId}`, factory, {
+      ttl: 1800,
+      prefix: 'user',
+    }); // 30 min
   }
 
   /**
@@ -146,7 +166,10 @@ export class CacheService {
     classId: string,
     factory: () => Promise<T>,
   ): Promise<T> {
-    return this.getOrSet(`roster:${classId}`, factory, { ttl: 300, prefix: 'class' }); // 5 min
+    return this.getOrSet(`roster:${classId}`, factory, {
+      ttl: 300,
+      prefix: 'class',
+    }); // 5 min
   }
 
   /**
@@ -156,4 +179,3 @@ export class CacheService {
     await this.invalidate(`class:roster:${classId}`);
   }
 }
-

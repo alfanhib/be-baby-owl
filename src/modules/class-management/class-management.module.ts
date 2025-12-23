@@ -15,10 +15,11 @@ import { ClassRepository } from './infrastructure/persistence/class.repository';
 
 // Interface
 import { ClassesController } from './interfaces/http/controllers/classes.controller';
+import { EnrollmentsController } from './interfaces/http/controllers/enrollments.controller';
 
 @Module({
   imports: [CqrsModule, PrismaModule, EventBusModule],
-  controllers: [ClassesController],
+  controllers: [ClassesController, EnrollmentsController],
   providers: [
     // Repository
     {

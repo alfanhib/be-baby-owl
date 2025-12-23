@@ -25,7 +25,6 @@ export class AddMeetingsHandler implements ICommandHandler<
     private readonly eventBus: EventBus,
   ) {}
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   async execute(command: AddMeetingsCommand): Promise<AddMeetingsResult> {
     const { classId, meetingsToAdd } = command;
 
@@ -53,6 +52,7 @@ export class AddMeetingsHandler implements ICommandHandler<
 
     // Publish domain events
     const events = classAggregate.clearEvents();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     events.forEach((event) => this.eventBus.publish(event));
 
     const newTotalMeetings: number = classAggregate.totalMeetings;

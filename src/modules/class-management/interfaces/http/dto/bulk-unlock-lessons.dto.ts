@@ -37,5 +37,3 @@ export class BulkUnlockLessonsDto {
   @Type(() => BulkUnlockItemDto)
   lessons: BulkUnlockItemDto[];
 }
-
-

@@ -140,22 +140,29 @@ export class Submission extends AggregateRoot<SubmissionId> {
 
     // Validate submission content based on type
     if (type.isFile() && !props.fileUrl) {
-      throw new InvalidSubmissionError('File URL is required for file submissions');
+      throw new InvalidSubmissionError(
+        'File URL is required for file submissions',
+      );
     }
     if (type.isText() && !props.textContent) {
-      throw new InvalidSubmissionError('Text content is required for text submissions');
+      throw new InvalidSubmissionError(
+        'Text content is required for text submissions',
+      );
     }
     if (type.isLink() && !props.linkUrl) {
-      throw new InvalidSubmissionError('Link URL is required for link submissions');
+      throw new InvalidSubmissionError(
+        'Link URL is required for link submissions',
+      );
     }
 
-    const fileInfo = type.isFile() && props.fileUrl
-      ? {
-          url: props.fileUrl,
-          name: props.fileName ?? 'unknown',
-          size: props.fileSize ?? 0,
-        }
-      : null;
+    const fileInfo =
+      type.isFile() && props.fileUrl
+        ? {
+            url: props.fileUrl,
+            name: props.fileName ?? 'unknown',
+            size: props.fileSize ?? 0,
+          }
+        : null;
 
     const submission = new Submission(id, {
       exerciseId: props.exerciseId,
@@ -265,23 +272,30 @@ export class Submission extends AggregateRoot<SubmissionId> {
 
     // Validate submission content based on type
     if (type.isFile() && !props.fileUrl) {
-      throw new InvalidSubmissionError('File URL is required for file submissions');
+      throw new InvalidSubmissionError(
+        'File URL is required for file submissions',
+      );
     }
     if (type.isText() && !props.textContent) {
-      throw new InvalidSubmissionError('Text content is required for text submissions');
+      throw new InvalidSubmissionError(
+        'Text content is required for text submissions',
+      );
     }
     if (type.isLink() && !props.linkUrl) {
-      throw new InvalidSubmissionError('Link URL is required for link submissions');
+      throw new InvalidSubmissionError(
+        'Link URL is required for link submissions',
+      );
     }
 
     this._type = type;
-    this._fileInfo = type.isFile() && props.fileUrl
-      ? {
-          url: props.fileUrl,
-          name: props.fileName ?? 'unknown',
-          size: props.fileSize ?? 0,
-        }
-      : null;
+    this._fileInfo =
+      type.isFile() && props.fileUrl
+        ? {
+            url: props.fileUrl,
+            name: props.fileName ?? 'unknown',
+            size: props.fileSize ?? 0,
+          }
+        : null;
     this._textContent = type.isText() ? (props.textContent ?? null) : null;
     this._linkUrl = type.isLink() ? (props.linkUrl ?? null) : null;
     this._comment = props.comment ?? this._comment;
@@ -378,4 +392,3 @@ export class Submission extends AggregateRoot<SubmissionId> {
     this.touch();
   }
 }
-

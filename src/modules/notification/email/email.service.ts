@@ -26,7 +26,8 @@ export class EmailService {
 
   constructor(private readonly configService: ConfigService) {
     const apiKey = this.configService.get<string>('email.resendApiKey');
-    this.defaultFrom = this.configService.get<string>('email.from') ?? 'noreply@inntexia.com';
+    this.defaultFrom =
+      this.configService.get<string>('email.from') ?? 'noreply@inntexia.com';
     this.isEnabled = !!apiKey && apiKey !== 'your-resend-api-key';
 
     if (this.isEnabled) {
@@ -39,8 +40,12 @@ export class EmailService {
 
   async send(options: EmailOptions): Promise<EmailResult> {
     if (!this.isEnabled) {
-      const toStr = Array.isArray(options.to) ? options.to.join(', ') : options.to;
-      this.logger.warn(`Email not sent (disabled): ${options.subject} to ${toStr}`);
+      const toStr = Array.isArray(options.to)
+        ? options.to.join(', ')
+        : options.to;
+      this.logger.warn(
+        `Email not sent (disabled): ${options.subject} to ${toStr}`,
+      );
       return {
         success: true,
         messageId: 'disabled',
@@ -65,7 +70,9 @@ export class EmailService {
         };
       }
 
-      const toStr = Array.isArray(options.to) ? options.to.join(', ') : options.to;
+      const toStr = Array.isArray(options.to)
+        ? options.to.join(', ')
+        : options.to;
       this.logger.log(`Email sent: ${options.subject} to ${toStr}`);
       return {
         success: true,
@@ -368,4 +375,3 @@ export class EmailService {
     });
   }
 }
-

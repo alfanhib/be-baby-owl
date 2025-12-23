@@ -5,4 +5,3 @@ export class InvalidSubmissionError extends DomainError {
     super(`Invalid submission: ${reason}`);
   }
 }
-

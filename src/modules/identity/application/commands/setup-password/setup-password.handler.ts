@@ -14,9 +14,7 @@ export interface SetupPasswordResult {
 }
 
 @CommandHandler(SetupPasswordCommand)
-export class SetupPasswordHandler
-  implements ICommandHandler<SetupPasswordCommand>
-{
+export class SetupPasswordHandler implements ICommandHandler<SetupPasswordCommand> {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
@@ -27,7 +25,9 @@ export class SetupPasswordHandler
 
   async execute(command: SetupPasswordCommand): Promise<SetupPasswordResult> {
     // Find user by invite token
-    const user = await this.userRepository.findByInviteToken(command.inviteToken);
+    const user = await this.userRepository.findByInviteToken(
+      command.inviteToken,
+    );
 
     if (!user) {
       throw new UnauthorizedException('Invalid or expired invite token');
@@ -60,4 +60,3 @@ export class SetupPasswordHandler
     };
   }
 }
-

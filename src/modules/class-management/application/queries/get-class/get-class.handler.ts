@@ -11,6 +11,7 @@ export interface ClassDetailResult {
   instructorName: string;
   type: string;
   status: string;
+  price: number | null;
   totalMeetings: number;
   meetingsCompleted: number;
   maxCapacity: number;
@@ -52,6 +53,7 @@ export class GetClassHandler implements IQueryHandler<GetClassQuery> {
       instructorName: classEntity.instructor.fullName,
       type: classEntity.type,
       status: classEntity.status,
+      price: classEntity.price ? Number(classEntity.price) : null,
       totalMeetings: classEntity.totalMeetings,
       meetingsCompleted: classEntity.meetingsCompleted,
       maxCapacity: classEntity.maxCapacity,

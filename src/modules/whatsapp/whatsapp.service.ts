@@ -42,9 +42,10 @@ export class WhatsAppService {
    * Generate purchase intent message
    */
   generatePurchaseMessage(data: PurchaseMessageData): string {
-    const userInfo = data.userName && data.userEmail
-      ? `Name: ${data.userName}\nEmail: ${data.userEmail}\n`
-      : '';
+    const userInfo =
+      data.userName && data.userEmail
+        ? `Name: ${data.userName}\nEmail: ${data.userEmail}\n`
+        : '';
 
     return `Hi! I'm interested in:
 
@@ -58,9 +59,10 @@ ${userInfo}Please send payment details.`;
    * Generate continue as private class message
    */
   generateContinuePrivateMessage(data: ContinuePrivateMessageData): string {
-    const userInfo = data.userName && data.userEmail
-      ? `Name: ${data.userName}\nEmail: ${data.userEmail}\n`
-      : '';
+    const userInfo =
+      data.userName && data.userEmail
+        ? `Name: ${data.userName}\nEmail: ${data.userEmail}\n`
+        : '';
 
     return `Hi! I'd like to continue learning.
 
@@ -85,7 +87,10 @@ ${userInfo}Please send private class options.`;
   /**
    * Generate continue as private class link
    */
-  generateContinuePrivateLink(data: ContinuePrivateMessageData, phone?: string): string {
+  generateContinuePrivateLink(
+    data: ContinuePrivateMessageData,
+    phone?: string,
+  ): string {
     const message = this.generateContinuePrivateMessage(data);
     return this.generateLink({
       phone: phone || this.defaultPhone,
@@ -110,4 +115,3 @@ ${userInfo}Please send private class options.`;
     return cleaned.replace(/^\+/, '');
   }
 }
-

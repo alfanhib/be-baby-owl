@@ -167,7 +167,10 @@ export class AuthController {
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Request password reset email' })
-  @ApiResponse({ status: 200, description: 'Reset email sent if account exists' })
+  @ApiResponse({
+    status: 200,
+    description: 'Reset email sent if account exists',
+  })
   async forgotPassword(
     @Body() dto: ForgotPasswordDto,
   ): Promise<{ message: string }> {
@@ -195,13 +198,21 @@ export class AuthController {
   @Post('request-verification')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Request email verification resend' })
-  @ApiResponse({ status: 200, description: 'Verification email sent if account exists' })
+  @ApiResponse({
+    status: 200,
+    description: 'Verification email sent if account exists',
+  })
   async requestVerification(
     @Body() dto: RequestVerificationDto,
   ): Promise<{ message: string }> {
     const command = new RequestVerificationEmailCommand(dto.email);
-    await this.commandBus.execute<RequestVerificationEmailCommand, void>(command);
-    return { message: 'If an account exists and is not verified, an email has been sent' };
+    await this.commandBus.execute<RequestVerificationEmailCommand, void>(
+      command,
+    );
+    return {
+      message:
+        'If an account exists and is not verified, an email has been sent',
+    };
   }
 
   @Public()

@@ -9,6 +9,7 @@ import { GetAuditLogsHandler } from './get-audit-logs/get-audit-logs.handler';
 import { GetFinancialReportHandler } from './get-financial-report/get-financial-report.handler';
 import { GetUserGrowthReportHandler } from './get-user-growth-report/get-user-growth-report.handler';
 import { GetCoursePerformanceHandler } from './get-course-performance/get-course-performance.handler';
+import { GetCourseStudentsHandler } from './get-course-students/get-course-students.handler';
 
 export const QueryHandlers = [
   GetUsersHandler,
@@ -22,6 +23,7 @@ export const QueryHandlers = [
   GetFinancialReportHandler,
   GetUserGrowthReportHandler,
   GetCoursePerformanceHandler,
+  GetCourseStudentsHandler,
 ];
 
 export * from './get-users/get-users.query';
@@ -46,4 +48,5 @@ export * from './get-user-growth-report/get-user-growth-report.query';
 export * from './get-user-growth-report/get-user-growth-report.handler';
 export * from './get-course-performance/get-course-performance.query';
 export * from './get-course-performance/get-course-performance.handler';
-
+export * from './get-course-students/get-course-students.query';
+export * from './get-course-students/get-course-students.handler';

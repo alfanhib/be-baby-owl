@@ -31,7 +31,8 @@ export class ContinueAsPrivateDto {
   packageMeetings: number;
 
   @ApiPropertyOptional({
-    description: 'Instructor ID for the new private class (defaults to same instructor)',
+    description:
+      'Instructor ID for the new private class (defaults to same instructor)',
     example: '550e8400-e29b-41d4-a716-446655440001',
   })
   @IsOptional()
@@ -48,4 +49,3 @@ export class ContinueAsPrivateDto {
   @Type(() => ScheduleDto)
   schedules?: ScheduleDto[];
 }
-

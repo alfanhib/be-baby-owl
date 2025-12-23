@@ -35,9 +35,7 @@ export interface SubmissionDetailDto {
 }
 
 @QueryHandler(GetSubmissionDetailQuery)
-export class GetSubmissionDetailHandler
-  implements IQueryHandler<GetSubmissionDetailQuery>
-{
+export class GetSubmissionDetailHandler implements IQueryHandler<GetSubmissionDetailQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(query: GetSubmissionDetailQuery): Promise<SubmissionDetailDto> {
@@ -108,4 +106,3 @@ export class GetSubmissionDetailHandler
     };
   }
 }
-

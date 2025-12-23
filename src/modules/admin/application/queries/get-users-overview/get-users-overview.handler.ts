@@ -33,9 +33,7 @@ export interface UsersOverviewDto {
 }
 
 @QueryHandler(GetUsersOverviewQuery)
-export class GetUsersOverviewHandler
-  implements IQueryHandler<GetUsersOverviewQuery>
-{
+export class GetUsersOverviewHandler implements IQueryHandler<GetUsersOverviewQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(): Promise<UsersOverviewDto> {
@@ -108,4 +106,3 @@ export class GetUsersOverviewHandler
     };
   }
 }
-

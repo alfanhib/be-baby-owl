@@ -43,4 +43,3 @@ export interface ISubmissionRepository {
   delete(id: SubmissionId): Promise<void>;
   countPending(exerciseId?: string): Promise<number>;
 }
-

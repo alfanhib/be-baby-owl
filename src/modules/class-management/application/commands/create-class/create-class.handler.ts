@@ -7,6 +7,7 @@ import {
 } from '@class-management/domain/repositories/class.repository.interface';
 import { Class } from '@class-management/domain/aggregates/class.aggregate';
 import { EventBusService } from '@shared/infrastructure/event-bus/event-bus.service';
+import { PrismaService } from '@shared/infrastructure/prisma/prisma.service';
 
 @CommandHandler(CreateClassCommand)
 export class CreateClassHandler implements ICommandHandler<CreateClassCommand> {
@@ -14,6 +15,7 @@ export class CreateClassHandler implements ICommandHandler<CreateClassCommand> {
     @Inject(CLASS_REPOSITORY)
     private readonly classRepository: IClassRepository,
     private readonly eventBus: EventBusService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async execute(command: CreateClassCommand): Promise<{ classId: string }> {
@@ -32,6 +34,14 @@ export class CreateClassHandler implements ICommandHandler<CreateClassCommand> {
     });
 
     await this.classRepository.save(classEntity);
+
+    // Update price if provided (infrastructure concern, not domain)
+    if (command.price !== undefined) {
+      await this.prisma.class.update({
+        where: { id: classEntity.id.value },
+        data: { price: command.price },
+      });
+    }
 
     // Publish domain events
     for (const event of classEntity.clearEvents()) {

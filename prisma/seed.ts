@@ -82,6 +82,41 @@ const seedUsers: SeedUser[] = [
     fullName: 'Alice Coder',
     role: UserRole.student,
   },
+  {
+    email: 'student4@inntexia.com',
+    username: 'davidweb',
+    password: 'Student123!',
+    fullName: 'David Webdev',
+    role: UserRole.student,
+  },
+  {
+    email: 'student5@inntexia.com',
+    username: 'emmacode',
+    password: 'Student123!',
+    fullName: 'Emma Programmer',
+    role: UserRole.student,
+  },
+  {
+    email: 'student6@inntexia.com',
+    username: 'frankdev',
+    password: 'Student123!',
+    fullName: 'Frank Developer',
+    role: UserRole.student,
+  },
+  {
+    email: 'student7@inntexia.com',
+    username: 'gracetech',
+    password: 'Student123!',
+    fullName: 'Grace Techie',
+    role: UserRole.student,
+  },
+  {
+    email: 'student8@inntexia.com',
+    username: 'henrylearn',
+    password: 'Student123!',
+    fullName: 'Henry Learner',
+    role: UserRole.student,
+  },
 ];
 
 // ============================================================================
@@ -360,6 +395,939 @@ const seedCourses: SeedCourse[] = [
                   duration: 840,
                 },
                 estimatedDuration: 14,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  // React.js Development - Complete Course
+  {
+    title: 'React.js Development',
+    slug: 'reactjs-development',
+    description:
+      'Kuasai React.js dari dasar hingga advanced. Belajar komponen, hooks, state management, dan deploy aplikasi React.',
+    coverImage: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee',
+    category: 'Web Development',
+    level: CourseLevel.intermediate,
+    language: 'indonesian',
+    estimatedDuration: 35,
+    status: CourseStatus.published,
+    sections: [
+      {
+        title: 'Pengenalan React',
+        description: 'Memahami konsep dasar React dan ekosistemnya',
+        lessons: [
+          {
+            title: 'Apa itu React.js?',
+            description: 'Pengenalan library React dan keunggulannya',
+            estimatedDuration: 20,
+            exercises: [
+              {
+                title: 'Video: Pengenalan React',
+                type: ExerciseType.video,
+                content: {
+                  youtubeId: 'w7ejDZ8SWv8',
+                  duration: 720,
+                },
+                estimatedDuration: 12,
+              },
+              {
+                title: 'Materi: Sejarah dan Filosofi React',
+                type: ExerciseType.material,
+                content: {
+                  body: '# Sejarah React\n\nReact dikembangkan oleh Facebook pada tahun 2011 dan dirilis ke publik pada tahun 2013.\n\n## Filosofi React\n\n1. **Declarative**: Kamu mendeskripsikan UI yang kamu inginkan, React yang akan handle update.\n2. **Component-Based**: Membangun UI dari komponen-komponen kecil yang reusable.\n3. **Learn Once, Write Anywhere**: Skill React bisa digunakan untuk web, mobile (React Native), dan lainnya.',
+                },
+                estimatedDuration: 8,
+              },
+            ],
+          },
+          {
+            title: 'Setup Development Environment',
+            description: 'Menyiapkan lingkungan pengembangan React',
+            estimatedDuration: 25,
+            exercises: [
+              {
+                title: 'Video: Setup Project dengan Vite',
+                type: ExerciseType.video,
+                content: {
+                  youtubeId: 'SWYqp7iY_Tc',
+                  duration: 900,
+                },
+                estimatedDuration: 15,
+              },
+              {
+                title: 'Quiz: React Setup',
+                type: ExerciseType.quiz,
+                content: {
+                  quizType: 'multiple_choice',
+                  questions: [
+                    {
+                      id: 'q1',
+                      question:
+                        'Tool apa yang direkomendasikan untuk membuat project React?',
+                      options: [
+                        'Create React App',
+                        'Vite',
+                        'Webpack manual',
+                        'Parcel',
+                      ],
+                      correctAnswer: 'Vite',
+                      points: 10,
+                    },
+                    {
+                      id: 'q2',
+                      question:
+                        'Ekstensi file untuk komponen React dengan JSX adalah?',
+                      options: ['.js atau .jsx', '.ts saja', '.html', '.react'],
+                      correctAnswer: '.js atau .jsx',
+                      points: 10,
+                    },
+                  ],
+                  passingScore: 70,
+                },
+                estimatedDuration: 5,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Komponen dan Props',
+        description: 'Belajar membuat komponen dan passing data dengan props',
+        lessons: [
+          {
+            title: 'Functional Components',
+            description: 'Membuat komponen dengan function',
+            estimatedDuration: 30,
+            exercises: [
+              {
+                title: 'Video: Membuat Functional Component',
+                type: ExerciseType.video,
+                content: {
+                  youtubeId: 'Y6aYx_KKM7A',
+                  duration: 1080,
+                },
+                estimatedDuration: 18,
+              },
+              {
+                title: 'Coding: Buat Komponen Greeting',
+                type: ExerciseType.coding,
+                content: {
+                  instructions:
+                    'Buat komponen `Greeting` yang menerima prop `name` dan menampilkan "Hello, {name}!"',
+                  starterCode:
+                    '// Buat komponen Greeting di sini\n\nfunction Greeting(props) {\n  // Tulis kode kamu\n}\n\nexport default Greeting;',
+                  testCases: [
+                    {
+                      input: '<Greeting name="John" />',
+                      expectedOutput: 'Hello, John!',
+                      hidden: false,
+                    },
+                    {
+                      input: '<Greeting name="Alice" />',
+                      expectedOutput: 'Hello, Alice!',
+                      hidden: true,
+                    },
+                  ],
+                  language: 'javascript',
+                },
+                estimatedDuration: 10,
+              },
+            ],
+          },
+          {
+            title: 'Props dan PropTypes',
+            description: 'Passing data antar komponen dan validasi props',
+            estimatedDuration: 25,
+            exercises: [
+              {
+                title: 'Materi: Memahami Props',
+                type: ExerciseType.material,
+                content: {
+                  body: '# Props di React\n\nProps adalah cara untuk passing data dari parent ke child component.\n\n```jsx\n// Parent component\n<UserCard name="John" age={25} isActive={true} />\n\n// Child component\nfunction UserCard({ name, age, isActive }) {\n  return (\n    <div>\n      <h2>{name}</h2>\n      <p>Age: {age}</p>\n      <p>Status: {isActive ? "Active" : "Inactive"}</p>\n    </div>\n  );\n}\n```\n\n## PropTypes\n\nGunakan PropTypes untuk validasi tipe props:\n\n```jsx\nimport PropTypes from "prop-types";\n\nUserCard.propTypes = {\n  name: PropTypes.string.isRequired,\n  age: PropTypes.number,\n  isActive: PropTypes.bool\n};\n```',
+                },
+                estimatedDuration: 15,
+              },
+              {
+                title: 'Quiz: Props',
+                type: ExerciseType.quiz,
+                content: {
+                  quizType: 'fill_blanks',
+                  questions: [
+                    {
+                      id: 'fb1',
+                      question:
+                        'Untuk destructuring props dalam function parameter, kita gunakan tanda ___.',
+                      correctAnswer: '{}',
+                      points: 10,
+                    },
+                    {
+                      id: 'fb2',
+                      question:
+                        'Props di React bersifat ___ (tidak bisa diubah oleh child).',
+                      correctAnswer: 'immutable',
+                      points: 10,
+                    },
+                  ],
+                  passingScore: 70,
+                },
+                estimatedDuration: 5,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        title: 'State dan Hooks',
+        description: 'Mengelola state dengan React Hooks',
+        lessons: [
+          {
+            title: 'useState Hook',
+            description: 'Mengelola local state dengan useState',
+            estimatedDuration: 35,
+            exercises: [
+              {
+                title: 'Video: useState Hook Deep Dive',
+                type: ExerciseType.video,
+                content: {
+                  youtubeId: 'O6P86uwfdR0',
+                  duration: 1200,
+                },
+                estimatedDuration: 20,
+              },
+              {
+                title: 'Coding: Counter Component',
+                type: ExerciseType.coding,
+                content: {
+                  instructions:
+                    'Buat komponen `Counter` dengan button increment (+1), decrement (-1), dan reset (ke 0).',
+                  starterCode:
+                    'import { useState } from "react";\n\nfunction Counter() {\n  // Tulis kode kamu di sini\n  \n  return (\n    <div>\n      {/* Tampilkan count dan buttons */}\n    </div>\n  );\n}\n\nexport default Counter;',
+                  testCases: [
+                    {
+                      input: 'increment 3x',
+                      expectedOutput: '3',
+                      hidden: false,
+                    },
+                    {
+                      input: 'decrement 2x from 3',
+                      expectedOutput: '1',
+                      hidden: false,
+                    },
+                    { input: 'reset', expectedOutput: '0', hidden: true },
+                  ],
+                  language: 'javascript',
+                },
+                estimatedDuration: 15,
+              },
+            ],
+          },
+          {
+            title: 'useEffect Hook',
+            description: 'Handling side effects dengan useEffect',
+            estimatedDuration: 40,
+            exercises: [
+              {
+                title: 'Video: useEffect Explained',
+                type: ExerciseType.video,
+                content: {
+                  youtubeId: '0ZJgIjIuY7U',
+                  duration: 1500,
+                },
+                estimatedDuration: 25,
+              },
+              {
+                title: 'Materi: useEffect Patterns',
+                type: ExerciseType.material,
+                content: {
+                  body: '# useEffect Patterns\n\n## 1. Run on Every Render\n```jsx\nuseEffect(() => {\n  console.log("Runs on every render");\n});\n```\n\n## 2. Run Once (on Mount)\n```jsx\nuseEffect(() => {\n  console.log("Runs only once");\n}, []);\n```\n\n## 3. Run When Dependency Changes\n```jsx\nuseEffect(() => {\n  console.log("count changed:", count);\n}, [count]);\n```\n\n## 4. Cleanup Function\n```jsx\nuseEffect(() => {\n  const timer = setInterval(() => {}, 1000);\n  \n  return () => {\n    clearInterval(timer); // Cleanup\n  };\n}, []);\n```',
+                },
+                estimatedDuration: 10,
+              },
+              {
+                title: 'Quiz: useEffect',
+                type: ExerciseType.quiz,
+                content: {
+                  quizType: 'multiple_choice',
+                  questions: [
+                    {
+                      id: 'q1',
+                      question:
+                        'Kapan useEffect dengan dependency array kosong [] dijalankan?',
+                      options: [
+                        'Setiap render',
+                        'Hanya saat mount',
+                        'Hanya saat unmount',
+                        'Tidak pernah',
+                      ],
+                      correctAnswer: 'Hanya saat mount',
+                      points: 10,
+                    },
+                    {
+                      id: 'q2',
+                      question: 'Apa fungsi return dalam useEffect?',
+                      options: [
+                        'Return value',
+                        'Cleanup function',
+                        'Error handler',
+                        'Conditional render',
+                      ],
+                      correctAnswer: 'Cleanup function',
+                      points: 10,
+                    },
+                  ],
+                  passingScore: 70,
+                },
+                estimatedDuration: 5,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Project: Todo App',
+        description: 'Membangun aplikasi Todo lengkap dengan React',
+        lessons: [
+          {
+            title: 'Todo App - Setup & UI',
+            description: 'Membuat struktur project dan UI komponen',
+            estimatedDuration: 45,
+            exercises: [
+              {
+                title: 'Video: Building Todo App Part 1',
+                type: ExerciseType.video,
+                content: {
+                  youtubeId: 'pCA4qpQDZD8',
+                  duration: 1800,
+                },
+                estimatedDuration: 30,
+              },
+              {
+                title: 'Assignment: Todo App Part 1',
+                type: ExerciseType.assignment,
+                content: {
+                  instructions:
+                    'Buat komponen TodoList dan TodoItem. Submit screenshot atau link repository.',
+                  requirements: [
+                    'Komponen TodoList yang menampilkan daftar todo',
+                    'Komponen TodoItem untuk setiap item todo',
+                    'Styling dasar dengan CSS',
+                  ],
+                  maxSubmissions: 3,
+                  allowedFileTypes: ['image/png', 'image/jpeg', 'text/plain'],
+                },
+                estimatedDuration: 30,
+              },
+            ],
+          },
+          {
+            title: 'Todo App - CRUD Operations',
+            description: 'Implementasi Create, Read, Update, Delete',
+            estimatedDuration: 50,
+            exercises: [
+              {
+                title: 'Video: Building Todo App Part 2',
+                type: ExerciseType.video,
+                content: {
+                  youtubeId: 'Rh3tobg7hEo',
+                  duration: 2100,
+                },
+                estimatedDuration: 35,
+              },
+              {
+                title: 'Coding: Delete Todo Function',
+                type: ExerciseType.coding,
+                content: {
+                  instructions:
+                    'Implementasikan fungsi `deleteTodo` yang menghapus todo berdasarkan id.',
+                  starterCode:
+                    'const [todos, setTodos] = useState([\n  { id: 1, text: "Learn React", completed: false },\n  { id: 2, text: "Build Todo App", completed: false }\n]);\n\nfunction deleteTodo(id) {\n  // Implementasi hapus todo\n}\n',
+                  testCases: [
+                    {
+                      input: 'deleteTodo(1)',
+                      expectedOutput: 'todos.length === 1',
+                      hidden: false,
+                    },
+                    {
+                      input: 'deleteTodo(2)',
+                      expectedOutput: 'todos.length === 0',
+                      hidden: true,
+                    },
+                  ],
+                  language: 'javascript',
+                },
+                estimatedDuration: 15,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  // UI/UX Design Fundamentals
+  {
+    title: 'UI/UX Design Fundamentals',
+    slug: 'ui-ux-design-fundamentals',
+    description:
+      'Pelajari prinsip-prinsip desain UI/UX yang baik. Dari wireframing hingga prototyping dengan Figma.',
+    coverImage: 'https://images.unsplash.com/photo-1561070791-2526d30994b5',
+    category: 'Design',
+    level: CourseLevel.beginner,
+    language: 'indonesian',
+    estimatedDuration: 25,
+    status: CourseStatus.published,
+    sections: [
+      {
+        title: 'Pengenalan UI/UX',
+        description: 'Memahami perbedaan UI dan UX serta pentingnya desain',
+        lessons: [
+          {
+            title: 'UI vs UX: Apa Bedanya?',
+            description:
+              'Memahami perbedaan antara User Interface dan User Experience',
+            estimatedDuration: 20,
+            exercises: [
+              {
+                title: 'Materi: Definisi UI dan UX',
+                type: ExerciseType.material,
+                content: {
+                  body: '# UI vs UX\n\n## User Interface (UI)\nUI adalah **tampilan visual** dari sebuah produk digital. Ini mencakup:\n- Warna dan typography\n- Buttons dan icons\n- Layout dan spacing\n- Animasi dan transisi\n\n## User Experience (UX)\nUX adalah **keseluruhan pengalaman** pengguna saat berinteraksi dengan produk. Ini mencakup:\n- Ease of use\n- Accessibility\n- User journey\n- Problem solving\n\n## Analogi Sederhana\n🏠 Jika UI adalah **cat dan dekorasi rumah**, maka UX adalah **tata letak ruangan dan bagaimana mudahnya hidup di rumah tersebut**.',
+                },
+                estimatedDuration: 10,
+              },
+              {
+                title: 'Quiz: UI vs UX',
+                type: ExerciseType.quiz,
+                content: {
+                  quizType: 'true_false',
+                  questions: [
+                    {
+                      id: 'tf1',
+                      question: 'UI Design hanya fokus pada tampilan visual.',
+                      options: ['True', 'False'],
+                      correctAnswer: 'True',
+                      points: 10,
+                    },
+                    {
+                      id: 'tf2',
+                      question:
+                        'UX Designer tidak perlu memahami psikologi pengguna.',
+                      options: ['True', 'False'],
+                      correctAnswer: 'False',
+                      points: 10,
+                    },
+                    {
+                      id: 'tf3',
+                      question:
+                        'Produk dengan UI bagus pasti memiliki UX yang baik.',
+                      options: ['True', 'False'],
+                      correctAnswer: 'False',
+                      points: 10,
+                    },
+                  ],
+                  passingScore: 70,
+                },
+                estimatedDuration: 5,
+              },
+            ],
+          },
+          {
+            title: 'Design Thinking Process',
+            description: 'Mengenal metodologi Design Thinking',
+            estimatedDuration: 30,
+            exercises: [
+              {
+                title: 'Video: 5 Tahap Design Thinking',
+                type: ExerciseType.video,
+                content: {
+                  youtubeId: '_r0VX-aU_T8',
+                  duration: 1200,
+                },
+                estimatedDuration: 20,
+              },
+              {
+                title: 'Quiz: Design Thinking',
+                type: ExerciseType.quiz,
+                content: {
+                  quizType: 'match_pairs',
+                  questions: [
+                    {
+                      id: 'mp1',
+                      question:
+                        'Cocokkan tahap Design Thinking dengan aktivitasnya',
+                      correctAnswer: {
+                        Empathize: 'Memahami kebutuhan pengguna',
+                        Define: 'Merumuskan masalah',
+                        Ideate: 'Brainstorming solusi',
+                        Prototype: 'Membuat model awal',
+                        Test: 'Mengujikan ke pengguna',
+                      },
+                      points: 50,
+                    },
+                  ],
+                  passingScore: 70,
+                },
+                estimatedDuration: 10,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Prinsip Desain Visual',
+        description: 'Belajar prinsip-prinsip fundamental desain visual',
+        lessons: [
+          {
+            title: 'Color Theory',
+            description: 'Memahami teori warna dan penggunaannya',
+            estimatedDuration: 25,
+            exercises: [
+              {
+                title: 'Materi: Color Theory Basics',
+                type: ExerciseType.material,
+                content: {
+                  body: '# Teori Warna\n\n## Color Wheel\n- **Primary Colors**: Merah, Kuning, Biru\n- **Secondary Colors**: Oranye, Hijau, Ungu\n- **Tertiary Colors**: Kombinasi primary dan secondary\n\n## Color Schemes\n1. **Complementary**: Warna berlawanan (merah-hijau)\n2. **Analogous**: Warna berdekatan (biru-hijau-cyan)\n3. **Triadic**: 3 warna seimbang (merah-kuning-biru)\n\n## Color Psychology\n- 🔴 **Merah**: Energi, urgency, passion\n- 🔵 **Biru**: Trust, calm, professional\n- 🟢 **Hijau**: Nature, growth, health\n- 🟡 **Kuning**: Optimism, attention, warmth\n- 🟣 **Ungu**: Luxury, creativity, mystery',
+                },
+                estimatedDuration: 15,
+              },
+              {
+                title: 'Quiz: Color Theory',
+                type: ExerciseType.quiz,
+                content: {
+                  quizType: 'multiple_choice',
+                  questions: [
+                    {
+                      id: 'q1',
+                      question:
+                        'Warna apa yang sering digunakan untuk tombol CTA karena menarik perhatian?',
+                      options: ['Biru', 'Abu-abu', 'Merah/Oranye', 'Hitam'],
+                      correctAnswer: 'Merah/Oranye',
+                      points: 10,
+                    },
+                    {
+                      id: 'q2',
+                      question: 'Complementary color dari biru adalah?',
+                      options: ['Hijau', 'Ungu', 'Oranye', 'Merah'],
+                      correctAnswer: 'Oranye',
+                      points: 10,
+                    },
+                  ],
+                  passingScore: 70,
+                },
+                estimatedDuration: 5,
+              },
+            ],
+          },
+          {
+            title: 'Typography',
+            description: 'Seni memilih dan menggunakan font',
+            estimatedDuration: 20,
+            exercises: [
+              {
+                title: 'Video: Typography Fundamentals',
+                type: ExerciseType.video,
+                content: {
+                  youtubeId: 'sByzHoiYFX0',
+                  duration: 900,
+                },
+                estimatedDuration: 15,
+              },
+              {
+                title: 'Quiz: Typography',
+                type: ExerciseType.quiz,
+                content: {
+                  quizType: 'fill_blanks',
+                  questions: [
+                    {
+                      id: 'fb1',
+                      question:
+                        'Font sans-serif cocok untuk konten ___ karena lebih mudah dibaca.',
+                      correctAnswer: 'digital',
+                      points: 10,
+                    },
+                    {
+                      id: 'fb2',
+                      question: 'Jarak antar baris teks disebut ___.',
+                      correctAnswer: 'line-height',
+                      points: 10,
+                    },
+                  ],
+                  passingScore: 70,
+                },
+                estimatedDuration: 5,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Figma Basics',
+        description: 'Belajar menggunakan Figma untuk desain UI',
+        lessons: [
+          {
+            title: 'Mengenal Interface Figma',
+            description: 'Tour interface dan tools dasar Figma',
+            estimatedDuration: 30,
+            exercises: [
+              {
+                title: 'Video: Figma Interface Tour',
+                type: ExerciseType.video,
+                content: {
+                  youtubeId: 'FTFaQWZBqQ8',
+                  duration: 1500,
+                },
+                estimatedDuration: 25,
+              },
+              {
+                title: 'Assignment: Buat Akun Figma',
+                type: ExerciseType.assignment,
+                content: {
+                  instructions:
+                    'Buat akun Figma gratis dan screenshot halaman dashboard kamu.',
+                  requirements: [
+                    'Daftar di figma.com',
+                    'Buat project baru',
+                    'Screenshot dashboard',
+                  ],
+                  maxSubmissions: 1,
+                  allowedFileTypes: ['image/png', 'image/jpeg'],
+                },
+                estimatedDuration: 10,
+              },
+            ],
+          },
+          {
+            title: 'Membuat Wireframe',
+            description: 'Membuat wireframe sederhana dengan Figma',
+            estimatedDuration: 40,
+            exercises: [
+              {
+                title: 'Video: Wireframing di Figma',
+                type: ExerciseType.video,
+                content: {
+                  youtubeId: 'D4NyQ5iOMF0',
+                  duration: 1800,
+                },
+                estimatedDuration: 30,
+              },
+              {
+                title: 'Assignment: Wireframe Mobile App',
+                type: ExerciseType.assignment,
+                content: {
+                  instructions:
+                    'Buat wireframe untuk 3 screen mobile app: Home, Detail, dan Profile.',
+                  requirements: [
+                    'Gunakan frame iPhone 14',
+                    'Minimal 3 screen',
+                    'Gunakan shapes dan text',
+                    'Export sebagai PNG atau share link Figma',
+                  ],
+                  maxSubmissions: 3,
+                  allowedFileTypes: ['image/png', 'text/plain'],
+                },
+                estimatedDuration: 45,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  // English for Professionals
+  {
+    title: 'English for Professionals',
+    slug: 'english-for-professionals',
+    description:
+      'Tingkatkan kemampuan bahasa Inggris untuk karir profesional. Business English, email writing, dan presentation skills.',
+    coverImage: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173',
+    category: 'Language',
+    level: CourseLevel.intermediate,
+    language: 'english',
+    estimatedDuration: 30,
+    status: CourseStatus.published,
+    sections: [
+      {
+        title: 'Business Email Writing',
+        description: 'Menulis email profesional dalam bahasa Inggris',
+        lessons: [
+          {
+            title: 'Email Structure & Etiquette',
+            description: 'Struktur email profesional yang baik',
+            estimatedDuration: 25,
+            exercises: [
+              {
+                title: 'Materi: Email Structure',
+                type: ExerciseType.material,
+                content: {
+                  body: '# Professional Email Structure\n\n## 1. Subject Line\n- Be specific and concise\n- ✅ "Meeting Request: Q4 Budget Review - Dec 15"\n- ❌ "Meeting"\n\n## 2. Greeting\n- Formal: "Dear Mr./Ms. [Last Name],"\n- Semi-formal: "Hello [First Name],"\n- Internal: "Hi [Name],"\n\n## 3. Opening Line\n- "I hope this email finds you well."\n- "Thank you for your email regarding..."\n- "I am writing to inquire about..."\n\n## 4. Body\n- Keep paragraphs short (2-3 sentences)\n- Use bullet points for lists\n- One topic per email\n\n## 5. Closing\n- "Please let me know if you have any questions."\n- "I look forward to hearing from you."\n\n## 6. Sign-off\n- Formal: "Best regards," / "Sincerely,"\n- Semi-formal: "Kind regards," / "Best,"',
+                },
+                estimatedDuration: 15,
+              },
+              {
+                title: 'Quiz: Email Etiquette',
+                type: ExerciseType.quiz,
+                content: {
+                  quizType: 'multiple_choice',
+                  questions: [
+                    {
+                      id: 'q1',
+                      question: 'Which subject line is most professional?',
+                      options: [
+                        'URGENT!!!',
+                        'Question about project',
+                        'Request for Feedback: Marketing Proposal Draft',
+                        'hey',
+                      ],
+                      correctAnswer:
+                        'Request for Feedback: Marketing Proposal Draft',
+                      points: 10,
+                    },
+                    {
+                      id: 'q2',
+                      question: 'When should you use "Dear Sir/Madam"?',
+                      options: [
+                        'When you know the person well',
+                        "When you don't know the recipient's name",
+                        'Never in business emails',
+                        'For internal emails only',
+                      ],
+                      correctAnswer: "When you don't know the recipient's name",
+                      points: 10,
+                    },
+                  ],
+                  passingScore: 70,
+                },
+                estimatedDuration: 5,
+              },
+            ],
+          },
+          {
+            title: 'Common Email Scenarios',
+            description: 'Templates untuk berbagai situasi email',
+            estimatedDuration: 30,
+            exercises: [
+              {
+                title: 'Video: Writing Different Types of Emails',
+                type: ExerciseType.video,
+                content: {
+                  youtubeId: 'SBmLzgm5rZE',
+                  duration: 1200,
+                },
+                estimatedDuration: 20,
+              },
+              {
+                title: 'Assignment: Write a Request Email',
+                type: ExerciseType.assignment,
+                content: {
+                  instructions:
+                    'Write a professional email requesting a meeting with your manager to discuss your Q4 performance review. Include all proper email components.',
+                  requirements: [
+                    'Clear subject line',
+                    'Professional greeting',
+                    'Purpose of the meeting',
+                    'Proposed time slots',
+                    'Professional closing',
+                  ],
+                  maxSubmissions: 2,
+                  allowedFileTypes: ['text/plain', 'application/pdf'],
+                },
+                estimatedDuration: 20,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Presentation Skills',
+        description: 'Memberikan presentasi profesional dalam bahasa Inggris',
+        lessons: [
+          {
+            title: 'Opening & Closing a Presentation',
+            description: 'Teknik membuka dan menutup presentasi dengan kuat',
+            estimatedDuration: 25,
+            exercises: [
+              {
+                title: 'Video: Powerful Openings',
+                type: ExerciseType.video,
+                content: {
+                  youtubeId: 'MnIPpUiTcRc',
+                  duration: 900,
+                },
+                estimatedDuration: 15,
+              },
+              {
+                title: 'Materi: Opening Techniques',
+                type: ExerciseType.material,
+                content: {
+                  body: '# Powerful Presentation Openings\n\n## 1. Start with a Question\n"Have you ever wondered why...?"\n\n## 2. Share a Surprising Statistic\n"Did you know that 70% of...?"\n\n## 3. Tell a Story\n"Last month, one of our customers..."\n\n## 4. Use a Quote\n"As Steve Jobs once said..."\n\n## 5. State a Bold Claim\n"By the end of this presentation, you\'ll be able to..."\n\n---\n\n# Strong Closings\n\n## 1. Summarize Key Points\n"To recap, we\'ve covered three main areas..."\n\n## 2. Call to Action\n"I encourage you to implement these strategies starting tomorrow."\n\n## 3. End with Impact\n"Remember, the future belongs to those who prepare for it today."',
+                },
+                estimatedDuration: 10,
+              },
+            ],
+          },
+          {
+            title: 'Handling Q&A Sessions',
+            description: 'Teknik menjawab pertanyaan dengan percaya diri',
+            estimatedDuration: 20,
+            exercises: [
+              {
+                title: 'Video: Q&A Best Practices',
+                type: ExerciseType.video,
+                content: {
+                  youtubeId: 'JGI85nE5Ngw',
+                  duration: 720,
+                },
+                estimatedDuration: 12,
+              },
+              {
+                title: 'Quiz: Q&A Responses',
+                type: ExerciseType.quiz,
+                content: {
+                  quizType: 'multiple_choice',
+                  questions: [
+                    {
+                      id: 'q1',
+                      question:
+                        "What should you do if you don't know the answer to a question?",
+                      options: [
+                        'Make up an answer',
+                        'Say "I don\'t know" and move on',
+                        'Acknowledge it and offer to follow up later',
+                        'Ignore the question',
+                      ],
+                      correctAnswer:
+                        'Acknowledge it and offer to follow up later',
+                      points: 10,
+                    },
+                    {
+                      id: 'q2',
+                      question:
+                        'A good technique before answering a difficult question is to:',
+                      options: [
+                        'Answer immediately',
+                        'Paraphrase the question to ensure understanding',
+                        'Ask the audience to answer',
+                        'Skip to the next question',
+                      ],
+                      correctAnswer:
+                        'Paraphrase the question to ensure understanding',
+                      points: 10,
+                    },
+                  ],
+                  passingScore: 70,
+                },
+                estimatedDuration: 5,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  // Digital Marketing
+  {
+    title: 'Digital Marketing Essentials',
+    slug: 'digital-marketing-essentials',
+    description:
+      'Pelajari strategi digital marketing yang efektif. SEO, Social Media Marketing, dan Google Ads.',
+    coverImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f',
+    category: 'Marketing',
+    level: CourseLevel.beginner,
+    language: 'indonesian',
+    estimatedDuration: 20,
+    status: CourseStatus.draft,
+    sections: [
+      {
+        title: 'Pengenalan Digital Marketing',
+        description: 'Memahami landscape digital marketing',
+        lessons: [
+          {
+            title: 'Apa itu Digital Marketing?',
+            description: 'Overview dunia digital marketing',
+            estimatedDuration: 20,
+            exercises: [
+              {
+                title: 'Video: Digital Marketing Overview',
+                type: ExerciseType.video,
+                content: {
+                  youtubeId: 'bixR-KIJKYM',
+                  duration: 900,
+                },
+                estimatedDuration: 15,
+              },
+              {
+                title: 'Quiz: Digital Marketing Basics',
+                type: ExerciseType.quiz,
+                content: {
+                  quizType: 'multiple_choice',
+                  questions: [
+                    {
+                      id: 'q1',
+                      question:
+                        'Manakah yang BUKAN termasuk digital marketing channel?',
+                      options: [
+                        'SEO',
+                        'Email Marketing',
+                        'Billboard',
+                        'Social Media',
+                      ],
+                      correctAnswer: 'Billboard',
+                      points: 10,
+                    },
+                  ],
+                  passingScore: 70,
+                },
+                estimatedDuration: 5,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Search Engine Optimization',
+        description: 'Belajar SEO untuk meningkatkan visibility',
+        lessons: [
+          {
+            title: 'SEO Fundamentals',
+            description: 'Dasar-dasar SEO yang perlu diketahui',
+            estimatedDuration: 30,
+            exercises: [
+              {
+                title: 'Materi: SEO Basics',
+                type: ExerciseType.material,
+                content: {
+                  body: '# SEO Fundamentals\n\n## What is SEO?\nSEO (Search Engine Optimization) adalah proses mengoptimalkan website agar mendapat ranking lebih tinggi di hasil pencarian.\n\n## 3 Pillars of SEO\n\n### 1. Technical SEO\n- Site speed\n- Mobile-friendliness\n- SSL certificate\n- XML sitemap\n\n### 2. On-Page SEO\n- Keyword research\n- Title tags & meta descriptions\n- Header tags (H1, H2, H3)\n- Content quality\n- Internal linking\n\n### 3. Off-Page SEO\n- Backlinks\n- Social signals\n- Brand mentions\n- Guest posting',
+                },
+                estimatedDuration: 15,
+              },
+              {
+                title: 'Quiz: SEO Basics',
+                type: ExerciseType.quiz,
+                content: {
+                  quizType: 'true_false',
+                  questions: [
+                    {
+                      id: 'tf1',
+                      question:
+                        'Keyword stuffing adalah praktik SEO yang baik.',
+                      options: ['True', 'False'],
+                      correctAnswer: 'False',
+                      points: 10,
+                    },
+                    {
+                      id: 'tf2',
+                      question:
+                        'Backlink dari website berkualitas tinggi membantu SEO.',
+                      options: ['True', 'False'],
+                      correctAnswer: 'True',
+                      points: 10,
+                    },
+                  ],
+                  passingScore: 70,
+                },
+                estimatedDuration: 5,
               },
             ],
           },
@@ -975,6 +1943,11 @@ async function seedClassManagementData(
   const student1Id = userIdMap.get('student@inntexia.com');
   const student2Id = userIdMap.get('student2@inntexia.com');
   const student3Id = userIdMap.get('student3@inntexia.com');
+  const student4Id = userIdMap.get('student4@inntexia.com');
+  const student5Id = userIdMap.get('student5@inntexia.com');
+  const student6Id = userIdMap.get('student6@inntexia.com');
+  const student7Id = userIdMap.get('student7@inntexia.com');
+  const student8Id = userIdMap.get('student8@inntexia.com');
   const staffId = userIdMap.get('staff@inntexia.com');
 
   if (
@@ -1055,11 +2028,20 @@ async function seedClassManagementData(
     classIds.set('python-group', pythonGroupClass.id);
     console.log(`   ✅ Created class: Python Batch 1 - Group (active)`);
 
-    // Enroll students
+    // Enroll students (including new students)
     const enrollments = [
       { studentId: student1Id, key: 'student1-python-group' },
       { studentId: student2Id, key: 'student2-python-group' },
       { studentId: student3Id, key: 'student3-python-group' },
+      ...(student4Id
+        ? [{ studentId: student4Id, key: 'student4-python-group' }]
+        : []),
+      ...(student5Id
+        ? [{ studentId: student5Id, key: 'student5-python-group' }]
+        : []),
+      ...(student6Id
+        ? [{ studentId: student6Id, key: 'student6-python-group' }]
+        : []),
     ];
 
     for (const { studentId, key } of enrollments) {
@@ -1074,7 +2056,13 @@ async function seedClassManagementData(
       });
       enrollmentIds.set(key, enrollment.id);
     }
-    console.log(`      └─ Enrolled 3 students`);
+    console.log(`      └─ Enrolled ${enrollments.length} students`);
+
+    // Update class capacity
+    await prisma.class.update({
+      where: { id: pythonGroupClass.id },
+      data: { currentCapacity: enrollments.length },
+    });
 
     // Unlock first 3 lessons
     for (let i = 0; i < 3 && i < pythonLessons.length; i++) {
@@ -1258,11 +2246,19 @@ async function seedClassManagementData(
       `   ✅ Created class: JavaScript Batch 1 - Group (enrollment_open)`,
     );
 
-    // Enroll 2 students
-    for (const [studentId, key] of [
-      [student1Id, 'student1-js-group'],
-      [student2Id, 'student2-js-group'],
-    ] as const) {
+    // Enroll students (including new students)
+    const jsEnrollments: Array<{ studentId: string; key: string }> = [
+      { studentId: student1Id, key: 'student1-js-group' },
+      { studentId: student2Id, key: 'student2-js-group' },
+    ];
+    if (student7Id)
+      jsEnrollments.push({ studentId: student7Id, key: 'student7-js-group' });
+    if (student8Id)
+      jsEnrollments.push({ studentId: student8Id, key: 'student8-js-group' });
+    if (student4Id)
+      jsEnrollments.push({ studentId: student4Id, key: 'student4-js-group' });
+
+    for (const { studentId, key } of jsEnrollments) {
       const enrollment = await prisma.classEnrollment.create({
         data: {
           classId: jsGroupClass.id,
@@ -1274,7 +2270,14 @@ async function seedClassManagementData(
       });
       enrollmentIds.set(key, enrollment.id);
     }
-    console.log(`      └─ Enrolled 2 students (waiting for more)`);
+
+    // Update class capacity
+    await prisma.class.update({
+      where: { id: jsGroupClass.id },
+      data: { currentCapacity: jsEnrollments.length },
+    });
+
+    console.log(`      └─ Enrolled ${jsEnrollments.length} students`);
   } else {
     classIds.set('js-group', existingJsGroup.id);
     console.log(`   ⏭️  Class "JavaScript Batch 1 - Group" already exists`);
@@ -2266,11 +3269,22 @@ async function main() {
 
   // Print courses summary
   console.log('\n📚 Courses Created:');
-  console.log('─'.repeat(50));
+  console.log('─'.repeat(60));
   seedCourses.forEach((c) => {
-    console.log(`   [${c.status.padEnd(9)}] ${c.title}`);
+    const sectionCount = c.sections.length;
+    const lessonCount = c.sections.reduce(
+      (acc, s) => acc + s.lessons.length,
+      0,
+    );
+    const exerciseCount = c.sections.reduce(
+      (acc, s) => acc + s.lessons.reduce((a, l) => a + l.exercises.length, 0),
+      0,
+    );
+    console.log(
+      `   [${c.status.padEnd(9)}] ${c.title.padEnd(30)} ${sectionCount}s/${lessonCount}l/${exerciseCount}e`,
+    );
   });
-  console.log('─'.repeat(50));
+  console.log('─'.repeat(60));
 
   // Print progress summary
   console.log('\n📊 Student Progress:');

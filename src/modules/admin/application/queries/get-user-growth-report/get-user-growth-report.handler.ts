@@ -34,15 +34,13 @@ export interface UserGrowthReportDto {
 }
 
 @QueryHandler(GetUserGrowthReportQuery)
-export class GetUserGrowthReportHandler
-  implements IQueryHandler<GetUserGrowthReportQuery>
-{
+export class GetUserGrowthReportHandler implements IQueryHandler<GetUserGrowthReportQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(query: GetUserGrowthReportQuery): Promise<UserGrowthReportDto> {
     const now = new Date();
     let startDate = query.startDate;
-    let endDate = query.endDate || now;
+    const endDate = query.endDate || now;
 
     if (!startDate) {
       switch (query.period) {
@@ -91,7 +89,9 @@ export class GetUserGrowthReportHandler
     });
 
     // Churn rate (inactive users / total)
-    const churnRate = Math.round(((totalUsers - activeUsers) / totalUsers) * 100);
+    const churnRate = Math.round(
+      ((totalUsers - activeUsers) / totalUsers) * 100,
+    );
 
     // By role breakdown
     const roleCountsTotal = await this.prisma.user.groupBy({
@@ -161,7 +161,11 @@ export class GetUserGrowthReportHandler
     const current = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
 
     while (current <= endDate) {
-      const monthEnd = new Date(current.getFullYear(), current.getMonth() + 1, 0);
+      const monthEnd = new Date(
+        current.getFullYear(),
+        current.getMonth() + 1,
+        0,
+      );
 
       const counts = await this.prisma.user.groupBy({
         by: ['role'],
@@ -230,4 +234,3 @@ export class GetUserGrowthReportHandler
     return Math.round((activeAfterDays / usersCreatedBefore) * 100);
   }
 }
-

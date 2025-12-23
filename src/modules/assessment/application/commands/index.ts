@@ -18,4 +18,3 @@ export * from './bulk-grade-submissions/bulk-grade-submissions.command';
 export * from './bulk-grade-submissions/bulk-grade-submissions.handler';
 export * from './return-for-revision/return-for-revision.command';
 export * from './return-for-revision/return-for-revision.handler';
-

@@ -5,4 +5,3 @@ export class UsernameAlreadyExistsError extends ConflictError {
     super(`Username "${username}" sudah digunakan`);
   }
 }
-

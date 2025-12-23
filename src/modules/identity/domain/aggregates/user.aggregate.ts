@@ -279,7 +279,9 @@ export class User extends AggregateRoot<UserId> {
    */
   setInviteToken(token: string, expiryHours: number = 72): void {
     this._inviteToken = token;
-    this._inviteTokenExpiry = new Date(Date.now() + expiryHours * 60 * 60 * 1000);
+    this._inviteTokenExpiry = new Date(
+      Date.now() + expiryHours * 60 * 60 * 1000,
+    );
     this.touch();
   }
 

@@ -13,4 +13,3 @@ export class AddMeetingsDto {
   @Max(100)
   meetingsToAdd: number;
 }
-

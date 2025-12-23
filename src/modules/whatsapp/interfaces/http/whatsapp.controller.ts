@@ -132,7 +132,8 @@ export class WhatsAppController {
     };
 
     const link = this.whatsAppService.generateContinuePrivateLink(messageData);
-    const message = this.whatsAppService.generateContinuePrivateMessage(messageData);
+    const message =
+      this.whatsAppService.generateContinuePrivateMessage(messageData);
 
     return { link, message };
   }
@@ -147,4 +148,3 @@ export class WhatsAppController {
     return Promise.resolve({ phone, configured: !!phone });
   }
 }
-

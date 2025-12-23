@@ -5,4 +5,3 @@ export class ExerciseNotAssignmentError extends DomainError {
     super(`Exercise ${exerciseId} is not an assignment type`);
   }
 }
-

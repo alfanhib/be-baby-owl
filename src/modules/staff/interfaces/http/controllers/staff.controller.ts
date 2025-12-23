@@ -14,7 +14,10 @@ import {
   CurrentUser,
   CurrentUserPayload,
 } from '@shared/interfaces/decorators/current-user.decorator';
-import { QuickEnrollCommand, BulkEnrollCommand } from '@staff/application/commands';
+import {
+  QuickEnrollCommand,
+  BulkEnrollCommand,
+} from '@staff/application/commands';
 import {
   GetStaffDashboardQuery,
   SearchStudentsQuery,
@@ -119,9 +122,10 @@ export class StaffController {
     @Query('courseId') courseId?: string,
     @Query('type') type?: 'group' | 'private',
   ): Promise<AvailableClassResult[]> {
-    return this.queryBus.execute<GetAvailableClassesQuery, AvailableClassResult[]>(
-      new GetAvailableClassesQuery(courseId, type),
-    );
+    return this.queryBus.execute<
+      GetAvailableClassesQuery,
+      AvailableClassResult[]
+    >(new GetAvailableClassesQuery(courseId, type));
   }
 
   @Post('quick-enroll')
@@ -149,7 +153,9 @@ export class StaffController {
       user.userId,
     );
 
-    return this.commandBus.execute<QuickEnrollCommand, QuickEnrollResult>(command);
+    return this.commandBus.execute<QuickEnrollCommand, QuickEnrollResult>(
+      command,
+    );
   }
 
   // ========== Staff Tools ==========
@@ -157,12 +163,16 @@ export class StaffController {
   @Get('pending-payments')
   @ApiOperation({ summary: 'Get payments pending verification' })
   @ApiResponse({ status: 200, description: 'Pending payments retrieved' })
-  async getPendingPayments(): Promise<Array<{ id: string; type: string; title: string }>> {
+  async getPendingPayments(): Promise<
+    Array<{ id: string; type: string; title: string }>
+  > {
     const dashboardResult = await this.queryBus.execute<
       GetStaffDashboardQuery,
       StaffDashboardResult
     >(new GetStaffDashboardQuery());
-    return dashboardResult.pendingActions.filter((a) => a.type === 'verify_payment');
+    return dashboardResult.pendingActions.filter(
+      (a) => a.type === 'verify_payment',
+    );
   }
 
   // ========== Enrollment History & Analytics ==========
@@ -221,7 +231,10 @@ export class StaffController {
   @Post('bulk-enroll')
   @ApiOperation({ summary: 'Bulk enroll multiple students to a class' })
   @ApiResponse({ status: 201, description: 'Bulk enrollment completed' })
-  @ApiResponse({ status: 400, description: 'Invalid input or capacity exceeded' })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input or capacity exceeded',
+  })
   @ApiResponse({ status: 404, description: 'Class not found' })
   async bulkEnroll(
     @Body() dto: BulkEnrollDto,
@@ -241,6 +254,8 @@ export class StaffController {
       user.userId,
     );
 
-    return this.commandBus.execute<BulkEnrollCommand, BulkEnrollResult>(command);
+    return this.commandBus.execute<BulkEnrollCommand, BulkEnrollResult>(
+      command,
+    );
   }
 }

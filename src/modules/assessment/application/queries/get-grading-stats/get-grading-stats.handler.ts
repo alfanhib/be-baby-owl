@@ -11,18 +11,14 @@ export interface GradingStatsDto {
 }
 
 @QueryHandler(GetGradingStatsQuery)
-export class GetGradingStatsHandler
-  implements IQueryHandler<GetGradingStatsQuery>
-{
+export class GetGradingStatsHandler implements IQueryHandler<GetGradingStatsQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(query: GetGradingStatsQuery): Promise<GradingStatsDto> {
     const { instructorId, classId } = query;
 
     // Get classes taught by this instructor
-    const classFilter = classId
-      ? { id: classId }
-      : { instructorId };
+    const classFilter = classId ? { id: classId } : { instructorId };
 
     const instructorClasses = await this.prisma.class.findMany({
       where: classFilter,
@@ -131,4 +127,3 @@ export class GetGradingStatsHandler
     };
   }
 }
-

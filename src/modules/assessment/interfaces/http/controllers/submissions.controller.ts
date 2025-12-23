@@ -201,11 +201,17 @@ export class SubmissionsController {
     @CurrentUser() user: CurrentUserPayload,
   ): Promise<{
     success: boolean;
-    data: { success: string[]; failed: Array<{ submissionId: string; error: string }> };
+    data: {
+      success: string[];
+      failed: Array<{ submissionId: string; error: string }>;
+    };
   }> {
     const result = await this.commandBus.execute<
       BulkGradeSubmissionsCommand,
-      { success: string[]; failed: Array<{ submissionId: string; error: string }> }
+      {
+        success: string[];
+        failed: Array<{ submissionId: string; error: string }>;
+      }
     >(new BulkGradeSubmissionsCommand(user.userId, dto.entries));
     return { success: true, data: result };
   }
@@ -252,4 +258,3 @@ export class SubmissionsController {
     return { success: true, data: result };
   }
 }
-

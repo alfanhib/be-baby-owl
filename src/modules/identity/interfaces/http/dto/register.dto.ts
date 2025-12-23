@@ -25,8 +25,7 @@ export class RegisterDto {
   @MinLength(3)
   @MaxLength(30)
   @Matches(/^[a-zA-Z0-9_-]+$/, {
-    message:
-      'Username hanya boleh berisi huruf, angka, underscore, dan dash',
+    message: 'Username hanya boleh berisi huruf, angka, underscore, dan dash',
   })
   username?: string;
 

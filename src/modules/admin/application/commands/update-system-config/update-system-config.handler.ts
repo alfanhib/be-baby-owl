@@ -6,9 +6,7 @@ import {
 } from '../../queries/get-system-config/get-system-config.handler';
 
 @CommandHandler(UpdateSystemConfigCommand)
-export class UpdateSystemConfigHandler
-  implements ICommandHandler<UpdateSystemConfigCommand>
-{
+export class UpdateSystemConfigHandler implements ICommandHandler<UpdateSystemConfigCommand> {
   execute(
     command: UpdateSystemConfigCommand,
   ): Promise<{ success: boolean; message: string }> {
@@ -40,4 +38,3 @@ export class UpdateSystemConfigHandler
     });
   }
 }
-

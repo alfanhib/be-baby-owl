@@ -42,4 +42,3 @@ export class Grade {
     return `${this._score}/${this._maxScore} (${this.percentage}%)`;
   }
 }
-

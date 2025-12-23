@@ -7,4 +7,3 @@ export class RequestVerificationDto {
   @IsNotEmpty()
   email: string;
 }
-

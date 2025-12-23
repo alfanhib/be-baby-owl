@@ -32,9 +32,7 @@ interface EnrollmentHistoryResult {
 }
 
 @QueryHandler(GetEnrollmentHistoryQuery)
-export class GetEnrollmentHistoryHandler
-  implements IQueryHandler<GetEnrollmentHistoryQuery>
-{
+export class GetEnrollmentHistoryHandler implements IQueryHandler<GetEnrollmentHistoryQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(
@@ -111,4 +109,3 @@ export class GetEnrollmentHistoryHandler
     };
   }
 }
-

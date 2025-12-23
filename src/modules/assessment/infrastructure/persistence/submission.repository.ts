@@ -211,4 +211,3 @@ export class SubmissionRepository implements ISubmissionRepository {
     return this.prisma.assignmentSubmission.count({ where });
   }
 }
-

@@ -4,4 +4,3 @@ export class GetCoursePerformanceQuery {
     public readonly endDate?: Date,
   ) {}
 }
-

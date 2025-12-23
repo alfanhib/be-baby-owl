@@ -11,4 +11,3 @@ export class SubmitAssignmentCommand {
     public readonly comment?: string,
   ) {}
 }
-
