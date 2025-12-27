@@ -14,7 +14,22 @@ export class PrismaService
   private readonly logger = new Logger(PrismaService.name);
 
   constructor() {
+    const databaseUrl = process.env.DATABASE_URL;
+
+    if (!databaseUrl) {
+      throw new Error(
+        'DATABASE_URL environment variable is not set. ' +
+          'Please set it in your .env file or environment variables. ' +
+          'Example: DATABASE_URL="postgresql://user:password@localhost:5432/dbname?schema=public"',
+      );
+    }
+
     super({
+      datasources: {
+        db: {
+          url: databaseUrl,
+        },
+      },
       log:
         process.env.NODE_ENV === 'development'
           ? ['query', 'info', 'warn', 'error']
